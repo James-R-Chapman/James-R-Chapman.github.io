@@ -1,747 +1,908 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="James Chapman - Cybersecurity Professional Portfolio showcasing skills, certifications, and projects in network security, ethical hacking, and SOC operations">
-    <meta name="keywords" content="cybersecurity, ethical hacking, network security, SOC analyst, penetration testing, vulnerability assessment, TryHackMe, security portfolio">
-    <meta name="author" content="James Chapman">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="James Chapman - Cybersecurity Professional Portfolio showcasing skills, certifications, and projects in network security, ethical hacking, and SOC operations"
+    />
+    <meta
+      name="keywords"
+      content="cybersecurity, ethical hacking, network security, SOC analyst, penetration testing, vulnerability assessment, TryHackMe, security portfolio"
+    />
+    <meta name="author" content="James Chapman" />
     <title>James Chapman | Cybersecurity Professional</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        :root {
-            --primary-bg: #0a0e27;
-            --secondary-bg: #151932;
-            --accent-color: #00d9ff;
-            --accent-secondary: #00ff88;
-            --text-primary: #e0e0e0;
-            --text-secondary: #a0a0a0;
-            --card-bg: #1a1f3a;
-            --border-color: #2a2f4a;
-        }
+      :root {
+        --primary-bg: #0a0e27;
+        --secondary-bg: #151932;
+        --accent-color: #00d9ff;
+        --accent-secondary: #00ff88;
+        --text-primary: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --card-bg: #1a1f3a;
+        --border-color: #2a2f4a;
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, #0d1127 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, var(--primary-bg) 0%, #0d1127 100%);
+        color: var(--text-primary);
+        line-height: 1.6;
+        scroll-behavior: smooth;
+      }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0, 217, 255, 0.1);
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(10, 14, 39, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 0;
+        z-index: 1000;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 2px 10px rgba(0, 217, 255, 0.1);
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding: 0 2rem;
+      }
+
+      nav a {
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        position: relative;
+      }
+
+      nav a:hover {
+        color: var(--accent-color);
+        background: rgba(0, 217, 255, 0.1);
+      }
+
+      /* Header */
+      header {
+        text-align: center;
+        padding: 8rem 2rem 4rem;
+        background: linear-gradient(
+          135deg,
+          var(--secondary-bg) 0%,
+          var(--primary-bg) 100%
+        );
+        border-bottom: 2px solid var(--accent-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(0, 217, 255, 0.1) 0%,
+          transparent 70%
+        );
+        animation: pulse 15s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      header h1 {
+        font-size: 3.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--accent-color),
+          var(--accent-secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 1;
+      }
+
+      header p {
+        font-size: 1.3rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header-stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--accent-color);
+      }
+
+      .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+      }
+
+      section {
+        margin-bottom: 4rem;
+        scroll-margin-top: 80px;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        color: var(--accent-color);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      h2::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 2.5rem;
+        background: linear-gradient(
+          180deg,
+          var(--accent-color),
+          var(--accent-secondary)
+        );
+        border-radius: 2px;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--accent-secondary);
+      }
+
+      /* Cards */
+      .card {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s;
+      }
+
+      .card:hover {
+        border-color: var(--accent-color);
+        box-shadow: 0 5px 20px rgba(0, 217, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      /* Skills Grid */
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .skill-item {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 3px solid var(--accent-color);
+        transition: all 0.3s;
+      }
+
+      .skill-item:hover {
+        background: var(--secondary-bg);
+        border-left-color: var(--accent-secondary);
+        transform: translateX(5px);
+      }
+
+      /* Certifications */
+      .cert-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .cert-item {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s;
+      }
+
+      .cert-item:hover {
+        border-color: var(--accent-color);
+        box-shadow: 0 3px 15px rgba(0, 217, 255, 0.15);
+      }
+
+      .cert-icon {
+        font-size: 2rem;
+        color: var(--accent-color);
+      }
+
+      .cert-status {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+      }
+
+      .cert-completed {
+        background: rgba(0, 255, 136, 0.2);
+        color: var(--accent-secondary);
+      }
+
+      .cert-progress {
+        background: rgba(0, 217, 255, 0.2);
+        color: var(--accent-color);
+      }
+
+      /* Work Examples */
+      .work-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .work-item {
+        background: var(--card-bg);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s;
+      }
+
+      .work-item:hover {
+        border-color: var(--accent-color);
+        box-shadow: 0 5px 20px rgba(0, 217, 255, 0.2);
+        transform: translateY(-5px);
+      }
+
+      .work-header {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-bg),
+          var(--primary-bg)
+        );
+        padding: 2rem;
+        border-bottom: 2px solid var(--accent-color);
+      }
+
+      .work-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .work-content {
+        padding: 2rem;
+      }
+
+      .placeholder {
+        background: rgba(0, 217, 255, 0.1);
+        padding: 1rem;
+        border-radius: 5px;
+        border-left: 3px solid var(--accent-color);
+        margin-top: 1rem;
+        font-style: italic;
+        color: var(--text-secondary);
+      }
+
+      /* Contact */
+      .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .contact-item {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s;
+      }
+
+      .contact-item:hover {
+        border-color: var(--accent-color);
+        box-shadow: 0 5px 20px rgba(0, 217, 255, 0.2);
+      }
+
+      .contact-icon {
+        font-size: 3rem;
+        color: var(--accent-color);
+        margin-bottom: 1rem;
+      }
+
+      .contact-item a {
+        color: var(--text-primary);
+        text-decoration: none;
+        word-break: break-all;
+      }
+
+      .contact-item a:hover {
+        color: var(--accent-color);
+      }
+
+      /* Experience Timeline */
+      .timeline {
+        position: relative;
+        padding-left: 2rem;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+          180deg,
+          var(--accent-color),
+          var(--accent-secondary)
+        );
+      }
+
+      .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+        padding-left: 2rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -2.5rem;
+        top: 0.5rem;
+        width: 12px;
+        height: 12px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        border: 3px solid var(--primary-bg);
+      }
+
+      .timeline-date {
+        color: var(--accent-secondary);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        background: var(--secondary-bg);
+        border-top: 1px solid var(--border-color);
+        color: var(--text-secondary);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 2.5rem;
         }
 
         nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-            padding: 0 2rem;
-        }
-
-        nav a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            position: relative;
-        }
-
-        nav a:hover {
-            color: var(--accent-color);
-            background: rgba(0, 217, 255, 0.1);
-        }
-
-        /* Header */
-        header {
-            text-align: center;
-            padding: 8rem 2rem 4rem;
-            background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-bg) 100%);
-            border-bottom: 2px solid var(--accent-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 217, 255, 0.1) 0%, transparent 70%);
-            animation: pulse 15s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 1;
-        }
-
-        header p {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
+          gap: 1rem;
         }
 
         .header-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-
-        section {
-            margin-bottom: 4rem;
-            scroll-margin-top: 80px;
+          gap: 1.5rem;
         }
 
         h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+          font-size: 2rem;
+        }
+      }
+
+      /* Print Styles */
+      @media print {
+        nav {
+          position: relative;
         }
 
-        h2::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 2.5rem;
-            background: linear-gradient(180deg, var(--accent-color), var(--accent-secondary));
-            border-radius: 2px;
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--accent-secondary);
-        }
-
-        /* Cards */
-        .card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
-        }
-
-        .card:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Skills Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .skill-item {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent-color);
-            transition: all 0.3s;
-        }
-
-        .skill-item:hover {
-            background: var(--secondary-bg);
-            border-left-color: var(--accent-secondary);
-            transform: translateX(5px);
-        }
-
-        /* Certifications */
-        .cert-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .cert-item {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s;
-        }
-
-        .cert-item:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 3px 15px rgba(0, 217, 255, 0.15);
-        }
-
-        .cert-icon {
-            font-size: 2rem;
-            color: var(--accent-color);
-        }
-
-        .cert-status {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-
-        .cert-completed {
-            background: rgba(0, 255, 136, 0.2);
-            color: var(--accent-secondary);
-        }
-
-        .cert-progress {
-            background: rgba(0, 217, 255, 0.2);
-            color: var(--accent-color);
-        }
-
-        /* Work Examples */
-        .work-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .work-item {
-            background: var(--card-bg);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
-        }
-
-        .work-item:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.2);
-            transform: translateY(-5px);
-        }
-
-        .work-header {
-            background: linear-gradient(135deg, var(--secondary-bg), var(--primary-bg));
-            padding: 2rem;
-            border-bottom: 2px solid var(--accent-color);
-        }
-
-        .work-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .work-content {
-            padding: 2rem;
-        }
-
-        .placeholder {
-            background: rgba(0, 217, 255, 0.1);
-            padding: 1rem;
-            border-radius: 5px;
-            border-left: 3px solid var(--accent-color);
-            margin-top: 1rem;
-            font-style: italic;
-            color: var(--text-secondary);
-        }
-
-        /* Contact */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
+        .card,
+        .work-item,
         .contact-item {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
+          break-inside: avoid;
         }
-
-        .contact-item:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.2);
-        }
-
-        .contact-icon {
-            font-size: 3rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-
-        .contact-item a {
-            color: var(--text-primary);
-            text-decoration: none;
-            word-break: break-all;
-        }
-
-        .contact-item a:hover {
-            color: var(--accent-color);
-        }
-
-        /* Experience Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(180deg, var(--accent-color), var(--accent-secondary));
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-left: 2rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2.5rem;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            border: 3px solid var(--primary-bg);
-        }
-
-        .timeline-date {
-            color: var(--accent-secondary);
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            background: var(--secondary-bg);
-            border-top: 1px solid var(--border-color);
-            color: var(--text-secondary);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.5rem;
-            }
-
-            nav ul {
-                gap: 1rem;
-            }
-
-            .header-stats {
-                gap: 1.5rem;
-            }
-
-            h2 {
-                font-size: 2rem;
-            }
-        }
-
-        /* Print Styles */
-        @media print {
-            nav {
-                position: relative;
-            }
-
-            .card, .work-item, .contact-item {
-                break-inside: avoid;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Navigation -->
     <nav>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#certifications">Certifications</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#work-samples">Work Samples</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#work-samples">Work Samples</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </nav>
 
     <!-- Header -->
     <header>
-        <h1>JAMES CHAPMAN</h1>
-        <p>Cybersecurity Professional | Ethical Hacker | SOC Analyst</p>
-        <div class="header-stats">
-            <div class="stat">
-                <div class="stat-number">Top 1%</div>
-                <div class="stat-label">TryHackMe Ranking</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">350+</div>
-                <div class="stat-label">Day Streak</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">350+</div>
-                <div class="stat-label">Rooms Completed</div>
-            </div>
+      <h1>JAMES CHAPMAN</h1>
+      <p>Cybersecurity Professional | Ethical Hacker | SOC Analyst</p>
+      <div class="header-stats">
+        <div class="stat">
+          <div class="stat-number">Top 1%</div>
+          <div class="stat-label">TryHackMe Ranking</div>
         </div>
+        <div class="stat">
+          <div class="stat-number">350+</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">350+</div>
+          <div class="stat-label">Rooms Completed</div>
+        </div>
+      </div>
     </header>
 
     <!-- Main Content -->
     <div class="container">
-        <!-- About Me Section -->
-        <section id="about">
-            <h2>About Me</h2>
-            <div class="card">
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    I am an aspiring cybersecurity professional with a strong academic foundation and hands-on experience in ethical hacking and network security. Currently pursuing my Bachelor of Science in Cybersecurity at Full Sail University (graduating November 2025), I've demonstrated dedication to continuous learning through my top 1% ranking on TryHackMe with over 350 completed rooms and a 350+ day streak.
-                </p>
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                    My practical experience spans network security, vulnerability assessment, incident response, and SOC operations. I've completed comprehensive certifications from Google and Microsoft in cybersecurity, and I'm actively pursuing CompTIA Network+, Security+, and TryHackMe SAL1 certifications. In my current role as Parts Manager/IT Helpdesk at Courage Kia, I've maintained 99% uptime on security systems throughout 2024 and provided critical technical support.
-                </p>
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                    I stay current with the cybersecurity landscape through daily engagement with industry resources including the Darknet Diaries and CyberWire Daily podcasts. My technical expertise includes Linux/Unix systems, Python programming, and security tools such as Nmap, Nessus, Wireshark, and Metasploit. I'm passionate about applying my skills to protect organizations from evolving cyber threats and contributing to building more secure digital environments.
-                </p>
-            </div>
-        </section>
+      <!-- About Me Section -->
+      <section id="about">
+        <h2>About Me</h2>
+        <div class="card">
+          <p style="font-size: 1.1rem; line-height: 1.8">
+            I am an aspiring cybersecurity professional with a strong academic
+            foundation and hands-on experience in ethical hacking and network
+            security. Currently pursuing my Bachelor of Science in Cybersecurity
+            at Full Sail University (graduating November 2025), I've
+            demonstrated dedication to continuous learning through my top 1%
+            ranking on TryHackMe with over 350 completed rooms and a 350+ day
+            streak.
+          </p>
+          <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem">
+            My practical experience spans network security, vulnerability
+            assessment, incident response, and SOC operations. I've completed
+            comprehensive certifications from Google and Microsoft in
+            cybersecurity, and I'm actively pursuing CompTIA Network+,
+            Security+, and TryHackMe SAL1 certifications. In my current role as
+            Parts Manager/IT Helpdesk at Courage Kia, I've maintained 99% uptime
+            on security systems throughout 2024 and provided critical technical
+            support.
+          </p>
+          <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem">
+            I stay current with the cybersecurity landscape through daily
+            engagement with industry resources including the Darknet Diaries and
+            CyberWire Daily podcasts. My technical expertise includes Linux/Unix
+            systems, Python programming, and security tools such as Nmap,
+            Nessus, Wireshark, and Metasploit. I'm passionate about applying my
+            skills to protect organizations from evolving cyber threats and
+            contributing to building more secure digital environments.
+          </p>
+        </div>
+      </section>
 
-        <!-- Skills Section -->
-        <section id="skills">
-            <h2>Skills & Expertise</h2>
-            <div class="skills-grid">
-                <div class="skill-item">
-                    <h3>🔐 Network Security</h3>
-                    <p>Network architecture, firewall configuration, intrusion detection/prevention systems</p>
-                </div>
-                <div class="skill-item">
-                    <h3>🎯 Ethical Hacking</h3>
-                    <p>Penetration testing, vulnerability exploitation, security assessments</p>
-                </div>
-                <div class="skill-item">
-                    <h3>🔍 Vulnerability Assessment</h3>
-                    <p>Nmap, Nessus, vulnerability scanning and prioritization</p>
-                </div>
-                <div class="skill-item">
-                    <h3>🚨 Incident Response</h3>
-                    <p>Threat detection, log analysis, incident investigation and mitigation</p>
-                </div>
-                <div class="skill-item">
-                    <h3>🐧 Linux/Unix Systems</h3>
-                    <p>System administration, bash scripting, security hardening</p>
-                </div>
-                <div class="skill-item">
-                    <h3>🐍 Python Programming</h3>
-                    <p>Security automation, scripting, tool development</p>
-                </div>
-                <div class="skill-item">
-                    <h3>🛠️ Security Tools</h3>
-                    <p>Wireshark, Metasploit, Burp Suite, SIEM systems</p>
-                </div>
-                <div class="skill-item">
-                    <h3>📊 SOC Operations</h3>
-                    <p>Security monitoring, EDR tools, threat hunting</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience Section -->
-        <section id="experience">
-            <h2>Professional Experience</h2>
-            <div class="card">
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">January 2023 - Present</div>
-                        <h3>Parts Manager / IT Helpdesk</h3>
-                        <p style="color: var(--accent-color); margin-bottom: 1rem;">Courage Kia, Gastonia NC</p>
-                        <ul style="margin-left: 1.5rem; color: var(--text-secondary);">
-                            <li>Tested and monitored computers and tablets, assured networking connectivity, and assisted other employees with troubleshooting hardware and software issues</li>
-                            <li>Documented processes and procedures for IT operations</li>
-                            <li>Communicated with employees and assisted with solving technical problems</li>
-                            <li>Ensured security cameras and associated hardware/software maintained 99% uptime for 2024</li>
-                            <li>Reviewed and contributed security footage to local authorities for evidence</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Education -->
-        <section id="education">
-            <h2>Education</h2>
-            <div class="card">
-                <h3>Bachelor of Science in Cybersecurity (B.S.)</h3>
-                <p style="color: var(--accent-color);">Full Sail University, FL USA</p>
-                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Expected Graduation: November 2025</p>
-                
-                <h3 style="margin-top: 2rem;">Associate of Science in Information Technologies</h3>
-                <p style="color: var(--accent-color);">Full Sail University, FL USA</p>
-                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Completed: October 2024</p>
-                
-                <div style="margin-top: 2rem;">
-                    <h3>Relevant Coursework</h3>
-                    <p style="color: var(--text-secondary);">
-                        Network Security | Cryptography | Ethical Hacking | Digital Forensics | 
-                        Malware Analysis | Security Information and Event Management (SIEM)
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Certifications Section -->
-        <section id="certifications">
-            <h2>Certifications & Achievements</h2>
-            <div class="cert-list">
-                <div class="cert-item">
-                    <div class="cert-icon">✓</div>
-                    <div>
-                        <strong>Google Cybersecurity Certification</strong>
-                        <div class="cert-status cert-completed">Completed</div>
-                    </div>
-                </div>
-                <div class="cert-item">
-                    <div class="cert-icon">✓</div>
-                    <div>
-                        <strong>Microsoft Cybersecurity Analyst Certification</strong>
-                        <div class="cert-status cert-completed">Completed</div>
-                    </div>
-                </div>
-                <div class="cert-item">
-                    <div class="cert-icon">⏳</div>
-                    <div>
-                        <strong>CompTIA Network+</strong>
-                        <div class="cert-status cert-progress">In Progress</div>
-                    </div>
-                </div>
-                <div class="cert-item">
-                    <div class="cert-icon">⏳</div>
-                    <div>
-                        <strong>CompTIA Security+</strong>
-                        <div class="cert-status cert-progress">In Progress</div>
-                    </div>
-                </div>
-                <div class="cert-item">
-                    <div class="cert-icon">⏳</div>
-                    <div>
-                        <strong>TryHackMe SAL1</strong>
-                        <div class="cert-status cert-progress">In Progress</div>
-                    </div>
-                </div>
-                <div class="cert-item">
-                    <div class="cert-icon">🏆</div>
-                    <div>
-                        <strong>TryHackMe Top 1% Ranking</strong>
-                        <div class="cert-status cert-completed">Achievement Unlocked</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects">
-            <h2>Projects & Hands-On Experience</h2>
-            
-            <div class="card">
-                <h3>TryHackMe SOC Level 1 Learning Path</h3>
-                <div class="timeline-date">September 2024 - Present</div>
-                <ul style="margin-left: 1.5rem; color: var(--text-secondary); margin-top: 1rem;">
-                    <li>Completed comprehensive SOC Level 1 learning path covering security operations fundamentals</li>
-                    <li>Gained practical experience in threat detection, incident response, and log analysis</li>
-                    <li>Developed proficiency in SIEM systems, intrusion detection/prevention systems, and EDR tools</li>
-                    <li>Applied knowledge to investigate and mitigate simulated cyber incidents in realistic SOC environments</li>
-                    <li>Maintained 350+ day streak with consistent daily practice and skill development</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>Vulnerability Assessment Lab</h3>
-                <div class="timeline-date">August 2023 - Present</div>
-                <ul style="margin-left: 1.5rem; color: var(--text-secondary); margin-top: 1rem;">
-                    <li>Conducted comprehensive vulnerability assessments of simulated corporate networks</li>
-                    <li>Utilized Nmap for network reconnaissance and service enumeration</li>
-                    <li>Performed vulnerability scanning and analysis using Nessus</li>
-                    <li>Identified and documented critical vulnerabilities with detailed risk assessments</li>
-                    <li>Proposed prioritized mitigation strategies and remediation plans</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <h3>Continuous Learning & Professional Development</h3>
-                <ul style="margin-left: 1.5rem; color: var(--text-secondary); margin-top: 1rem;">
-                    <li><strong>Darknet Diaries Podcast:</strong> Avid follower gaining insights into real-world cybersecurity incidents, investigations, and industry best practices</li>
-                    <li><strong>CyberWire Daily Podcast:</strong> Daily listener staying informed on the latest cybersecurity news, trends, and emerging threats</li>
-                    <li><strong>TryHackMe Platform:</strong> Completed 350+ rooms and challenges covering penetration testing, digital forensics, network security, and more</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Work Samples Section -->
-        <section id="work-samples">
-            <h2>Work Samples</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                Below are examples of my academic work demonstrating practical cybersecurity skills and knowledge. 
-                All documents are available in PDF format to ensure content integrity.
+      <!-- Skills Section -->
+      <section id="skills">
+        <h2>Skills & Expertise</h2>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <h3>🔐 Network Security</h3>
+            <p>
+              Network architecture, firewall configuration, intrusion
+              detection/prevention systems
             </p>
-            
-            <div class="work-grid">
-                <div class="work-item">
-                    <div class="work-header">
-                        <div class="work-icon">📋</div>
-                        <h3>Security Plan</h3>
-                    </div>
-                    <div class="work-content">
-                        <p>Comprehensive organizational security plan covering risk assessment, security controls, incident response procedures, and compliance requirements.</p>
-                        <div class="placeholder">
-                            📎 Document will be added here<br>
-                            (Security Plan from Project and Portfolio IV/V)
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="skill-item">
+            <h3>🎯 Ethical Hacking</h3>
+            <p>
+              Penetration testing, vulnerability exploitation, security
+              assessments
+            </p>
+          </div>
+          <div class="skill-item">
+            <h3>🔍 Vulnerability Assessment</h3>
+            <p>Nmap, Nessus, vulnerability scanning and prioritization</p>
+          </div>
+          <div class="skill-item">
+            <h3>🚨 Incident Response</h3>
+            <p>
+              Threat detection, log analysis, incident investigation and
+              mitigation
+            </p>
+          </div>
+          <div class="skill-item">
+            <h3>🐧 Linux/Unix Systems</h3>
+            <p>System administration, bash scripting, security hardening</p>
+          </div>
+          <div class="skill-item">
+            <h3>🐍 Python Programming</h3>
+            <p>Security automation, scripting, tool development</p>
+          </div>
+          <div class="skill-item">
+            <h3>🛠️ Security Tools</h3>
+            <p>Wireshark, Metasploit, Burp Suite, SIEM systems</p>
+          </div>
+          <div class="skill-item">
+            <h3>📊 SOC Operations</h3>
+            <p>Security monitoring, EDR tools, threat hunting</p>
+          </div>
+        </div>
+      </section>
 
-                <div class="work-item">
-                    <div class="work-header">
-                        <div class="work-icon">📜</div>
-                        <h3>Security Policies</h3>
-                    </div>
-                    <div class="work-content">
-                        <p>Well-written security policies addressing access control, data protection, acceptable use, and other critical organizational security requirements.</p>
-                        <div class="placeholder">
-                            📎 Documents will be added here<br>
-                            (1-2 Security Policies from Project and Portfolio IV)
-                        </div>
-                    </div>
-                </div>
-
-                <div class="work-item">
-                    <div class="work-header">
-                        <div class="work-icon">📊</div>
-                        <h3>Security Maturity Assessment</h3>
-                    </div>
-                    <div class="work-content">
-                        <p>Spreadsheet analysis evaluating organizational security maturity with prioritized recommendations for improvement.</p>
-                        <div class="placeholder">
-                            📎 Spreadsheet will be added here<br>
-                            (Maturity Spreadsheet from Project and Portfolio V)
-                        </div>
-                    </div>
-                </div>
-
-                <div class="work-item">
-                    <div class="work-header">
-                        <div class="work-icon">🔍</div>
-                        <h3>Case Study Analysis</h3>
-                    </div>
-                    <div class="work-content">
-                        <p>In-depth analysis of a cybersecurity incident or scenario with well-defined results, lessons learned, and actionable recommendations.</p>
-                        <div class="placeholder">
-                            📎 Case study will be added here<br>
-                            (Case Study with results)
-                        </div>
-                    </div>
-                </div>
+      <!-- Experience Section -->
+      <section id="experience">
+        <h2>Professional Experience</h2>
+        <div class="card">
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-date">January 2023 - Present</div>
+              <h3>Parts Manager / IT Helpdesk</h3>
+              <p style="color: var(--accent-color); margin-bottom: 1rem">
+                Courage Kia, Gastonia NC
+              </p>
+              <ul style="margin-left: 1.5rem; color: var(--text-secondary)">
+                <li>
+                  Tested and monitored computers and tablets, assured networking
+                  connectivity, and assisted other employees with
+                  troubleshooting hardware and software issues
+                </li>
+                <li>Documented processes and procedures for IT operations</li>
+                <li>
+                  Communicated with employees and assisted with solving
+                  technical problems
+                </li>
+                <li>
+                  Ensured security cameras and associated hardware/software
+                  maintained 99% uptime for 2024
+                </li>
+                <li>
+                  Reviewed and contributed security footage to local authorities
+                  for evidence
+                </li>
+              </ul>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- Contact Section -->
-        <section id="contact">
-            <h2>Contact Information</h2>
-            <div class="contact-grid">
-                <div class="contact-item">
-                    <div class="contact-icon">📍</div>
-                    <h3>Location</h3>
-                    <p>Ellenboro, NC</p>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon">📧</div>
-                    <h3>Email</h3>
-                    <p><a href="mailto:6sec6cyl@gmail.com">6sec6cyl@gmail.com</a></p>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon">📱</div>
-                    <h3>Phone</h3>
-                    <p><a href="tel:+18282893320">(828) 289-3320</a></p>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon">💼</div>
-                    <h3>LinkedIn</h3>
-                    <p><a href="https://www.linkedin.com/in/james-chapman-a4376982/" target="_blank">linkedin.com/in/james-chapman</a></p>
-                </div>
+      <!-- Education -->
+      <section id="education">
+        <h2>Education</h2>
+        <div class="card">
+          <h3>Bachelor of Science in Cybersecurity (B.S.)</h3>
+          <p style="color: var(--accent-color)">Full Sail University, FL USA</p>
+          <p style="color: var(--text-secondary); margin-top: 0.5rem">
+            Expected Graduation: November 2025
+          </p>
+
+          <h3 style="margin-top: 2rem">
+            Associate of Science in Information Technologies
+          </h3>
+          <p style="color: var(--accent-color)">Full Sail University, FL USA</p>
+          <p style="color: var(--text-secondary); margin-top: 0.5rem">
+            Completed: October 2024
+          </p>
+
+          <div style="margin-top: 2rem">
+            <h3>Relevant Coursework</h3>
+            <p style="color: var(--text-secondary)">
+              Network Security | Cryptography | Ethical Hacking | Digital
+              Forensics | Malware Analysis | Security Information and Event
+              Management (SIEM)
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Certifications Section -->
+      <section id="certifications">
+        <h2>Certifications & Achievements</h2>
+        <div class="cert-list">
+          <div class="cert-item">
+            <div class="cert-icon">✓</div>
+            <div>
+              <strong>Google Cybersecurity Certification</strong>
+              <div class="cert-status cert-completed">Completed</div>
             </div>
-        </section>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">✓</div>
+            <div>
+              <strong>Microsoft Cybersecurity Analyst Certification</strong>
+              <div class="cert-status cert-completed">Completed</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">⏳</div>
+            <div>
+              <strong>CompTIA Network+</strong>
+              <div class="cert-status cert-progress">In Progress</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">⏳</div>
+            <div>
+              <strong>CompTIA Security+</strong>
+              <div class="cert-status cert-progress">In Progress</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">⏳</div>
+            <div>
+              <strong>TryHackMe SAL1</strong>
+              <div class="cert-status cert-progress">In Progress</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-icon">🏆</div>
+            <div>
+              <strong>TryHackMe Top 1% Ranking</strong>
+              <div class="cert-status cert-completed">Achievement Unlocked</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects Section -->
+      <section id="projects">
+        <h2>Projects & Hands-On Experience</h2>
+
+        <div class="card">
+          <h3>TryHackMe SOC Level 1 Learning Path</h3>
+          <div class="timeline-date">September 2024 - Present</div>
+          <ul
+            style="
+              margin-left: 1.5rem;
+              color: var(--text-secondary);
+              margin-top: 1rem;
+            "
+          >
+            <li>
+              Completed comprehensive SOC Level 1 learning path covering
+              security operations fundamentals
+            </li>
+            <li>
+              Gained practical experience in threat detection, incident
+              response, and log analysis
+            </li>
+            <li>
+              Developed proficiency in SIEM systems, intrusion
+              detection/prevention systems, and EDR tools
+            </li>
+            <li>
+              Applied knowledge to investigate and mitigate simulated cyber
+              incidents in realistic SOC environments
+            </li>
+            <li>
+              Maintained 350+ day streak with consistent daily practice and
+              skill development
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Vulnerability Assessment Lab</h3>
+          <div class="timeline-date">August 2023 - Present</div>
+          <ul
+            style="
+              margin-left: 1.5rem;
+              color: var(--text-secondary);
+              margin-top: 1rem;
+            "
+          >
+            <li>
+              Conducted comprehensive vulnerability assessments of simulated
+              corporate networks
+            </li>
+            <li>
+              Utilized Nmap for network reconnaissance and service enumeration
+            </li>
+            <li>Performed vulnerability scanning and analysis using Nessus</li>
+            <li>
+              Identified and documented critical vulnerabilities with detailed
+              risk assessments
+            </li>
+            <li>
+              Proposed prioritized mitigation strategies and remediation plans
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Continuous Learning & Professional Development</h3>
+          <ul
+            style="
+              margin-left: 1.5rem;
+              color: var(--text-secondary);
+              margin-top: 1rem;
+            "
+          >
+            <li>
+              <strong>Darknet Diaries Podcast:</strong> Avid follower gaining
+              insights into real-world cybersecurity incidents, investigations,
+              and industry best practices
+            </li>
+            <li>
+              <strong>CyberWire Daily Podcast:</strong> Daily listener staying
+              informed on the latest cybersecurity news, trends, and emerging
+              threats
+            </li>
+            <li>
+              <strong>TryHackMe Platform:</strong> Completed 350+ rooms and
+              challenges covering penetration testing, digital forensics,
+              network security, and more
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Work Samples Section -->
+      <section id="work-samples">
+        <h2>Work Samples</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem">
+          Below are examples of my academic work demonstrating practical
+          cybersecurity skills and knowledge. All documents are available in PDF
+          format to ensure content integrity.
+        </p>
+
+        <div class="work-grid">
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">📋</div>
+              <h3>Security Plan</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Comprehensive organizational security plan covering risk
+                assessment, security controls, incident response procedures, and
+                compliance requirements.
+              </p>
+              <div class="placeholder">
+                📎 Document will be added here<br />
+                (Security Plan from Project and Portfolio IV/V)
+              </div>
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">📜</div>
+              <h3>Security Policies</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Well-written security policies addressing access control, data
+                protection, acceptable use, and other critical organizational
+                security requirements.
+              </p>
+              <div class="placeholder">
+                📎 Documents will be added here<br />
+                (1-2 Security Policies from Project and Portfolio IV)
+              </div>
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">📊</div>
+              <h3>Security Maturity Assessment</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Spreadsheet analysis evaluating organizational security maturity
+                with prioritized recommendations for improvement.
+              </p>
+              <div class="placeholder">
+                📎 Spreadsheet will be added here<br />
+                (Maturity Spreadsheet from Project and Portfolio V)
+              </div>
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🔍</div>
+              <h3>Case Study Analysis</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                In-depth analysis of a cybersecurity incident or scenario with
+                well-defined results, lessons learned, and actionable
+                recommendations.
+              </p>
+              <div class="placeholder">
+                📎 Case study will be added here<br />
+                (Case Study with results)
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact">
+        <h2>Contact Information</h2>
+        <div class="contact-grid">
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <h3>Email</h3>
+            <p><a href="mailto:6sec6cyl@gmail.com">6sec6cyl@gmail.com</a></p>
+          </div>
+          <!-- <div class="contact-item"> -->
+          <!--   <div class="contact-icon">📱</div> -->
+          <!--   <h3>Phone</h3> -->
+          <!--   <p><a href="tel:+18282893320">(828) 289-3320</a></p> -->
+          <!-- </div> -->
+          <div class="contact-item">
+            <div class="contact-icon">💼</div>
+            <h3>LinkedIn</h3>
+            <p>
+              <a
+                href="https://www.linkedin.com/in/james-chapman-a4376982/"
+                target="_blank"
+                >linkedin.com/in/james-chapman</a
+              >
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 James Chapman | Cybersecurity Professional Portfolio</p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Built with HTML5 | Optimized for SEO | Ready for Professional Review</p>
+      <p>&copy; 2025 James Chapman | Cybersecurity Professional Portfolio</p>
+      <p style="margin-top: 0.5rem; font-size: 0.9rem">
+        Built with HTML5 | Optimized for SEO | Ready for Professional Review
+      </p>
     </footer>
-</body>
+  </body>
 </html>
