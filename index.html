@@ -163,39 +163,6 @@
         font-size: 0.9rem;
       }
 
-      .header-content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 3rem;
-        flex-wrap: wrap;
-        position: relative;
-        z-index: 1;
-      }
-
-      .profile-picture {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        border: 4px solid var(--accent-color);
-        box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
-        object-fit: cover;
-        animation: glow 3s infinite alternate;
-      }
-
-      @keyframes glow {
-        0% {
-          box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
-        }
-        100% {
-          box-shadow: 0 0 40px rgba(0, 217, 255, 0.8);
-        }
-      }
-
-      .header-text {
-        text-align: center;
-      }
-
       /* Container */
       .container {
         max-width: 1200px;
@@ -551,9 +518,10 @@
         <li>
           <a
             href="documents/resume/James_Chapman.pdf"
-            download
+            target="_blank"
+            rel="noopener noreferrer"
             style="color: var(--accent-secondary)"
-            >📥 Resume</a
+            >📄 Resume</a
           >
         </li>
       </ul>
@@ -561,19 +529,8 @@
 
     <!-- Header -->
     <header>
-      <div class="header-content">
-        <img
-          src="documents/profile-picture.jpeg"
-          alt="James Chapman - Cybersecurity Professional"
-          class="profile-picture"
-        />
-
-        <div class="header-text">
-          <h1>JAMES CHAPMAN</h1>
-          <p>Cybersecurity Professional | Ethical Hacker | SOC Analyst</p>
-        </div>
-      </div>
-
+      <h1>JAMES CHAPMAN</h1>
+      <p>Cybersecurity Professional | Ethical Hacker | SOC Analyst</p>
       <div class="header-stats">
         <div class="stat">
           <div class="stat-number">Top 1%</div>
@@ -627,11 +584,12 @@
           <div style="text-align: center; margin-top: 2rem">
             <a
               href="documents/resume/James_Chapman.pdf"
-              download
+              target="_blank"
+              rel="noopener noreferrer"
               class="download-btn"
               style="font-size: 1.1rem; padding: 1rem 2rem"
             >
-              📥 Download Full Resume (PDF)
+              📄 View Full Resume (PDF)
             </a>
           </div>
         </div>
@@ -761,9 +719,10 @@
               <div class="cert-status cert-completed">Completed</div>
               <a
                 href="documents/coursera/Google_CyberSecurity_Analyst.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn-small"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -774,9 +733,10 @@
               <div class="cert-status cert-completed">Completed</div>
               <a
                 href="documents/coursera/Microsoft_Cybersecurity_Analyst.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn-small"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -831,9 +791,10 @@
               </p>
               <a
                 href="documents/TryHackMe/THM-Cyber_Security_101.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -850,9 +811,10 @@
               </p>
               <a
                 href="documents/TryHackMe/THM-Red_Teaming.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -869,9 +831,10 @@
               </p>
               <a
                 href="documents/TryHackMe/THM-SOC_Level_2.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -888,9 +851,10 @@
               </p>
               <a
                 href="documents/TryHackMe/THM-Jr_Penetration_Tester.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -907,9 +871,10 @@
               </p>
               <a
                 href="documents/TryHackMe/THM-Web_Application_Pentesting.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -926,9 +891,10 @@
               </p>
               <a
                 href="documents/TryHackMe/THM-CompTIA_Pentest+.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -945,9 +911,10 @@
               </p>
               <a
                 href="documents/TryHackMe/THM-Advanced_Endpoint_Investigations.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 View Certificate</a
+                >📄 View Certificate</a
               >
             </div>
           </div>
@@ -1053,8 +1020,7 @@
         <p style="color: var(--text-secondary); margin-bottom: 2rem">
           Examples of my academic work demonstrating practical cybersecurity
           skills in planning, policy development, and security maturity
-          assessment. All documents are available in PDF format to ensure
-          content integrity.
+          assessment. Click any document to view it in your browser.
         </p>
 
         <div class="work-grid">
@@ -1082,9 +1048,10 @@
               </p>
               <a
                 href="documents/work-samples/Security_Plan_Example.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 Download Security Plan (PDF)</a
+                >📄 View Security Plan</a
               >
             </div>
           </div>
@@ -1113,9 +1080,10 @@
               </p>
               <a
                 href="documents/work-samples/Patch_Update_Policy.pdf"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 class="download-btn"
-                >📥 Download Policy (PDF)</a
+                >📄 View Policy</a
               >
             </div>
           </div>
@@ -1144,9 +1112,10 @@
                 </p>
                 <a
                   href="documents/work-samples/Maturity_Spreadsheet.xlsx"
-                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="download-btn-small"
-                  >📊 Download Spreadsheet (XLSX)</a
+                  >📊 View Spreadsheet</a
                 >
               </div>
               <div style="margin-top: 1rem">
@@ -1162,9 +1131,10 @@
                 </p>
                 <a
                   href="documents/work-samples/Maturity_Policy.pdf"
-                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="download-btn-small"
-                  >📥 Download Report (PDF)</a
+                  >📄 View Report</a
                 >
               </div>
             </div>
@@ -1176,21 +1146,21 @@
       <section id="contact">
         <h2>Contact Information</h2>
         <div class="contact-grid">
-          <!-- <div class="contact-item"> -->
-          <!--     <div class="contact-icon">📍</div> -->
-          <!--     <h3>Location</h3> -->
-          <!--     <p>Ellenboro, NC</p> -->
-          <!-- </div> -->
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <h3>Location</h3>
+            <p>Ellenboro, NC</p>
+          </div>
           <div class="contact-item">
             <div class="contact-icon">📧</div>
             <h3>Email</h3>
             <p><a href="mailto:6sec6cyl@gmail.com">6sec6cyl@gmail.com</a></p>
           </div>
-          <!-- <div class="contact-item"> -->
-          <!--     <div class="contact-icon">📱</div> -->
-          <!--     <h3>Phone</h3> -->
-          <!--     <p><a href="tel:+18282893320">(828) 289-3320</a></p> -->
-          <!-- </div> -->
+          <div class="contact-item">
+            <div class="contact-icon">📱</div>
+            <h3>Phone</h3>
+            <p><a href="tel:+18282893320">(828) 289-3320</a></p>
+          </div>
           <div class="contact-item">
             <div class="contact-icon">💼</div>
             <h3>LinkedIn</h3>
