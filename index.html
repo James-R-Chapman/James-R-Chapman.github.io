@@ -163,6 +163,39 @@
         font-size: 0.9rem;
       }
 
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+      }
+
+      .profile-picture {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 4px solid var(--accent-color);
+        box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+        object-fit: cover;
+        animation: glow 3s infinite alternate;
+      }
+
+      @keyframes glow {
+        0% {
+          box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+        100% {
+          box-shadow: 0 0 40px rgba(0, 217, 255, 0.8);
+        }
+      }
+
+      .header-text {
+        text-align: center;
+      }
+
       /* Container */
       .container {
         max-width: 1200px;
@@ -528,8 +561,19 @@
 
     <!-- Header -->
     <header>
-      <h1>JAMES CHAPMAN</h1>
-      <p>Cybersecurity Professional | Ethical Hacker | SOC Analyst</p>
+      <div class="header-content">
+        <img
+          src="documents/profile-picture.jpeg"
+          alt="James Chapman - Cybersecurity Professional"
+          class="profile-picture"
+        />
+
+        <div class="header-text">
+          <h1>JAMES CHAPMAN</h1>
+          <p>Cybersecurity Professional | Ethical Hacker | SOC Analyst</p>
+        </div>
+      </div>
+
       <div class="header-stats">
         <div class="stat">
           <div class="stat-number">Top 1%</div>
