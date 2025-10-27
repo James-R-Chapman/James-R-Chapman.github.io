@@ -426,6 +426,50 @@
         color: var(--text-secondary);
       }
 
+      /* Download Buttons */
+      .download-btn {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--accent-color),
+          var(--accent-secondary)
+        );
+        color: var(--primary-bg);
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
+      .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 217, 255, 0.4);
+      }
+
+      .download-btn-small {
+        display: inline-block;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 217, 255, 0.2);
+        color: var(--accent-color);
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: 1px solid var(--accent-color);
+        font-size: 0.85rem;
+      }
+
+      .download-btn-small:hover {
+        background: rgba(0, 217, 255, 0.3);
+        transform: translateX(3px);
+      }
+
       /* Responsive */
       @media (max-width: 768px) {
         header h1 {
@@ -467,9 +511,18 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#tryhackme-certs">TryHackMe Certificates</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#work-samples">Work Samples</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li>
+          <a
+            href="documents/resume/James_Chapman.pdf"
+            download
+            style="color: var(--accent-secondary)"
+            >📥 Resume</a
+          >
+        </li>
       </ul>
     </nav>
 
@@ -527,6 +580,16 @@
             skills to protect organizations from evolving cyber threats and
             contributing to building more secure digital environments.
           </p>
+          <div style="text-align: center; margin-top: 2rem">
+            <a
+              href="documents/resume/James_Chapman.pdf"
+              download
+              class="download-btn"
+              style="font-size: 1.1rem; padding: 1rem 2rem"
+            >
+              📥 Download Full Resume (PDF)
+            </a>
+          </div>
         </div>
       </section>
 
@@ -649,16 +712,28 @@
         <div class="cert-list">
           <div class="cert-item">
             <div class="cert-icon">✓</div>
-            <div>
+            <div style="flex: 1">
               <strong>Google Cybersecurity Certification</strong>
               <div class="cert-status cert-completed">Completed</div>
+              <a
+                href="documents/coursera/Google_CyberSecurity_Analyst.pdf"
+                download
+                class="download-btn-small"
+                >📥 View Certificate</a
+              >
             </div>
           </div>
           <div class="cert-item">
             <div class="cert-icon">✓</div>
-            <div>
+            <div style="flex: 1">
               <strong>Microsoft Cybersecurity Analyst Certification</strong>
               <div class="cert-status cert-completed">Completed</div>
+              <a
+                href="documents/coursera/Microsoft_Cybersecurity_Analyst.pdf"
+                download
+                class="download-btn-small"
+                >📥 View Certificate</a
+              >
             </div>
           </div>
           <div class="cert-item">
@@ -687,6 +762,149 @@
             <div>
               <strong>TryHackMe Top 1% Ranking</strong>
               <div class="cert-status cert-completed">Achievement Unlocked</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TryHackMe Certificates Section -->
+      <section id="tryhackme-certs">
+        <h2>TryHackMe Learning Paths</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem">
+          Completed comprehensive learning paths demonstrating practical skills
+          in penetration testing, security operations, and red teaming.
+        </p>
+        <div class="work-grid">
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🎓</div>
+              <h3>Cyber Security 101</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Foundation-level cybersecurity concepts, network fundamentals,
+                and security best practices.
+              </p>
+              <a
+                href="documents/TryHackMe/THM-Cyber_Security_101.pdf"
+                download
+                class="download-btn"
+                >📥 View Certificate</a
+              >
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🔴</div>
+              <h3>Red Teaming</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Advanced offensive security techniques, post-exploitation, and
+                adversary emulation tactics.
+              </p>
+              <a
+                href="documents/TryHackMe/THM-Red_Teaming.pdf"
+                download
+                class="download-btn"
+                >📥 View Certificate</a
+              >
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🛡️</div>
+              <h3>SOC Level 2</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Advanced security operations, threat hunting, SIEM analysis, and
+                incident response coordination.
+              </p>
+              <a
+                href="documents/TryHackMe/THM-SOC_Level_2.pdf"
+                download
+                class="download-btn"
+                >📥 View Certificate</a
+              >
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🔍</div>
+              <h3>Jr Penetration Tester</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Practical penetration testing methodology, vulnerability
+                assessment, and exploitation techniques.
+              </p>
+              <a
+                href="documents/TryHackMe/THM-Jr_Penetration_Tester.pdf"
+                download
+                class="download-btn"
+                >📥 View Certificate</a
+              >
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🌐</div>
+              <h3>Web Application Pentesting</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Web application security testing, OWASP Top 10, and modern web
+                exploitation techniques.
+              </p>
+              <a
+                href="documents/TryHackMe/THM-Web_Application_Pentesting.pdf"
+                download
+                class="download-btn"
+                >📥 View Certificate</a
+              >
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🔐</div>
+              <h3>CompTIA Pentest+</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                CompTIA Pentest+ exam preparation covering planning, scoping,
+                and vulnerability management.
+              </p>
+              <a
+                href="documents/TryHackMe/THM-CompTIA_Pentest+.pdf"
+                download
+                class="download-btn"
+                >📥 View Certificate</a
+              >
+            </div>
+          </div>
+
+          <div class="work-item">
+            <div class="work-header">
+              <div class="work-icon">🔬</div>
+              <h3>Advanced Endpoint Investigations</h3>
+            </div>
+            <div class="work-content">
+              <p>
+                Digital forensics, malware analysis, and advanced endpoint
+                detection and response techniques.
+              </p>
+              <a
+                href="documents/TryHackMe/THM-Advanced_Endpoint_Investigations.pdf"
+                download
+                class="download-btn"
+                >📥 View Certificate</a
+              >
             </div>
           </div>
         </div>
@@ -789,9 +1007,10 @@
       <section id="work-samples">
         <h2>Work Samples</h2>
         <p style="color: var(--text-secondary); margin-bottom: 2rem">
-          Below are examples of my academic work demonstrating practical
-          cybersecurity skills and knowledge. All documents are available in PDF
-          format to ensure content integrity.
+          Examples of my academic work demonstrating practical cybersecurity
+          skills in planning, policy development, and security maturity
+          assessment. All documents are available in PDF format to ensure
+          content integrity.
         </p>
 
         <div class="work-grid">
@@ -806,28 +1025,54 @@
                 assessment, security controls, incident response procedures, and
                 compliance requirements.
               </p>
-              <div class="placeholder">
-                📎 Document will be added here<br />
-                (Security Plan from Project and Portfolio IV/V)
-              </div>
+              <p
+                style="
+                  margin-top: 1rem;
+                  color: var(--text-secondary);
+                  font-size: 0.95rem;
+                "
+              >
+                <strong>Key Components:</strong> Risk assessment framework, NIST
+                CSF implementation roadmap, security controls matrix, incident
+                response procedures, and compliance mapping.
+              </p>
+              <a
+                href="documents/work-samples/Security_Plan_Example.pdf"
+                download
+                class="download-btn"
+                >📥 Download Security Plan (PDF)</a
+              >
             </div>
           </div>
 
           <div class="work-item">
             <div class="work-header">
               <div class="work-icon">📜</div>
-              <h3>Security Policies</h3>
+              <h3>Patch & Update Policy</h3>
             </div>
             <div class="work-content">
               <p>
-                Well-written security policies addressing access control, data
-                protection, acceptable use, and other critical organizational
-                security requirements.
+                Well-written security policy addressing patch management, update
+                procedures, testing protocols, and emergency patching
+                requirements.
               </p>
-              <div class="placeholder">
-                📎 Documents will be added here<br />
-                (1-2 Security Policies from Project and Portfolio IV)
-              </div>
+              <p
+                style="
+                  margin-top: 1rem;
+                  color: var(--text-secondary);
+                  font-size: 0.95rem;
+                "
+              >
+                <strong>Coverage:</strong> Patch assessment procedures, testing
+                and validation processes, deployment schedules, rollback
+                procedures, and documentation requirements.
+              </p>
+              <a
+                href="documents/work-samples/Patch_Update_Policy.pdf"
+                download
+                class="download-btn"
+                >📥 Download Policy (PDF)</a
+              >
             </div>
           </div>
 
@@ -838,30 +1083,45 @@
             </div>
             <div class="work-content">
               <p>
-                Spreadsheet analysis evaluating organizational security maturity
-                with prioritized recommendations for improvement.
+                Comprehensive analysis evaluating organizational security
+                maturity across multiple domains with prioritized
+                recommendations for improvement.
               </p>
-              <div class="placeholder">
-                📎 Spreadsheet will be added here<br />
-                (Maturity Spreadsheet from Project and Portfolio V)
+              <div style="margin-top: 1rem">
+                <p
+                  style="
+                    color: var(--text-secondary);
+                    font-size: 0.95rem;
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  <strong>Spreadsheet Assessment:</strong> Maturity levels
+                  across security domains with scoring methodology
+                </p>
+                <a
+                  href="documents/work-samples/Maturity_Spreadsheet.xlsx"
+                  download
+                  class="download-btn-small"
+                  >📊 Download Spreadsheet (XLSX)</a
+                >
               </div>
-            </div>
-          </div>
-
-          <div class="work-item">
-            <div class="work-header">
-              <div class="work-icon">🔍</div>
-              <h3>Case Study Analysis</h3>
-            </div>
-            <div class="work-content">
-              <p>
-                In-depth analysis of a cybersecurity incident or scenario with
-                well-defined results, lessons learned, and actionable
-                recommendations.
-              </p>
-              <div class="placeholder">
-                📎 Case study will be added here<br />
-                (Case Study with results)
+              <div style="margin-top: 1rem">
+                <p
+                  style="
+                    color: var(--text-secondary);
+                    font-size: 0.95rem;
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  <strong>Policy Document:</strong> Detailed maturity assessment
+                  findings and recommendations
+                </p>
+                <a
+                  href="documents/work-samples/Maturity_Policy.pdf"
+                  download
+                  class="download-btn-small"
+                  >📥 Download Report (PDF)</a
+                >
               </div>
             </div>
           </div>
@@ -872,15 +1132,20 @@
       <section id="contact">
         <h2>Contact Information</h2>
         <div class="contact-grid">
+          <!-- <div class="contact-item"> -->
+          <!--     <div class="contact-icon">📍</div> -->
+          <!--     <h3>Location</h3> -->
+          <!--     <p>Ellenboro, NC</p> -->
+          <!-- </div> -->
           <div class="contact-item">
             <div class="contact-icon">📧</div>
             <h3>Email</h3>
             <p><a href="mailto:6sec6cyl@gmail.com">6sec6cyl@gmail.com</a></p>
           </div>
           <!-- <div class="contact-item"> -->
-          <!--   <div class="contact-icon">📱</div> -->
-          <!--   <h3>Phone</h3> -->
-          <!--   <p><a href="tel:+18282893320">(828) 289-3320</a></p> -->
+          <!--     <div class="contact-icon">📱</div> -->
+          <!--     <h3>Phone</h3> -->
+          <!--     <p><a href="tel:+18282893320">(828) 289-3320</a></p> -->
           <!-- </div> -->
           <div class="contact-item">
             <div class="contact-icon">💼</div>
