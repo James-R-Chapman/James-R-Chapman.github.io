@@ -159,7 +159,7 @@ type=PROCTITLE msg=audit(09/19/25 17:56:15.225:424) : proctitle=whoami
 type=SYSCALL msg=audit(09/19/25 17:56:15.225:424) : ppid=24310 pid=24312 auid=unset uid=root key=exec
 ```
 
-    Continue with the TryPingMe scenario and find out what followed the reverse shell!
+Continue with the TryPingMe scenario and find out what followed the reverse shell!
 You can start the hunt from **ausearch -i -if /home/ubuntu/scenario/audit.log** .
 
 ### **Answer the questions below**

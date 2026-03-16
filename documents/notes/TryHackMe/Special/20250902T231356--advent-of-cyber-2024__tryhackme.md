@@ -2394,7 +2394,7 @@ Glitch Did ItLet’s examine the Cloudtrail logs related to the **wareville-care
     "principalId": "AIDAXRMKYT5O5Y2GLD4ZG",
     "arn": "arn:aws:iam::518371450717:user/wareville_collector",
     "accountId": "518371450717",
-    "accessKeyId": "REDACTED_AWS_ACCESS_KEY_ID",
+    "accessKeyId": "AKIAXRMKYT5OZCZPGNZ7",
     "userName": "wareville_collector"
   },
   "eventTime": "2024-10-21T22:13:24Z",
@@ -7479,4 +7479,5 @@ Correct Answer
 hubs:
     - "[[TryHackMe]]"
 ---
+
 
