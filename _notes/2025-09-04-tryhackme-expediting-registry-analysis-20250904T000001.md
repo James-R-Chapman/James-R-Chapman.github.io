@@ -234,7 +234,7 @@ From the same SYSTEM Hive, we can help Anna identify the Current Control Set (`S
 Try running RECmd in the command prompt in the attached VM to check its different options. As we can see, the RECmd utility can recursively look into the provided directories or files, extract values and keys specified, or search for specific strings in the registry hives. It can save the results in either CSV or JSON. It can search for BASE64, Unicode, ASCII or regex. It can also recover any deleted keys or values. The following example shows RECmd being used to search for the keyword 'administrator' in the SAM registry hive.
 
    RECmd search for text in key names 
-```RECmd search for text in key names 
+```bash
 C:\Users\Administrator\Desktop\EZTools\RECmd>RECmd.exe -f c:\Users\Administrator\Desktop\collection\c\windows\System32\config\SAM --sk administrator 
 RECmd version 2.0.0.0
 
@@ -258,7 +258,7 @@ C:\Users\Administrator\Desktop\EZTools\RECmd>
  The following command line shows RECmd being used to get specific key details.
 
    RECmd view key details 
-```RECmd view key details 
+```bash
 C:\Users\Administrator\Desktop\EZTools\RECmd>RECmd.exe -f c:\Users\Administrator\Desktop\collection\c\windows\System32\config\SAM --kn SAM\Domains\Account\Users\Names\Administrator
 RECmd version 2.0.0.0
 
@@ -289,7 +289,7 @@ C:\Users\Administrator\Desktop\EZTools\RECmd>
  An example batch file will look something like the following.
 
    Example batch file 
-```Example batch file 
+```bash
 Description: RECmd Batch File Template
 Author: Andrew Rathbun
 Version: 1.0

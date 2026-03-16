@@ -241,7 +241,7 @@ To recap, osquery is a powerful endpoint monitoring tool developed by Facebook. 
 This command will open the interactive session in osquery for us to interact. Run the `.help` command to display the help options.
 
     osquery  
-```osquery 
+```bash
 root@cybertees:~# osqueryi
 Using a virtual database. Need help, type '.help'
 osquery> .help
@@ -292,7 +292,7 @@ Let's use osquery's search queries to get information from the host.
 The following search query uses the `users` table to retrieve information about the user accounts created on the host.**Search Query:**  `Select username, uid, description from users;`
 
     Osquery  
-```Osquery 
+```bash
 osquery> Select username, uid, description from users;
 +----------------------+-------+------------------------------------+
 | username             | uid   | description                        |
@@ -324,7 +324,7 @@ Use the following query to get the information about the running processes.
 **Query:**  `Select pid, name, parent,path from processes;`
 
    Osquery  
-```Osquery 
+```bash
 osquery> Select pid, name, parent,path from processes LIMIT 10;
 +-----+----------------+--------+--------------------------+
 | pid | name           | parent | path                     |
@@ -395,7 +395,7 @@ The first important step in the investigation is to obtain as much detailed info
  **Command:**  `uname -a`
 
     System Profiling  
-```System Profiling 
+```bash
 root@cybertees:~# uname -a
 Linux cybertees 5.15.0-1063-aws #69~20.04.1-Ubuntu SMP Fri May 10 19:20:12 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
 ```
@@ -420,7 +420,7 @@ The following command provides details about the hostname and related settings.
  **Command** : `hostnamectl`
 
     System Profiling  
-```System Profiling 
+```bash
 root@cybertees:~# hostnamectl
    Static hostname: cybertees
          Icon name: computer-vm
@@ -452,7 +452,7 @@ Let's break down the information we retrieved from this command:
  **Command** : **`uptime`**
 
     System Profiling  
-```System Profiling 
+```bash
 root@cybertees:~# uptime
  19:28:46 up 9 days, 12:27,  0 users,  load average: 0.00, 0.00, 0.00
 ```
@@ -464,7 +464,7 @@ root@cybertees:~# uptime
  **Command:**  **`lscpu`**
 
     System Profiling  
-```System Profiling 
+```bash
 root@cybertees:~# lscpu
 Architecture:                       cybertees
 CPU op-mode(s):                     32-bit, 64-bit
@@ -527,7 +527,7 @@ Some of the key information that could be important for us is explained below:
 `
 
    System Profiling  
-```System Profiling 
+```bash
 root@cybertees:/home/ubuntu# df -h
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/root        59G  7.2G   51G  13% /
@@ -559,7 +559,7 @@ tmpfs           391M  8.0K  391M   1% /run/user/114
  
 
    System Profiling  
-```System Profiling 
+```bash
 root@cybertees:~# lsblk
 NAME    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 loop0     7:0    0  24.9M  1 loop /snap/amazon-ssm-agent/7628
@@ -589,7 +589,7 @@ xvda    202:0    0    60G  0 disk
  **Explanation:**  The `free -h` command in Linux is used to display memory usage information in a human-readable format.
 
     System Profiling  
-```System Profiling 
+```bash
 root@cybertees:~# free -h
               total        used        free      shared  buff/cache   available
 Mem:          3.8Gi       667Mi       2.2Gi        31Mi       957Mi       2.9Gi
@@ -616,7 +616,7 @@ This command can also help identify a package that seems odd and suspicious in t
 `apt` command handles dependencies, automatically downloads and installs packages from repositories, and resolves conflicts. We can use the following command to list down all the packages installed through apt.
 
     APT Installed packages  
-```APT Installed packages 
+```bash
 root@cybertees:/home/ubuntu# apt list --installed | head -n 30
 
 WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
@@ -649,7 +649,7 @@ Network Profiling
  Command: **`ip a`**  or **`ifconfig`**
 
    Installed Packages  
-```Installed Packages 
+```bash
 root@cybertees:/home/ubuntu# ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -671,7 +671,7 @@ root@cybertees:/home/ubuntu# ip a
  **Explanation:**  Displays routing table.
 
    APT Installed packages  
-```APT Installed packages 
+```bash
 root@cybertees:# route
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
@@ -727,7 +727,7 @@ First, use the following command to list down all the running processes.
 **Explanation:** This command will display the list of the processes running on the host.
 
     Osquery: Reviewing Processes  
-```Osquery: Reviewing Processes 
+```bash
 osquery> SELECT pid, name, path, state FROM processes;
 +------+----------------------+----------------------------------+-------+
 | pid  | name                 | path                             | state |
@@ -772,7 +772,7 @@ Processes Running From the tmp Directory
 
   Processes from tmp directory
  
-```Processes from tmp directory 
+```bash
 osquery> SELECT pid, name, path FROM processes WHERE path LIKE '/tmp/%' OR path LIKE '/var/tmp/%';
 +-----+----------------+-------------------------+
 | pid | name           | path                    |
@@ -792,7 +792,7 @@ Adversaries tend to remove the binary from the disk after executing it to avoid 
 
    Fileless Process
  
-```Fileless Process 
+```bash
 osquery> SELECT pid, name, path, cmdline, start_time FROM processes WHERE on_disk = 0;
 +-----+----------------+-------------------------+-------------------------+------------+
 | pid | name           | path                    | cmdline                 | start_time |
@@ -819,7 +819,7 @@ The following query will look into the running processes and list the ones with 
 
    Orphan Process
  
-```Orphan Process 
+```bash
 osquery> SELECT pid, name, parent, path FROM processes WHERE parent NOT IN (SELECT pid from processes);
 +-----+----------+--------+--------------------------+
 | pid | name     | parent | path                     |
@@ -835,7 +835,7 @@ Finding Processes Launched from User Directories
 In the context of a server, if the process is running from the user directory, that process could be marked for further investigation. One of the main reasons is that, typically, system processes run from the standard system directories. Let's use the following search query to look for the processes running from the user directories.
 
 **Search Query:**  `SELECT pid, name, path, cmdline, start_time FROM processes WHERE path LIKE '/home/%' OR path LIKE '/Users/%';`**Explanation** : The following query will search in the list of running processes and see which method is running from the user directory, as shown in the result below:    System Profiling  
-```System Profiling 
+```bash
 osquery> SELECT pid, name, path, cmdline, start_time FROM processes WHERE path LIKE '/home/%' OR path LIKE '/Users/%';
 +-----+-------------+--------------+-------------------------------------------------+------------+
 | pid | name        | path                                            | cmdline    | start_time   |
@@ -886,7 +886,7 @@ From an investigation point of view, examining ongoing network communication or 
 **Explanation:** This query retrieves information about network connections established by various processes on the system. It selects entries from the `process_open_sockets` table.
 
     osquery  
-```osquery 
+```bash
 osquery> SELECT pid, family, remote_address, remote_port, local_address, local_port, state FROM process_open_sockets LIMIT 20;
 +------+--------+----------------+-------------+---------------+------------+-------------+
 | pid  | family | remote_address | remote_port | local_address | local_port | state       |
@@ -924,7 +924,7 @@ The remote network connection established on this host could help identify poten
 
    Remote Connection
  
-```Remote Connection 
+```bash
 osquery> SELECT pid, fd, socket, local_address, remote_address, local_port, remote_port FROM process_open_sockets WHERE remote_address IS NOT NULL;
 +------+-----+--------+---------------+----------------+------------+-------------+
 | pid  | fd  | socket | local_address | remote_address | local_port | remote_port |
@@ -957,7 +957,7 @@ Use the following query to retrieve the information about the DNS queries on thi
 
    DNS Queries
  
-```DNS Queries 
+```bash
 osquery> SELECT * FROM dns_resolvers;
 +----+------------+----------------------------+---------+----------+
 | id | type       | address                    | netmask | options  |
@@ -976,7 +976,7 @@ Use the following query to retrieve the information about the network interface.
 
    Network Interfaces
  
-```Network Interfaces 
+```bash
 osquery> SELECT interface, address, mask, broadcast FROM interface_addresses;
 +-----------+------------------------------+-----------------------------------------+---------------+
 | interface | address                      | mask                                    | broadcast     |
@@ -996,7 +996,7 @@ Let's use the following command to list down the listening ports.
 
     Osquery: Listening Ports
  
-```Osquery: Listening Ports 
+```bash
 osquery> SELECT * FROM listening_ports;
 +-----+------+----------+--------+------------+----+--------+------+---------------+
 | pid | port | protocol | family | address    | fd | socket | path | net_namespace |
@@ -1039,7 +1039,7 @@ First, Let's use the following query to list all the files opened.
 
    Opened Files
  
-```Opened Files 
+```bash
 osquery> SELECT pid, fd, path FROM process_open_files;
 +------+----+----------------------------------+
 | pid  | fd | path                             |
@@ -1071,7 +1071,7 @@ We can narrow down the result by filtering the query to only show the files bein
 
   Opened Files
  
-```Opened Files 
+```bash
 osquery> SELECT pid, fd, path FROM process_open_files where path LIKE '/tmp/%';
 +------+----+----------------------+
 | pid  | fd | path                 |
@@ -1090,7 +1090,7 @@ osquery> SELECT pid, fd, path FROM process_open_files where path LIKE '/tmp/%';
 
    Process Hunting
  
-```Process Hunting 
+```bash
 osquery> select pid, name, path from processes where pid = '556';
 +-----+----------+------------------+
 | pid | name     | path              |
@@ -1110,7 +1110,7 @@ Hiding files on the host is a common practice. However, adversaries may also cha
 
    Hidden Files
  
-```Hidden Files 
+```bash
 osquery> SELECT filename, path, directory, size, type FROM file WHERE path LIKE '/.%';
 +------------+------------+-----------+-------+-----------+
 | filename   | path       | directory | size  | type      |
@@ -1131,7 +1131,7 @@ Let's use the following command to see which file was recently modified.**Search
 
   Recent Modified Files
  
-```Recent Modified Files 
+```bash
 osquery> SELECT filename, path, directory, type, size FROM file WHERE path LIKE '/etc/%' AND (mtime > (strftime('%s', 'now') - 86400));
 +----------+------------+-----------+-----------+------+
 | filename | path       | directory | type      | size |
@@ -1149,7 +1149,7 @@ Similar to files, adversaries tend to modify system binaries and ingest maliciou
 **Search Query:**  `SELECT filename, path, directory, mtime FROM file WHERE path LIKE '/opt/%' OR path LIKE '/bin/' AND (mtime > (strftime('%s', 'now') - 86400));`
 
    Recent Modified Binaries 
-```Recent Modified Binaries 
+```bash
 osquery> SELECT filename, path, directory, mtime FROM file WHERE path LIKE '/opt/%' OR path LIKE '/bin/' AND (mtime > (strftime('%s', 'now') - 86400));
 +----------+---------------+--------------+------------+
 | filename | path          | directory    | mtime      |
@@ -1175,7 +1175,7 @@ Let's see if the suspect had installed any malicious packages on the host.
 Search for the term `install` in the `/var/log/dpkg.log` file, which contains all the information about installed / uninstalled packages.
 
     Installed Packages  
-```Installed Packages 
+```bash
 ubuntu@cybertees:/home$ grep " install " /var/log/dpkg.log
 2024-06-13 06:47:05 install linux-image-5.15.0-1063-aws:amd64 <none> 5.15.0-1063.69~20.04.1
 2024-06-13 06:47:06 install linux-aws-5.15-headers-5.15.0-1063:all <none> 5.15.0-1063.69~20.04.1
@@ -1191,7 +1191,7 @@ Here, we found a suspicious package installed on the 26th of June, 2024. Let's u
 **Command:** `dpkg -l | grep <REDACTED> `
 
     Installed Packages  
-```Installed Packages 
+```bash
 ubuntu@cybertees:/home$ dpkg -l | grep <<REDACTED>>
      Name   Version  Architecture      Description
 ===================================-=====================================-============-
@@ -1246,7 +1246,7 @@ Out of many ways, adversaries would initiate the services on the infected host t
 
    Services List
  
-```Services List 
+```bash
 root@cybertees:/etc/systemd/system# ls
 
 dbus-org.freedesktop.ModemManager1.service   
@@ -1273,7 +1273,7 @@ Creating a backdoor account is a common practice observed in various APT groups 
 
    Backdoor Account
  
-```Backdoor Account 
+```bash
 osquery> select username, directory from users;
 +----------+-----------------+
 | username | directory       |
@@ -1297,7 +1297,7 @@ We can also list down the names of the users from the `/etc/passwd` file.
 **Command** :` cut -d  : -f1 /etc/passwd`
 
    /etc/passwd 
-```/etc/passwd 
+```bash
 root@cybertees:/usr/bin# cut -d  : -f1 /etc/passwd
 root
 daemon
@@ -1320,7 +1320,7 @@ As already covered in the [Linux Process Analysis](https://tryhackme.com/r/room/
 
    Cron Job
  
-```Cron Job 
+```bash
 root@cybertees:/home/ubuntu# crontab -l
 # Edit this file to introduce tasks to be run by cron.
 # 

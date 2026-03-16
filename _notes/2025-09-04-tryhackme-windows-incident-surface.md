@@ -73,7 +73,7 @@ Attackers can modify the environment variables to hijack the execution flow (ATT
  Since we are looking for anomalies in environment variables, we can use the below commands to dump and read them. We have shown a snipped version of the actual result.
 
    List the Environmental Variables 
-```List the Environmental Variables 
+```bash
 C:\Users\Administrator\Desktop\tools\shells> set > env_vars.txt
 
 C:\Users\Administrator\Desktop\tools\shells> type env_vars.txt
@@ -110,7 +110,7 @@ ALLUSERSPROFILE=C:\ProgramDataAPPDATA=C:\Users\Administrator\AppData\RoamingComm
   `$PSHOME\profile.ps1`    The above mentioned paths are relative paths, but since we are using our own command shell, we will need to translate them to absolute paths. We can take help from the environment variables we previously listed to do that. The `USERPROFILE` variable shows the absolute path to the `$HOME` directory. The `PSModulePath` variable shows the absolute path to the `$PSHOME` and other relevant directories. In case there are multiple directories present for the `PSModulePath`, we can use the location of the PowerShell executable as our `PSModulePath`. Profile file needs to reside in the same directory as this executable. Therefore, we can use the command below to reveal the absolute path of the `$PSHOME`.
 
    Reveal the Path of $PSHOME 
-```Reveal the Path of $PSHOME 
+```bash
 C:\Users\Administrator\Desktop\tools\shells> where powershell.exe
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
 ```
@@ -118,7 +118,7 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
    We have identified the absolute paths for `$HOME` and `$PSHOME`; Now, let's start checking the profiles. We can execute the following commands to identify the available profile files.
 
    List the Available Profiles 
-```List the Available Profiles 
+```bash
 C:\Users\Administrator\Desktop\tools\shells>if exist "C:\Windows\System32\WindowsPowerShell\v1.0\Microsoft.PowerShell_profile.ps1" (echo PROFILE EXISTS) else (echo PROFILE DOES NOT EXIST)
 PROFILE DOES NOT EXIST
 
@@ -135,7 +135,7 @@ PROFILE EXISTS
    We have identified that a PowerShell profile exists and is valid for all users and hosts. Let's read this file to determine if an event-triggered execution (ATT&CK ID: T1546.013) is present in the system. We can do that by executing the commands in the terminal below.
 
    Enumerate a PowerShell Profile 
-```Enumerate a PowerShell Profile 
+```bash
 C:\Users\Administrator\Desktop\tools\shells> type "C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1"
 Set-PSReadlineOption -HistorySaveStyle SaveNothing
 Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue
@@ -151,7 +151,7 @@ Set-Location "$Env:UserProfile\Desktop"
  Restoring Justice Just like our toolbox, we also brought our own PowerShell profile. Let's restore the original profile by replacing it with the `PS-DFIR-Profile.ps1` in our toolbox. In an actual scenario, we can do that by bringing a profile from a trusted golden image. We can follow the steps in the below terminal to replace the malicious PS profile with a clean one.
 
    Restore the clean Profile 
-```Restore the clean Profile 
+```bash
 # Rename the safe PS profile file to be used in the system.
 C:\Users\Administrator\Desktop\tools\shells> ren PS-DFIR-Profile.ps1 profile.ps1
 
@@ -167,7 +167,7 @@ C:\Users\Administrator\Desktop\tools\shells> copy profile.ps1 C:\Windows\System3
  Loaded Modules Before we proceed further, it would be prudent to make note of the PowerShell version and loaded modules to see if any malicious module is loaded. This can be matched with a trusted baseline to ensure nothing malicious is happening in the system. Let's execute the following commands to achieve this objective.
 
    Check the PowerShell Version 
-```Check the PowerShell Version 
+```bash
 C:\Users\Administrator\Desktop\tools\shells> Get-Module | ft ModuleType, Version, Name
 
 ModuleType Version Name
@@ -216,7 +216,7 @@ Now that we have fixed our analysis tools, we can start the analysis by first pr
  System Name and Network Information The following command can be used to identify the system DNS Hostname, IP addresses, and MAC addresses of all the interfaces. It is a good practice to note this information down for future reference. Please note that this command is most useful when performing live analysis while the system is connected to its regular network.
 
    System and Network Information 
-```System and Network Information 
+```bash
 C:\Users\Administrator\Desktop\tools\shells> Get-CimInstance win32_networkadapterconfiguration -Filter IPEnabled=TRUE | ft DNSHostname, IPAddress, MACAddress
 
 DNSHostname          IPAddress                                 MACaddress
@@ -226,7 +226,7 @@ DNSHostname          IPAddress                                 MACaddress
    OS Version and Installation Details The following command will give us the computer name, OS version, Build Number, Install Date, Last Boot time, and Architecture information.
 
    OS Details 
-```OS Details 
+```bash
 C:\Users\Administrator\Desktop\tools\shells> Get-CimInstance -ClassName Win32_OperatingSystem | fl CSName, Version, BuildNumber, InstallDate, LastBootUpTime, OSArchitecture
 CSName         : [REDACTED]
 Version        : [REDACTED]
@@ -243,7 +243,7 @@ OSArchitecture : 64-bit
  Date and TimeZone Info It is important for an analyst to note down the current date and the timezone of the system. This will come in handy in the subsequent steps of the investigation as we will need to refer to the current time and the timezone to identify the context of different activities. We can use the following commands to get this information.
 
    Date and TimeZone Information 
-```Date and TimeZone Information 
+```bash
 PS C:\Users\Administrator\Desktop\tools\shells> Get-Date ; Get-TimeZone
 
 Monday, June 2, 2025 7:58:26 AM
@@ -262,7 +262,7 @@ BaseUtcOffset              : [REDACTED]
  The following command can be used to create an HTML report for system policies. Please note that the below command will fail if you did not replace the infected PowerShell profile with the DFIR profile in the previous task.
 
    Extracting the System Policies 
-```Extracting the System Policies 
+```bash
 PS C:\Users\Administrator\Desktop\tools\shells> Get-GPResultantSetOfPolicy -ReportType HTML -Path (Join-Path -Path (Get-Location).Path -ChildPath "RSOPReport.html")
 
 RsopMode        : Logging
@@ -307,7 +307,7 @@ Users Adversaries can create new accounts (ATT&CK ID: T1136) or manipulate the e
  We can see the available local users in the system by using the command shown in the terminal below.
 
    List the Users 
-```List the Users 
+```bash
 PS C:\Users\Administrator\Desktop\tools\shells> Get-LocalUser | tee l-users.txt
 
 Name               Enabled Description
@@ -334,7 +334,7 @@ WDAGUtilityAccount             True            True               True
  Now, let's explore the local group memberships to see which user account groups they belong.
 
    List the User Groups 
-```List the User Groups 
+```bash
 PS C:\Users\Administrator\Desktop\tools\shells> Get-LocalGroup | ForEach-Object { $members = Get-LocalGroupMember -Group $_.Name; if ($members) { Write-Output "`nGroup: $($_.Name)"; $members | ForEach-Object { Write-Output "`tMember: $($_.Name)" } } } | tee gp-members.txt
 
 Group: Administrators
@@ -356,7 +356,7 @@ Group: Backup Operators
 - `C:\Users\Administrator\Desktop\tools\utils`
 
    List the Current Sessions 
-```List the Current Sessions 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> .\PsLoggedon64.exe | tee sessions.txt
 
 Users logged on locally:
@@ -399,7 +399,7 @@ Active Ports and Connections Adversaries can move laterally across the network (
  Let's quickly review the active ports and connections for TCP in the following snippet:
 
    List the TCP Connections 
-```List the TCP Connections 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-NetTCPConnection | select Local*, Remote*, State, OwningProcess,` @{n="ProcName";e={(Get-Process -Id $_.OwningProcess).ProcessName}},` @{n="ProcPath";e={(Get-Process -Id $_.OwningProcess).Path}} | sort State | ft -Auto | tee tcp-conn.txt
 
 LocalAddress LocalPort RemoteAddress RemotePort  State OwningProcess ProcName  ProcPath
@@ -417,7 +417,7 @@ LocalAddress LocalPort RemoteAddress RemotePort  State OwningProcess ProcName  P
  Let's list the network shares using the given snippet.
 
    List the Network Shares 
-```List the Network Shares 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-CimInstance -Class Win32_Share | tee net-shares.txt
 
 Name   Path       Description
@@ -432,7 +432,7 @@ IPC$              Remote IPC
  Firewall (Network) The firewall is another gold mine of information that is tedious to evaluate manually but provides pinpoint results. Identifying rules that enable generic ports used in security assessment and by some threat profiles, such as 4444, is relatively easy. However, identifying advisedly altered or crafted rules requires strong collaboration with the system administrator, a grasp of the environment profile, and a strong knowledge of adversarial TTPs. First, let's identify the status of the available firewall profiles.
 
    Checking the Firewall Configuration 
-```Checking the Firewall Configuration 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-NetFirewallProfile | ft Name, Enabled, DefaultInboundAction, DefaultOutboundAction | tee fw-profiles.txt
 
 Name    Enabled DefaultInboundAction DefaultOutboundAction
@@ -446,7 +446,7 @@ Public    False        NotConfigured         NotConfigured
  Let's run the `fw-summary.ps1`script available in the`C:\Users\Administrator\Desktop\tools\utils`directory to list all the active firewall rules to see if we can find something juicy there:
 
    List the Firewall Rules 
-```List the Firewall Rules 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> .\fw-summary.ps1 | tee fw-rules.txt
 
 DisplayName             Protocol LocalPort RemotePort RemoteAddress Direction Action Program
@@ -501,7 +501,7 @@ AllJoyn Router (UDP-In) UDP      Any       Any        Any             Inbound  A
 Boot-Time Execution Entries The Windows startup is a traditional location for implementing execution (ATT&CK ID: TA002) and persistence (ATT&CK ID: TA003) tactics. Attackers use the scheduled tasks after compromising the systems to maintain the backdoors, C2 implants, malicious tasks, and services. Let's use Sysinternals `Autorunsc`tool to list down all the entries along with their hash values, which are implemented on boot-time startup of all the users:
 
    List the Boot Startup Programs 
-```List the Boot Startup Programs 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils>  .\autorunsc64.exe -a b * -h | tee boot.txt
 
 HKLM\System\CurrentControlSet\Control\Session Manager\BootExecute
@@ -519,7 +519,7 @@ HKLM\System\CurrentControlSet\Control\Session Manager\BootExecute
  Startup Programs and Commands Now, let's list the programs and commands executed in the startup sequence through the command given in the snippet below:
 
    C:\Users\Administrator\Desktop\tools\shells\PS-DFIR.exe 
-```C:\Users\Administrator\Desktop\tools\shells\PS-DFIR.exe 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | fl | tee autorun-cmds.txt
 
 Name     : RunWallpaperSetup
@@ -543,7 +543,7 @@ User     : [REDACTED]
  Logon-Time Execution Entries Just as the boot-time autostart programs can be used for system-level persistence, there are user logon autostart programs meant for user-level persistence. These programs run every time the user logs in, unlike the boot-time autostart programs that run every time the system boots. Let's extract them through the same command we used previously by just replacing the `b`with an`l`.
 
    List the User Logon Startup Programs 
-```List the User Logon Startup Programs 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils>  .\autorunsc64.exe -a l * -h | tee logon.txt
 
 HKLM\System\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\StartupPrograms
@@ -564,7 +564,7 @@ HKLM\System\CurrentControlSet\Control\Terminal Server\Wds\rdpwd\StartupPrograms
 - `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Shell`
 
    Enumerating a Registry Key 
-```Enumerating a Registry Key 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> $winlogonPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"; "Userinit: $((Get-ItemProperty -Path $winlogonPath -Name 'Userinit').Userinit)"; "Shell: $((Get-ItemProperty -Path $winlogonPath -Name 'Shell').Shell)"
 
 Userinit: C:\Windows\system32\userinit.exe, cmd.exe [REDACTED]
@@ -576,7 +576,7 @@ Shell: explorer.exe
  These results are very interesting. Some privilege escalation and persistence techniques rely on a netshell executable to trigger arbitrary code executions through helper DLLs (ATT&CK ID: 1546). That's why we take it into account so much. Let’s explore this key through the command given below:
 
    Getting Details of a Registry Key 
-```Getting Details of a Registry Key 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\NetSh" | tee netsh-records.txt
 
 2            : ifmon.dll
@@ -626,7 +626,7 @@ Services and scheduled tasks both function in a system’s background. Attackers
  Let’s first list down the running services of the machine through the command given in the snippet below:
 
    List the Current Running Services 
-```List the Current Running Services 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> "Running Services:"; Get-CimInstance -ClassName Win32_Service | Where-Object { $_.State -eq "Running" } | Select-Object Name, DisplayName, State, StartMode, PathName, ProcessId | ft -AutoSize | tee services-active.txt
 
 Running Services:
@@ -645,7 +645,7 @@ Appinfo Application Inf Running Manual    C:\Windows\system32\svchost.exe -k net
  Let’s now list down the non-running/idle services of the machine through the command given in the snippet below:
 
    List the Idle Services 
-```List the Idle Services 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> "Non-Running Services:"; Get-CimInstance -ClassName Win32_Service | Where-Object { $_.State -ne "Running" } | Select-Object @{Name='Name'; Expression={if ($_.Name.Length -gt 22) { "$($_.Name.Substring(0,19))..." } else { $_.Name }}}, @{Name='DisplayName'; Expression={if ($_.DisplayName.Length -gt 45) { "$($_.DisplayName.Substring(0,42))..." } else { $_.DisplayName }}}, State, StartMode, PathName, ProcessId | Format-Table -AutoSize | Tee-Object services-idle.txt      Non-Running Services:
 
 Name         DisplayName            State   StartMode PathName                                      
@@ -663,7 +663,7 @@ AppReadiness App Readiness          Stopped Manual    C:\Windows\System32\svchos
  Let’s list all the available scheduled tasks using the command given in the snippet below:
 
    List the Scheduled Tasks 
-```List the Scheduled Tasks 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> $tasks = Get-CimInstance -Namespace "Root/Microsoft/Windows/TaskScheduler" -ClassName MSFT_ScheduledTask; if ($tasks.Count -eq 0) { Write-Host "No scheduled tasks found."; exit } else { Write-Host "$($tasks.Count) scheduled tasks found." }; $results = @(); foreach ($task in $tasks) { foreach ($action in $task.Actions) { if ($action.PSObject.TypeNames[0] -eq 'Microsoft.Management.Infrastructure.CimInstance#Root/Microsoft/Windows/TaskScheduler/MSFT_TaskExecAction') { $results += [PSCustomObject]@{ TaskPath = $task.TaskPath.Substring(0, [Math]::Min(50, $task.TaskPath.Length)); TaskName = $task.TaskName.Substring(0, [Math]::Min(50, $task.TaskName.Length)); State = $task.State; Author = $task.Principal.UserId; Execute = $action.Execute } } } }; if ($results.Count -eq 0) { Write-Host "No tasks with 'MSFT_TaskExecAction' actions found." } else { $results | Format-Table -AutoSize | tee scheduled-tasks.txt }
 141 scheduled tasks found.
 
@@ -719,7 +719,7 @@ Processes Processes are a crucial part of the live investigation as they are dyn
  Let’s list down the current running processes through the command given in the snippet below to do some general-level analysis:
 
    List the Current Running Processes 
-```List the Current Running Processes 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-WmiObject -Class Win32_Process | ForEach-Object {$owner = $_.GetOwner(); [PSCustomObject]@{Name=$_.Name; PID=$_.ProcessId; P_PID=$_.ParentProcessId; User="$($owner.User)"; CommandLine=if ($_.CommandLine.Length -le 60) { $_.CommandLine } else { $_.CommandLine.Substring(0, 60) + "..." }; Path=$_.Path}} | ft -AutoSize | tee process-summary.txt
 
 Name                   PID P_PID User   CommandLine   Path
@@ -741,7 +741,7 @@ winlogon.exe           532   460 SYSTEM winlogon.exe  C:\Windows\system32\winlog
  Let’s use the command given in the snippet below to list down the Temp folders for all the user profiles:
 
    Details of the Temp Folders 
-```Details of the Temp Folders 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-ChildItem -Path "C:\Users" -Force | Where-Object { $_.PSIsContainer } | ForEach-Object { Get-ChildItem -Path "$($_.FullName)\AppData\Local\Temp" -Recurse -Force -ErrorAction SilentlyContinue | Select-Object @{Name='User';Expression={$_.FullName.Split('\')[2]}}, FullName, Name, Extension } | ft -AutoSize | tee temp-folders.txt
 
 User          FullName                                                Name           Extension
@@ -759,7 +759,7 @@ Guest         C:\Users\Guest\AppData\Local\Temp\1                     1
  As we are analyzing the temporary paths, how can we forget the file `INITIAL_LANTERN.exe`that was found in the services and processes with the path`C:\Users\Administrator\AppData\SpcTmp\INITIAL_LANTERN.exe`? Let's quickly review this`C:\Users\Administrator\AppData\SpcTmp\`path to see if there is anything else we can find here:
 
    Further Details of a Temp Folder 
-```Further Details of a Temp Folder 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-ChildItem -Path "C:\Users\Administrator\AppData\SpcTmp\" -Recurse -Force | ft FullName, Name, Extension
 
 FullName                                                     Name                   Extension
@@ -772,7 +772,7 @@ C:\Users\Administrator\AppData\SpcTmp\Invoke-SocksProxy.psm1 Invoke-SocksProxy.p
  Before completing this last task, as a part of general analysis, let's also check the disk volumes of this system through the command given in the snippet below:
 
    List the Disk Volumes of the System 
-```List the Disk Volumes of the System 
+```bash
 PS C:\Users\Administrator\Desktop\tools\utils> Get-CimInstance -ClassName Win32_Volume | ft -AutoSize DriveLetter, Label, FileSystem, Capacity, FreeSpace | tee disc-volumes.txt
 
 DriveLetter Label              FileSystem    Capacity   FreeSpace

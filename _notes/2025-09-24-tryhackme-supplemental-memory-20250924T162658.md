@@ -105,7 +105,7 @@ Let’s try to either prove or disprove the team’s suspicions regarding traces
  Below are a few tips on how different lateral movement techniques can be identified using memory analysis.
 
  Detecting Lateral Movement via PsExec Execution   Volatility Terminal 
-```Volatility Terminal 
+```bash
 analyst@tryhackme$ vol -f ransomhub.dmp windows.pstree
 PID     PPID    ImageFileName
 4       0       System
@@ -118,7 +118,7 @@ PID     PPID    ImageFileName
 ```
 
      Detecting Lateral Movement via WMI Execution   Volatility Terminal 
-```Volatility Terminal 
+```bash
 analyst@tryhackme$ vol -f conti.dmp windows.pstree
 PID     PPID    ImageFileName
 4       0       System
@@ -132,7 +132,7 @@ PID     PPID    ImageFileName
 ```
 
      Detecting Lateral Movement via PowerShell Remote   Volatility Terminal 
-```Volatility Terminal 
+```bash
 analyst@tryhackme$ vol -f FIN12.dmp windows.pstree
 PID     PPID    ImageFileName
 4       0       System
@@ -206,7 +206,7 @@ You did a great job detecting some truly valuable indicators of the adversary in
  Below are examples of how to identify potential signs of privilege escalation through memory analysis.
 
    Detection of Malicious Process Execution: 543mal.exe 
-```Detection of Malicious Process Execution: 543mal.exe 
+```bash
 analyst@tryhackme$ vol -f apt41.dmp windows.pstree
 PID     PPID    ImageFileName
 4       0       System
@@ -220,7 +220,7 @@ PID     PPID    ImageFileName
 ```
 
      Detecting Privilege Levels of Malicious Execution 
-```Detecting Privilege Levels of Malicious Execution 
+```bash
 analyst@tryhackme$ vol -f apt41.dmp windows.getsids --pid 1612                         
 PID	Process	SID	Name
 1612	543mal.exe	S-1-5-21-3147497877-...-1010 michael.brown
@@ -231,7 +231,7 @@ PID	Process	SID	Name
    As seen above, the malicious process was executed under the user account michael.brown on the system. Let's take a closer look at this example.
 
    Detecting Privilege Escalation via Service 
-```Detecting Privilege Escalation via Service 
+```bash
 analyst@tryhackme$ vol -f apt41.dmp windows.pstree                     
 PID     PPID    ImageFileName
 4       0       System
@@ -244,7 +244,7 @@ PID     PPID    ImageFileName
 ```
 
      Detecting Privilege Levels of Malicious Execution 
-```Detecting Privilege Levels of Malicious Execution 
+```bash
 analyst@tryhackme$ vol -f apt41.dmp windows.getsids --pid 1531
 PID     Process     SID                                       Name
 1531    up.exe      S-1-5-21-3147497877-...-1107 svc_backup

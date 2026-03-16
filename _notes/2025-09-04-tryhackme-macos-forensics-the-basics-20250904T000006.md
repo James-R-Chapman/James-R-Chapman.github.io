@@ -142,7 +142,7 @@ Apple previewed the Apple File System (APFS) in macOS 10.12 Sierra and released 
  We can use the `diskutil` tool on the command line to manage the disks.
 
    Disk Utility in macOS 
-```Disk Utility in macOS 
+```bash
 thm@THM-MacBook-Pro ~ % diskutil
 Disk Utility Tool
 Utility to manage local disks and volumes
@@ -170,7 +170,7 @@ diskutil  with no options will provide help on that verb
    The command `diskutil apfs` can list the options for APFS images.
 
    Disk Utility in macOS 
-```Disk Utility in macOS 
+```bash
 thm@THM-MacBook-Pro ~ % diskutil apfs
 Usage:  diskutil [quiet] ap[fs]  
         where  is as follows:
@@ -195,7 +195,7 @@ diskutil apfs  with no options will provide help on that verb
  In the terminal window below, we can see that the attached disk is named disk3 and has a size of 500GB. This disk contains different volumes, such as disk3s1, disk3s2, and so on. We can also see the UUIDs, mount points, capacity, and whether FileVault encrypts the disks.
 
    Disk Utility in macOS 
-```Disk Utility in macOS 
+```bash
 thm@THM-MacBook-Pro ~ % diskutil apfs list
 APFS Containers (3 found)
 |
@@ -282,7 +282,7 @@ Although Apple has used a vastly different file system for macOS, the underlying
  Directory Structure of macOS In the root directory of macOS, we will find the following directories similar to Unix/Linux operating systems.
 
    macOS root directory 
-```macOS root directory 
+```bash
 thm@THM-MacBook-Pro ~ % cd /
 thm@THM-MacBook-Pro / % ls
 Applications	System		Volumes		cores		etc		opt		sbin		usr
@@ -312,7 +312,7 @@ thm@THM-MacBook-Pro / %
  The System domain contains software developed and managed by Apple. It maps to the `/System` directory and contains critical OS applications and configurations. Apple does not allow users to modify or remove files in this domain, even with root privileges.
 
    The System Domain 
-```The System Domain 
+```bash
 thm@THM-MacBook-Pro /System % pwd
 /System
 thm@THM-MacBook-Pro /System % mkdir test
@@ -427,7 +427,7 @@ Well, we have gone through a lot of trouble acquiring a disk image from a Mac de
  Checking the APFS Container Info In the attached VM, a Mac disk image is already placed in the home directory with the name `mac.dmg`. First, we can list all the volumes in the container using the `apfsutil` tool.
 
    Checking APFS Container 
-```Checking APFS Container 
+```bash
 ubuntu@tryhackme:~$ apfsutil mac-disk.img 
 Found partitions:
 69646961-6700-11AA-11AA-00306543ECAC 68CB0FFE-F676-47D6-D1A2-5707D06D3E49 0000000000000028 00000000000FA027 0000000000000000 iBootSystemContainer
@@ -490,7 +490,7 @@ Snapshots:
  Mounting Using APFS-Fuse To mount the drive using `apfs-fuse`, we need to get root permissions. The instructions to assign read permissions to another user after mounting as root are present in the GitHub readme file, but we will continue just using the root user to read the image for now. Please note that `apfs-fuse` does not have write capabilities so the image will be mounted as read-only.
 
    apfs-fuse options 
-```apfs-fuse options 
+```bash
 ubuntu@tryhackme:~$ sudo su
 root@tryhackme:/home/ubuntu# apfs-fuse
 apfs-fuse [options] <device> <dir>
@@ -521,7 +521,7 @@ snap=N        : Mount snapshot with given id. Use apfsutil for getting the ids.
    We see that `apfs-fuse` is working, so let's mount the disk image and see what we get. We can mount the image using the **mac**  directory as the mount point.
 
    Mounting APFS image using apfs-fuse 
-```Mounting APFS image using apfs-fuse 
+```bash
 root@tryhackme:/home/ubuntu# apfs-fuse mac-disk.img mac/
 root@tryhackme:/home/ubuntu# ls mac
 private-dir  root
@@ -530,7 +530,7 @@ private-dir  root
    Ok, the image has been mounted, and we can see that it has two directories, **root**  and **private-dir** . The data is supposed to be present in the root directory. Let's check.
 
    Root directory 
-```Root directory 
+```bash
 root@tryhackme:/home/ubuntu# ls mac/root
 Applications  Library  System  Users  Volumes  bin  cores  dev  etc  opt  private  sbin  tmp  usr  var
 root@tryhackme:/home/ubuntu#
@@ -539,7 +539,7 @@ root@tryhackme:/home/ubuntu#
    Okay, it looks like we have the data. Let's check the Users directory.
 
    Users Directory 
-```Users Directory 
+```bash
 root@tryhackme:/home/ubuntu# ls mac/root/Users
 root@tryhackme:/home/ubuntu#
 ```
@@ -549,7 +549,7 @@ root@tryhackme:/home/ubuntu#
  Remember the different volumes that we saw when we ran the `apfsutil` command? It looks like we might have mounted the wrong volume. Let's try again, and this time, let's mount the Data volume. As we can see from the output of apfsutil, the Data volume is volume 4 in the container.
 
    Mounting the Data Volume 
-```Mounting the Data Volume 
+```bash
 root@tryhackme:/home/ubuntu# apfs-fuse -v 4 mac-disk.img mac
 root@tryhackme:/home/ubuntu# ls mac/root/Users
 Shared  thm

@@ -198,7 +198,7 @@ Start Virtual Machine In this room, we will use a Windows Server 2019 virtual ma
 - Note down the hash value. Where to note it should be described in your memory process outline. **Note: The calculated hash values of this example and yours will be different, which is expected as the memory content continuously changes**
 
    Full Memory Capture - Hash 
-```Full Memory Capture - Hash 
+```bash
 PS C:\Users\Administrator\Documents> Get-FileHash -Path 'C:\Users\Administrator\Documents\Full Memory Capture\FS-ANALYSIS-07April2025.mem' -Algorithm MD5 
 
 Algorithm Hash Path
@@ -212,7 +212,7 @@ Algorithm Hash Path
  You will focus on manually dumping the `lsass.exe` process. This process manages authentication, tokens, credentials, and more. Threat actors often target the `lsass.exe` process using **Mimikatz** . Enter the following command to dump the content of the `lsass.exe` process:
 
    Process Dump 
-```Process Dump 
+```bash
 PS C:\TMP\SysinternalsSuite> .\procdump64.exe -ma lsass.exe C:\TMP -accepteula
 
 ProcDump v11.0 - Sysinternals process dump utility
@@ -236,7 +236,7 @@ ProcDump v11.0 - Sysinternals process dump utility
  Now that you have created a memory dump of the `lsass.exe` process, you need to ensure its integrity. Enter the following command to calculate an MD5 hash of the memory capture. Adjust the filename to reflect your memory capture.
 
    Calculate Hash 
-```Calculate Hash 
+```bash
 PS C:\TMP\SysinternalsSuite>  Get-FileHash -Path 'C:\TMP\lsass.exe_250408_082640.dmp' -Algorithm MD5
 Algorithm Hash Path       MD5 9DF3963A62B01D3151CB6B824C8DE6D1 C:\TMP\lsass.exe_250408_082640.dmp
 ```
@@ -293,7 +293,7 @@ Start Virtual Machine In this room, we will use a Ubuntu desktop VM. You can sta
  Full Memory Capture In this task, you will use the `LiME` tool to take a full memory capture. This tool isn't included by default on most Linux systems. Since the VM has no internet access, **we've pre-installed the tool for you** . If you're trying this on your machine, here's how you would install it manually:
 
    Install LiME 
-```Install LiME 
+```bash
 ubuntu@tryhackme:~$
 # first install necessary dependencies
 sudo apt update
@@ -308,7 +308,7 @@ make
    Continuing with the VM, open a terminal window and enter the following command to take a full memory capture:
 
    Take Memory Dump 
-```Take Memory Dump 
+```bash
 ubuntu@tryhackme:~$ cd LiME/srcubuntu@tryhackme:~/LiME/src$ sudo insmod lime-6.8.0-1027-aws.ko "path=/tmp/ubuntu-150000-22042025.lime format=lime"
 ```
 
@@ -329,7 +329,7 @@ ubuntu@tryhackme:~$ cd LiME/srcubuntu@tryhackme:~/LiME/src$ sudo insmod lime-6.8
 - Finish by entering the `sudo rmmod lime` command to unload LiME from the kernel. **Note: Each time you want to capture the memory, you must first run this command to unload any previous LiME modules**
 
    MD5 Hash 
-```MD5 Hash 
+```bash
 ubuntu@tryhackme:~/LiME/src$ md5sum tmp/ubuntu-150000-22042025.lime
 0ef7140f0c0cabd6c4ef76c708f2324f  /tmp/ubuntu-150000-22042025.limeubuntu@tryhackme:~/LiME/src$ sudo rmmod lime
 ```
@@ -337,7 +337,7 @@ ubuntu@tryhackme:~/LiME/src$ md5sum tmp/ubuntu-150000-22042025.lime
    Process Memory dump Continuing with the VM, open a new terminal and enter the following commands to dump the memory of the `bash` process:
 
    Process Dump with gcore 
-```Process Dump with gcore 
+```bash
 ubuntu@tryhackme:~$ ps aux |grep bash # Search the PID number of the bash process
 ubuntu      6506  0.0  0.2   5892  4096 pts/0    Ss   Apr11   0:00 bash
 ubuntu     34136  0.0  0.1   3528  1792 pts/0    S+   13:57   0:00 grep --color=auto bash
@@ -347,7 +347,7 @@ ubuntu@tryhackme:~$ sudo gcore -o /tmp/BASH-130000-10042025 6506 # Dump the memo
    Now that you have created a memory dump of the `bash` process, you need to ensure its integrity. Enter the following command to calculate an MD5 hash of the memory capture. Adjust the filename to reflect your memory capture.
 
    Process Dump with gcore 
-```Process Dump with gcore 
+```bash
 ubuntu@tryhackme:~$ md5sum /tmp/BASH-130000-10042025.6506 
 b1baa84b8f1e725f1a45795465ba710c  /tmp/BASH-130000-10042025.6506
 ```
@@ -358,7 +358,7 @@ b1baa84b8f1e725f1a45795465ba710c  /tmp/BASH-130000-10042025.6506
 As stated in the [Official documentation ](https://documentation.ubuntu.com/server/how-to/software/kernel-crash-dump/index.html) of Ubuntu, the kernel crash dump is enabled by default starting from Ubuntu version 24.10. The VM in this task has Ubuntu version 24.04, so you must enable the kernel crash dump yourself. Due to the limited connectivity of the VM, **we have done the configuration ourselves** . We entered the following commands and added explanatory comments (with # delimiter) to the terminal window below:
 
    Enable kdump 
-```Enable kdump 
+```bash
 ubuntu@tryhackme:~$ 
 # check status kernel crash dump utility
 ubuntu@tryhackme:~$ cat /proc/cmdline # This command verifies if the kernel crash dump is enabled or not. If a line similar to 'crashkernel=384M-2G:64M,2G-:128M' is present, it is enabled. You don't need to execute the following commands in this case.
@@ -393,7 +393,7 @@ On most Linux distributions, process crash dumps are disabled by default. There 
  Start by entering the following commands to configure the crash dump for systemd-managed processes:
 
    Process crash dump 
-```Process crash dump 
+```bash
 ubuntu@tryhackme:~$ sudo mkdir -p /etc/systemd/system.conf.d
 ubuntu@tryhackme:~$ sudo nano /etc/systemd/system.conf.d/core-dumps.conf
 # Add the following lines to the core-dumps.conf file and enter CTRL+o to save the file, then exit the editor by entering CTRL+x
@@ -406,7 +406,7 @@ ubuntu@tryhackme:~$ sudo systemctl daemon-reexec
    Now, continue configuring the crash dump for the user processes and interactive sessions. The commands below will ensure the configuration persists. Enter the following commands:
 
    Process crash dump 
-```Process crash dump 
+```bash
 # Enable process dumps
 ubuntu@tryhackme:~$ ulimit -c unlimited
 # Open the config file
@@ -482,7 +482,7 @@ Acquiring memory on a Hyper-V hosted VM can be done with the native functions of
 - Use the `volatility windows.hyperv` plugin to process the file
 
    Memory dump Hyper-v 
-```Memory dump Hyper-v 
+```bash
 PS C:\Users\administrator> get-vm | FT VMId, VMName
 
 VMId VMName
@@ -524,7 +524,7 @@ The recommended way to acquire the memory of a VM hosted on VirtualBox is by usi
 - `Volatility` supports the processing of `.elf files` , so you don't need to convert them
 
    Memory Dump  
-```Memory Dump 
+```bash
 PS C:\Program Files\Oracle\VirtualBox> .\VBoxManage.exe list runningvms
 "Kali_purple" {9a969c90-7ab0-4b9b-893d-48c70fa42ee5}
 PS C:\Program Files\Oracle\VirtualBox> .\VBoxManage.exe debugvm "Kali_purple" dumpvmcore --filename C:\temp\kali_memdump.elf

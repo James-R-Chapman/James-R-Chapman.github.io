@@ -67,7 +67,7 @@ In the world of Linux systems administration, understanding logs is akin to deci
  We can view the current contents of the ring buffer by running the command `dmesg` as root or privileged user on the host.
 
     Reading the kernel ring buffer  
-```Reading the kernel ring buffer 
+```bash
 ubuntu@tryhackme:~$ sudo dmesg
 [    0.000000] Linux version 5.15.0-1063-aws (buildd@lcy02-amd64-003) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #69~20.04.1-Ubuntu SMP Fri May 10 19:20:12 UTC 2024 (Ubuntu 5.15.0-1063.69~20.04.1-aws 5.15.152)
 [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.15.0-1063-aws root=PARTUUID=da63a61e-01 ro console=tty1 console=ttyS0 nvme_core.io_timeout=4294967295 panic=-1
@@ -127,7 +127,7 @@ The `/var/log` directory in Linux systems is a critical repository of log files 
  By running the commands shown below, we can simulate a custom kernel rootkit installation and investigate the logs generated. Note that the kernel module file used here has already been generated in the VM.
 
     Kernel rootkit installation simulation with kern.log  
-```Kernel rootkit installation simulation with kern.log 
+```bash
 ubuntu@tryhackme:~$ sudo insmod /home/ubuntu/exploit/custom_kernel.ko 
 ubuntu@tryhackme:~$ sudo tail -f /var/log/kern.log
 Jun 27 10:54:13 tryhackme kernel: raid6: sse2x1   gen()  4131 MB/s
@@ -146,7 +146,7 @@ Jun 27 12:11:02 tryhackme kernel: Custom Kernel Module Loaded: Simulating Kernel
  Another location to look for kernel logs is the `/var/log/dmesg` file. Examining this log can help you detect unusual messages during system startup, which might indicate tampering or hardware issues. However, what you would notice is that it is quite difficult to follow this format of the logs.
 
     Investigating kernel logs with dmesg  
-```Investigating kernel logs with dmesg 
+```bash
 ubuntu@tryhackme:~$ sudo tail /var/log/dmesg
 [   30.719880] kernel: audit: type=1400 audit(1719484416.292:4): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/usr/lib/NetworkManager/nm-dhcp-client.action" pid=352 comm="apparmor_parser"
 [   30.719886] kernel: audit: type=1400 audit(1719484416.292:5): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/usr/lib/NetworkManager/nm-dhcp-helper" pid=352 comm="apparmor_parser"
@@ -164,7 +164,7 @@ ubuntu@tryhackme:~$ sudo tail /var/log/dmesg
  Let's investigate our rootkit simulation by running the command `sudo dmesg -T | grep 'exploit'`. The **-T**  option is used to convert the timestamps recorded into a human-readable format.
 
     Rootkit investigation with dmesg  
-```Rootkit investigation with dmesg 
+```bash
 ubuntu@tryhackme:~$ sudo dmesg -T | grep 'custom_kernel'
 [Thu Jun 27 12:11:03 2024] custom_kernel: loading out-of-tree module taints kernel.
 [Thu Jun 27 12:11:03 2024] custom_kernel: module verification failed: signature and/or required key missing - tainting kernel.
@@ -176,7 +176,7 @@ ubuntu@tryhackme:~$ sudo dmesg -T | grep 'custom_kernel'
  For example, we can simulate an attacker who may be attempting to gain unauthorised access to the system through SSH brute-force attacks by generating SSH authentication logs by running:
 
     Unauthorised login attempts in auth.log  
-```Unauthorised login attempts in auth.log 
+```bash
 ubuntu@tryhackme:~$ ssh root@localhost -p 22
 The authenticity of host 'localhost (127.0.0.1)' can't be established.
 ECDSA key fingerprint is ------
@@ -189,7 +189,7 @@ root@localhost: Permission denied (publickey).
  Then, investigate the authentication logs for any output from the command:
 
     Unauthorised login attempts in auth.log  
-```Unauthorised login attempts in auth.log 
+```bash
 ubuntu@tryhackme:~$ sudo tail -f /var/log/auth.log
 Jun 27 08:55:45 tryhackme sshd[70808]: Connection closed by authenticating user root 127.0.0.1 port 43086 [preauth]
 Jun 27 08:56:10 tryhackme sudo:   ubuntu : TTY=pts/0 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/tail -f /var/log/auth.log
@@ -200,7 +200,7 @@ Jun 27 08:56:10 tryhackme sudo: pam_unix(sudo:session): session opened for user 
  It is also important to monitor successful login attempts, especially those occurring outside normal business hours or from unusual IP addresses, by running `grep 'Accepted password' /var/log/auth.log` to filter these entries.
 
     Successful login attempts in auth.log  
-```Successful login attempts in auth.log 
+```bash
 ubuntu@tryhackme:~$ grep 'Accepted password' /var/log/auth.log
 May 31 11:17:00 server sshd[2009]: Accepted password for root from 192.168.1.50 port 22 ssh2
 ```
@@ -209,7 +209,7 @@ May 31 11:17:00 server sshd[2009]: Accepted password for root from 192.168.1.50 
  Additionally, tracking commands executed with elevated privileges can provide insights into potential malicious activities. By running `grep 'sudo' /var/log/auth.log`, you can review all commands run with **sudo** , giving you a clear view of who has performed critical system operations.
 
     Sudo commands in auth.log  
-```Sudo commands in auth.log 
+```bash
 ubuntu@tryhackme:~$ grep 'sudo' /var/log/auth.log
 Jun 18 07:51:00 tryhackme sudo:   ubuntu : TTY=pts/0 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/dmesg
 Jun 18 07:51:00 tryhackme sudo: pam_unix(sudo:session): session opened for user root by ubuntu(uid=0)
@@ -225,7 +225,7 @@ Jun 18 07:55:23 tryhackme sudo: pam_unix(sudo:session): session closed for user 
  For instance, we can look at cron job executions in syslog by searching for entries containing '**CRON** '. This can help you verify that scheduled tasks are running as expected and identify any suspicious or unauthorised cron jobs.
 
     Cron job executions in syslog  
-```Cron job executions in syslog 
+```bash
 ubuntu@tryhackme:~$ grep 'CRON' /var/log/syslog
 Jun 18 00:09:01 tryhackme CRON[18304]: (root) CMD (  [ -x /usr/lib/php/sessionclean ] && if [ ! -d /run/systemd/system ]; then /usr/lib/php/sessionclean; fi)
 Jun 18 00:09:01 tryhackme CRON[18305]: (root) CMD (   test -x /etc/cron.daily/popularity-contest && /etc/cron.daily/popularity-contest --crond)
@@ -240,7 +240,7 @@ Jun 18 01:39:01 tryhackme CRON[18486]: (root) CMD (  [ -x /usr/lib/php/sessioncl
  Kernel-related messages can also be viewed via syslog. These entries can indicate hardware issues or potential attacks targeting the kernel. By running `grep 'kernel' /var/log/syslog`, you can sift through these messages and pinpoint problems that might otherwise go unnoticed.
 
     Kernel messages in syslog  
-```Kernel messages in syslog 
+```bash
 ubuntu@tryhackme:~$ grep 'kernel' /var/log/syslog
 May 31 12:00:10 server kernel: [10000.123456] EXT4-fs error (device sda1): ext4_find_entry:1446: inode #524289: comm apache2: reading directory lblock 0
 ```
@@ -249,7 +249,7 @@ May 31 12:00:10 server kernel: [10000.123456] EXT4-fs error (device sda1): ext4_
  **btmp and wtmp**  The `/var/log/btmp` file logs failed login attempts, while the `/var/log/wtmp` records every login and logout activity. We can be assured that these files are critical in identifying potential brute-force attacks and tracking unauthorised access, similar to the `/var/log/auth.log` file.
 
     Assessing login attempts in wtmp  
-```Assessing login attempts in wtmp 
+```bash
 ubuntu@tryhackme:~$ sudo last -f /var/log/wtmp
 ubuntu   pts/3        10.110.7.185      Thu Jun 27 11:50 - 15:04  (03:13)
 ubuntu   pts/2        10.110.7.185      Thu Jun 27 11:50 - 15:05  (03:15)
@@ -290,7 +290,7 @@ User space logging involves capturing and analysing log messages generated by ap
  Syslog Configuration The syslog default configuration file, `/etc/rsyslog.d/50-default.conf`, controls how messages are logged. Here’s an example configuration snippet:
 
     Syslog configuration snippet  
-```Syslog configuration snippet 
+```bash
 # Default rules for rsyslog.
 #
 #         For more information see rsyslog.conf(5) and /etc/rsyslog.conf
@@ -373,7 +373,7 @@ The `journal` and `journalctl` tools provide a powerful logging system for moder
  To view logs, simply type the following command. It will reveal all logs in reverse chronological order.
 
     Running journalctl  
-```Running journalctl 
+```bash
 ubuntu@tryhackme:~$ sudo journalctl
 -- Logs begin at Wed 2023-09-06 07:57:36 UTC, end at Tue 2024-06-11 08:17:01 UTC. --
 Sep 06 07:57:36 ubuntu kernel: Linux version 5.4.0-1029-aws (buildd@lcy01-amd64-022) (gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)) #30-Ubuntu SMP Tue Oct 20 10:06:38 UTC 2020 (Ub>
@@ -399,7 +399,7 @@ Sep 06 07:57:36 ubuntu kernel: x86/fpu: Enabled xstate features 0x7, context siz
  **Filtering Logs by Date and Time**  We may need to focus our investigations on specific periods, especially when working with servers with significant uptime. From the options we have seen before, we can filter by arbitrary time limits using `--since or -S` and `--until or -U`. Time values can come in various formats, and if we need to filter by absolute time values, we should use the format `YYYY-MM-DD HH:MM:SS`. To view the logs from Feb 6th, 2024, at 15:30 hrs to Feb 17th, 2024, at 15:30 hrs, the command will look as follows:
 
     Filter by absolute date and time  
-```Filter by absolute date and time 
+```bash
 ubuntu@tryhackme:~$ sudo journalctl -S "2024-02-06 15:30:00" -U "2024-02-17 15:29:59"
 -- Logs begin at Sun 2022-02-27 13:52:14 UTC, end at Wed 2024-07-03 14:00:50 UTC. --
 Feb 16 10:40:52 tryhackme kernel: Linux version 5.4.0-1029-aws (buildd@lcy01-amd64-022) (gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)) #30-Ubuntu SMP Tue Oct 20 10:06:38 UTC 2020 >
@@ -432,7 +432,7 @@ Feb 16 10:40:52 tryhackme kernel: BIOS-e820: [mem 0x00000000e0000000-0x00000000e
  If we want to check logs from 2 hours ago, we will run:
 
     Relative time filtering  
-```Relative time filtering 
+```bash
 ubuntu@tryhackme:~$ sudo journalctl -S "2 hours ago"
 -- Logs begin at Sun 2022-02-27 13:52:14 UTC, end at Tue 2024-06-18 08:13:29 UTC. --
 Jun 18 06:17:01 tryhackme audit[19095]: USER_ACCT pid=19095 uid=0 auid=4294967295 ses=4294967295 subj=unconfined msg='op=PAM:accounting grantors=pam_permit acct="root" exe="/usr/sbin/>
@@ -448,7 +448,7 @@ Jun 18 06:17:01 tryhackme audit[19095]: USER_END pid=19095 uid=0 auid=0 ses=350 
  **Filtering Logs by Service**  In addition to filtering by time, `journalctl` can filter logs by the services and units running on the host machine. To do so, we use the `-u` option and specify the service needed.
 
     Service filtering  
-```Service filtering 
+```bash
 ubuntu@tryhackme:~$ sudo journalctl -u nginx.service
 ```
 
@@ -458,7 +458,7 @@ ubuntu@tryhackme:~$ sudo journalctl -u nginx.service
  To show entries logged at a critical level or above on the host, that is, *critical, alert, and emergency*  levels, we will run the command:
 
     Priority filtering  
-```Priority filtering 
+```bash
 ubuntu@tryhackme:~$ sudo journalctl -p crit 
 	-- Logs begin at Sun 2022-02-27 13:52:14 UTC, end at Tue 2024-06-18 08:16:30 UTC. --
 Feb 27 15:14:15 ip-10-10-238-44 gnome-session-binary[38253]: CRITICAL: We failed, but the fail whale is dead. Sorry....
@@ -511,7 +511,7 @@ Auditd is a powerful tool that can be used to enhance the security posture of a 
  The below terminal window shows an example output of `ausearch` for a rule named tests-changes, which monitors changes to a file named `tests.sh`:
 
     Auditd report  
-```Auditd report 
+```bash
 ubuntu@tryhackme:~$ sudo ausearch -k tests-changes
 ----
 time->Wed Jun 12 22:23:12 2024
@@ -532,7 +532,7 @@ type=SYSCALL msg=audit(1718231602.640:256): arch=c000003e syscall=188 success=ye
 One thing we might note here is that the `proctitle` information here is in hex. We can use the same `ausearch` utility to decode this information as well. We can use the `-i` option for decoding the `proctitle` from hex to ASCII, this time on the serverdir-changes rule, as shown below.
 
     Auditd search directory changes  
-```Auditd search directory changes 
+```bash
 ubuntu@tryhackme:~$ sudo ausearch -i -k serverdir-changes
 ----
 time->Sun Jun 23 21:28:50 2024
@@ -575,7 +575,7 @@ Auth logs or authentication logs are crucial for monitoring and analysing user a
 
    Auth log
  
-```Auth log 
+```bash
 ubuntu@tryhackme:~$ tail /var/log/auth.log
 Jun 19 19:07:12 tryhackme sudo: pam_unix(sudo:session): session opened for user root by (uid=0)
 Jun 19 19:07:12 tryhackme su: (to root) ubuntu on pts/0
@@ -608,7 +608,7 @@ Jun 19 19:07:48 tryhackme sudo: pam_unix(sudo:session): session opened for user 
 
    Failed logins
  
-```Failed logins 
+```bash
 ubuntu@tryhackme:~$ /var/log$ sudo grep -i "failure" /var/log/auth.log*
 /var/log/auth.log.1:Jun  9 14:01:54 tryhackme polkit-agent-helper-1[51951]: pam_unix(polkit-1:auth): authentication failure; logname= uid=1000 euid=0 tty= ruser=ubuntu rhost=  user=ubuntu
 /var/log/auth.log.1:Jun 10 10:54:26 tryhackme polkit-agent-helper-1[65186]: pam_unix(polkit-1:auth): authentication failure; logname= uid=1000 euid=0 tty= ruser=ubuntu rhost=  user=ubuntu
@@ -630,7 +630,7 @@ ubuntu@tryhackme:~$ /var/log$ sudo grep -i "failure" /var/log/auth.log*
 
     Sudo usage
  
-```Sudo usage 
+```bash
 ubuntu@tryhackme:~$ grep "sudo" /var/log/auth.log*
 /var/log/auth.log.1:Jun 12 22:51:08 tryhackme sudo:   ubuntu : TTY=pts/0 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/systemctl disable tests.timer
 /var/log/auth.log.1:Jun 12 22:51:08 tryhackme sudo: pam_unix(sudo:session): session opened for user root by (uid=0)
@@ -665,7 +665,7 @@ ubuntu@tryhackme:~$ grep "sudo" /var/log/auth.log*
  This command filters log entries from the past two hours. We are actually using the Linux `date` utility to identify the current date and time and then extract the time in the format of the abbreviated month (`%b`), day of the month (`%e`), and hour (`%H`). An example execution of this command will look as follows:
 
     Logs from the last two hours  
-```Logs from the last two hours 
+```bash
 ubuntu@tryhackme:~$ grep "$(date --date='2 hours ago' '+%b %e %H:')" /var/log/auth.log*
 /var/log/auth.log:Jun 19 18:36:06 tryhackme runuser: pam_unix(runuser-l:session): session opened for user ubuntu by (uid=0)
 /var/log/auth.log:Jun 19 18:36:07 tryhackme sudo: pam_unix(sudo:session): session closed for user root
@@ -720,7 +720,7 @@ Viewing Apache2 Logs Apache2 logs are stored in the `/var/log/apache2/` director
  Here is what the access log looks like:
 
     Apache2 access log  
-```Apache2 access log 
+```bash
 ubuntu@tryhackme:~$ tail -f /var/log/apache2/access.log*
 10.11.86.7 - - [12/Jun/2024:15:59:15 +0000] "GET /favicon.ico HTTP/1.1" 404 493 "http://10.10.104.189:8080/cmd.php?ip=10.10.225.142&port=5000" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"
 10.11.86.7 - - [12/Jun/2024:16:35:25 +0000] "GET /cmd.php?ip=10.10.225.142&port=5000 HTTP/1.1" 200 205 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"
@@ -744,7 +744,7 @@ ubuntu@tryhackme:~$ tail -f /var/log/apache2/access.log*
  Here is what the output will look like:
 
     Apache error log  
-```Apache error log 
+```bash
 ubuntu@tryhackme:~$ tail -f /var/log/apache2/error.log*
 [Wed Jun 12 00:00:27.334620 2024] [mpm_prefork:notice] [pid 65787] AH00163: Apache/2.4.41 (Ubuntu) configured -- resuming normal operations
 [Wed Jun 12 00:00:27.334650 2024] [core:notice] [pid 65787] AH00094: Command line: '/usr/sbin/apache2'
@@ -765,7 +765,7 @@ ubuntu@tryhackme:~$ tail -f /var/log/apache2/error.log*
  The result is shown in the below terminal window.
 
     Logs from specific IP  
-```Logs from specific IP 
+```bash
 ubuntu@tryhackme:~$ grep 10.10.24.106 /var/log/apache2/access.log*
 10.10.24.106 - - [12/Jun/2024:19:28:04 +0000] "GET / HTTP/1.1" 200 484 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
 10.10.24.106 - - [12/Jun/2024:19:28:04 +0000] "GET /favicon.ico HTTP/1.1" 404 493 "http://10.10.104.189:8080/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
@@ -781,7 +781,7 @@ ubuntu@tryhackme:~$ grep 10.10.24.106 /var/log/apache2/access.log*
  The output will look something like this:
 
     Logs for specific response code  
-```Logs for specific response code 
+```bash
 ubuntu@tryhackme:~$ grep "404" /var/log/apache2/access.log* 
 10.11.86.7 - - [12/Jun/2024:15:59:15 +0000] "GET /favicon.ico HTTP/1.1" 404 493 "http://10.10.104.189:8080/cmd.php?ip=10.10.225.142&port=5000" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"
 10.10.24.106 - - [12/Jun/2024:19:28:04 +0000] "GET /favicon.ico HTTP/1.1" 404 493 "http://10.10.104.189:8080/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
@@ -799,7 +799,7 @@ ubuntu@tryhackme:~$ grep "404" /var/log/apache2/access.log*
  The output will show us the number of requests each IP address made.
 
     Requests per IP address  
-```Requests per IP address 
+```bash
 ubuntu@tryhackme:~$ awk '{print $1}' /var/log/apache2/access.log* | sort | uniq -c | sort -nr
       5 10.10.24.106
       4 10.11.86.7
@@ -813,7 +813,7 @@ ubuntu@tryhackme:~$ awk '{print $1}' /var/log/apache2/access.log* | sort | uniq 
  The output will contain the number of times each HTTP status code was returned by the server.
 
     Status codes summary  
-```Status codes summary 
+```bash
 ubuntu@tryhackme:~$ awk '{print $9}' /var/log/apache2/access.log* | sort | uniq -c | sort -nr
       8 200
       3 404
@@ -838,7 +838,7 @@ Anna is the IR lead for Deer Inc., an organisation that protects wildlife. Vario
 To identify if the server might have been compromised, Anna decided to look at the initial access vector. Since the server had been accessible over the Internet and hosted an Apache web server, this would be the most obvious attack vector.
 
     Apache2 access log  
-```Apache2 access log 
+```bash
 ubuntu@tryhackme:~$ grep "404" /var/log/apache2/access.log* 
 [Redacted] - - [23/Jun/2024:21:02:04 +0000] "[redacted] /[redacted].ico HTTP/1.1" 404 493 "http://10.10.133.134:8080/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
 [Redacted] - - [23/Jun/2024:21:30:45 +0000] "[redacted] /[redacted].php HTTP/1.1" 404 494 "http://10.10.133.134:8080/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
@@ -851,7 +851,7 @@ ubuntu@tryhackme:~$ grep "404" /var/log/apache2/access.log*
 Anna had set up an auditd rule to identify any changes to the `/var/www/html` directory. This rule was named `serverdir-changes`. She could use this rule to determine if any changes occurred during the exploitation.
 
     Auditd search directory changes  
-```Auditd search directory changes 
+```bash
 ubuntu@tryhackme:~$ sudo ausearch -i -k serverdir-changes
 ----
 time->Sun Jun 23 21:28:50 2024
@@ -867,7 +867,7 @@ type=CONFIG_CHANGE msg=audit(1719178130.725:305): auid=1000 ses=2 subj=unconfine
 Once privilege escalation is achieved, the threat actor generally moves to persistence. A service might be used to establish persistence, or a new account might be created. Digging through the different services, Anna found one that might be worth investigating. So, Anna opened the journalctl logs for this service.
 
     Journalctl logs  
-```Journalctl logs 
+```bash
 ubuntu@tryhackme:~$ sudo journalctl -u tests.service 
 -- Logs begin at Sun 2022-02-27 13:52:14 UTC, end at Mon 2024-06-24 03:38:32 UTC. --
 Jun 23 21:13:19 tryhackme systemd[1]: Started Run Command Script.
@@ -882,7 +882,7 @@ Jun 23 21:13:19 tryhackme command.sh[15110]: [INFO] All tests passed
 The investigation now took a new turn. Anna had to figure out if this newly created account was ever logged in to, so she looked into the auth logs (Since Anna wanted to search all the historical logs, including the ones which had been rotated and zipped, she used the `zgrep` utility instead of the `grep` utility.)
 
     Auth logs  
-```Auth logs 
+```bash
 ubuntu@tryhackme:~$ zgrep -i [redacted] /var/log/auth*
 /var/log/auth.log:Jun 23 22:03:25 tryhackme sudo:     root : TTY=unknown ; PWD=/ ; USER=root ; COMMAND=/usr/sbin/useradd [redacted]
 /var/log/auth.log:Jun 23 22:03:25 tryhackme useradd[16522]: new group: name=[redacted], GID=1001

@@ -83,7 +83,7 @@ There are many tools you can use to scan for open ports, from preinstalled Netca
 
 Basic Nmap Scan
 
-```Basic Nmap Scan
+```bash
 root@attackbox:~# nmap MACHINE_IP
 Nmap scan report for MACHINE_IP
 Host is up (0.061s latency).
@@ -102,7 +102,7 @@ It seems like the website is defaced by bad bunnies, and we don't know the key t
 
 Specifying Port Range
 
-```Specifying Port Range
+```bash
 root@attackbox:~# nmap -p- --script=banner MACHINE_IP
 Nmap scan report for MACHINE_IP
 Host is up (0.00036s latency).
@@ -121,7 +121,7 @@ Looks like you found a running FTP server and some custom TBFC application. Even
 
 Using FTP Client
 
-```Using FTP Client
+```bash
 root@attackbox:~# ftp MACHINE_IP 21212
 Connected to 10.10.239.62.
 Name (10.10.239.62:root): anonymous
@@ -138,7 +138,7 @@ Good job finding the first flag part. There is nothing more we can see on the FT
 
 Using Netcat Client
 
-```Using Netcat Client
+```bash
 root@attackbox:~# nc -v MACHINE_IP 25251
 Connection to 10.10.239.62 25251 port [tcp/*] succeeded!
 TBFC maintd v0.2
@@ -156,7 +156,7 @@ Congratulations on the second flag! But where to look for the third one? Till no
 
 Scanning UDP Ports
 
-```Scanning UDP Ports
+```bash
 root@attackbox:~# nmap -sU MACHINE_IP
 PORT   STATE SERVICE
 53/udp open  domain
@@ -167,7 +167,7 @@ After a minute you should see an open port 53 associated with DNS - a protocol t
 
 Querying DNS Server
 
-```Querying DNS Server
+```bash
 root@attackbox:~# dig @MACHINE_IP TXT key3.tbfc.local +short
 [RUN THE CORRECT COMMAND TO GET HIDDEN KEY 3]
 ```
@@ -182,7 +182,7 @@ Once you have access to the console, there is no need to scan the ports, as you 
 
 Listing Listening Ports
 
-```Listing Listening Ports
+```bash
 tbfcapp@tbfc-devqa01:~$ ss -tunlp
 Netid  State   Recv-Q  Send-Q       Local Address:Port      Peer Address:Port  Process
 udp    UNCONN  0       0                  0.0.0.0:53             0.0.0.0:*
@@ -202,7 +202,7 @@ With root permissions, you can also view the process column. However, for now, l
 
 Enumerating MySQL Tables
 
-```Enumerating MySQL Tables
+```bash
 tbfcapp@tbfc-devqa01:~$ mysql -D tbfcqa01 -e "show tables;"            +--------------------+                                                 | Tables_in_tbfcqa01 |                                                 +--------------------+                                                 | flags              |                                                 +--------------------+                                                 tbfcapp@tbfc-devqa01:~$ mysql -D tbfcqa01 -e "select * from flags;"    [GET YOUR FLAG HERE]
 ```
 

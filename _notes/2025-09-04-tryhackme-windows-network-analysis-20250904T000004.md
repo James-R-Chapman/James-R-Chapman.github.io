@@ -78,7 +78,7 @@ In a database (SRUDB.dat) on the host, this can be found at `C:\Windows\System32
 However, we will need to use external tooling to process this database as there is no built-in utility that can be used to gather the information that we need. It should be noted that, during a live acquisition, this file is locked by Windows, so we will need to export it to our own machine. We can use utilities such as FTK Imager or KAPE to retrieve this.
 
     Using KAPE's SRUMDump module  
-```Using KAPE's SRUMDump module 
+```bash
 C:\Users\CMNatic\Desktop\kape>.\kape.exe --tsource C:\Windows\System32\sru --tdest C:\Users\CMNatic\Desktop\SRUM --tflush --mdest C:\Users\CMNatic\Desktop\MODULE --mflush --module SRUMDump --target SRUM
 KAPE version 1.3.0.2, Author: Eric Zimmerman, Contact: https://www.kroll.com/kape (kape@kroll.com)
 
@@ -125,7 +125,7 @@ After a few minutes, we can open the `pfirewall.log` located in `C:\Windows\Syst
 You can, of course, view this using the `gc` (Get-Content) cmdlet in PowerShell:
 
     Using the Get-Content module to output the Firewall log  
-```Using the Get-Content module to output the Firewall log 
+```bash
 PS C:\Users\Administrator\Desktop> gc C:\Windows\System32\LogFiles\Firewall\pfirewall.log | more
 #Version: 1.5
 #Software: Microsoft Windows Firewall
@@ -173,7 +173,7 @@ Show TCP Connections and Associated Processes
 This snippet can be a nice "quick win" to see what processes are making TCP connections and the IP addresses, where you can quickly find anomalies for further investigation.
 
     Using the Get-NetTCPConnetion cmdlet  
-```Using the Get-NetTCPConnetion cmdlet 
+```bash
 PS C:\Users\Administrator Get-NetTCPConnection | select LocalAddress,localport,remoteaddress,remoteport,state,@{name="process";Expression={(get-process -id $_.OwningProcess).ProcessName}}, @{Name="cmdline";Expression={(Get-WmiObject Win32_Process -filter "ProcessId = $($_.OwningProcess)").commandline}} | sort Remoteaddress -Descending | ft -wrap -autosize
 
 192.168.0.101     50109 23.208.241.199        443 Established OUTLOOK     "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
@@ -186,7 +186,7 @@ PS C:\Users\Administrator Get-NetTCPConnection | select LocalAddress,localport,r
 The following snippet will display all UDP connections. Whilst the majority of applications will be using TCP, viewing the UDP connections are helpful in building a picture of the activity of the machine. Additionally, hosts who are infected with joining a botnet, may use UDP to communicate, such as in the case of flood attacks.
 
     Using the Get-NetUDPEndpoint cmdlet  
-```Using the Get-NetUDPEndpoint cmdlet 
+```bash
 PS C:\Users\Administrator Get-NetUDPEndpoint | select local*,creationtime, remote* | ft -autosize
 
 LocalAddress  LocalPort creationtime        remote*
@@ -215,7 +215,7 @@ LocalAddress  LocalPort creationtime        remote*
 This snippet can be used to list the IP addresses associated with ongoing TCP connections on the host, where they are then sorted in numerical order and uniqued (removing duplicates). The `-Unique` filter on `Sort-Object` is important because IP addresses can make multiple connections (I.e. a browser). The output from this snippet can be exported, where the IP addresses can be compared to threat intelligence or any possible events from security applications such as an IDS.
 
     Using the Get-NetTCPConnection cmdlet with a remoteaddress filter  
-```Using the Get-NetTCPConnection cmdlet with a remoteaddress filter 
+```bash
 PS C:\Users\Administrator (Get-NetTCPConnection).remoteaddress | Sort-Object -Unique
 ::
 ::1
@@ -244,7 +244,7 @@ PS C:\Users\Administrator (Get-NetTCPConnection).remoteaddress | Sort-Object -Un
 If we wish to drill down into an IP address, we can use the following snippet to gain some more insight. For example, in the snippet below, we can see the connection status, the date and time it was initiated, the local port (local host) and a remote port (remote host), and the process causing that connection. This could be an excellent way to discover connections that an IP is making to a process. For example, a process from *payload.exe*  connecting to port 4444 on an IP address.
 
     Specifying an IP address to Get-NetTCPConnection  
-```Specifying an IP address to Get-NetTCPConnection 
+```bash
 PS C:\Users\Administrator Get-NetTCPConnection -remoteaddress 51.15.43.212 | select state, creationtime, localport,remoteport | ft -autosize
 
     State creationtime        localport remoteport
@@ -259,7 +259,7 @@ CloseWait 21/02/2024 13:43:36     50150        443
 The DNS cache on a host is a locally stored "database" of DNS records and their corresponding host stored on the host, used to remember what domains match up to what IP address, improving performance (i.e, the host already knows where the domain points to). Reviewing the cache can be used to indicate what domains have recently been contacted.
 
     Using the Get-DnsClientCache cmdlet  
-```Using the Get-DnsClientCache cmdlet 
+```bash
 PS C:\Users\Administrator Get-DnsClientCache | ? Entry -NotMatch "workst|servst|memes|kerb|ws|ocsp" | out-string -width 1000
 
 attacker.thm    AAAA   NoRecords                                                                                                                                                             
@@ -276,7 +276,7 @@ Attackers use the hosts file to redirect traffic to something they control, as t
 There are numerous examples of this being used in banking trojans, phishing attacks, etc, where the user thinks they're logging into the correct page because the URL matches up. Meanwhilst, the traffic is being sent to the attacker's servers instead.
 
     Using gc to output the last four lines of the hosts file  
-```Using gc to output the last four lines of the hosts file 
+```bash
 PS C:\Users\Administrator gc -tail 4 "C:\Windows\System32\Drivers\etc\hosts"
 #       ::1             localhost
 192.168.0.200 attacker.thm
@@ -294,7 +294,7 @@ Querying WindowsRM sessions is essential, especially as sessions can persist (i.
 Querying active and recent RDP connections is another "quick win" to understand the current activity on the host. The qwinsta command will show the user status, as well as source of the connection.
 
     Using qwinsta to display remote desktop sessions  
-```Using qwinsta to display remote desktop sessions 
+```bash
 PS C:\Users\Administrator qwinsta
  SESSIONNAME       USERNAME                 ID  STATE   TYPE        DEVICE
  services                                    0  Disc
@@ -308,7 +308,7 @@ PS C:\Users\Administrator
  Querying SMB Shares
 
     Using the Get-SmbConnection to display established SMB Connections  
-```Using the Get-SmbConnection to display established SMB Connections 
+```bash
 PS C:\Users\Administrator Get-SmbConnection
 
 ServerName    ShareName UserName             Credential           Dialect NumOpens
@@ -360,7 +360,7 @@ Convert a PacketMonitor capture file to a text file.`pktmon etl2pcap`
 
 Convert a PacketMonitor capture file to a pcap.
     Starting a PacketMonitor capture 
-```Starting a PacketMonitor capture 
+```bash
 C:\Windows\system32>pktmon start -c
 
 Logger Parameters:
@@ -390,7 +390,7 @@ Packet Filters:
  To begin, we can launch a new cmd and enter `netstat -a`. This will instruct Netstat to list all active connections.
 
     Using Netstat to capture network traffic on all interfaces  
-```Using Netstat to capture network traffic on all interfaces 
+```bash
 C:\Users\tryhackme:~$ netstat -a
   TCP    127.0.0.1:143          mail:49725             ESTABLISHED
   TCP    127.0.0.1:49725        mail:imap              ESTABLISHED
@@ -416,7 +416,7 @@ Display all TCP connections and include the process ID.`netstat -p`
 Display connections by protocol. Options include TCP, UDP, ICMP, and the IPV6 iterations.It is worth noting that these options can be combined together. An example of this is in the snippet below, where `-a` and `-b` are used to show active TCP connections and the executable responsible for them.
 
     Using Netstat to capture network traffic on all interfaces  
-```Using Netstat to capture network traffic on all interfaces 
+```bash
 C:\Users\tryhackme>netstat -a -b
 
 Active Connections
@@ -445,7 +445,7 @@ Active Connections
   Viewing Network Connections With PID
 
     Using Netstat to show active connections and associated PID  
-```Using Netstat to show active connections and associated PID 
+```bash
 C:\Users\tryhackme~$ netstat -a -o
 Active Connections
 

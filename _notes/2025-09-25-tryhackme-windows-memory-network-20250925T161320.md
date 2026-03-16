@@ -117,7 +117,7 @@ To inspect the network connections, volatility locates the [EPROCESS ](https://l
  **Note** : *This command can take some time to finish, depending on CPU usage and the size of the memory dump. In case you do not want to wait, you can access the same output in the already existing file `netscan-saved.txt`. There are also some other commands that have been pre-saved to save time if needed.*
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ vol -f THM-WIN-001_071528_07052025.mem windows.netscan >  netscan.txt
 user@tryhackme$cat netscan.txt
 
@@ -141,7 +141,7 @@ Offset	Proto	LocalAddr	LocalPort	ForeignAddr	ForeignPort	State	PID	Owner	Created
    We can observe in the output above that some connections are marked as **ESTABLISHED** . We can notice that PID **10032** (**updater.exe** ) is connected to IP **10.0.0.129 on port 8081** . That is an external network and suggests it may be the attacker's infrastructure. Another connection of interest is from PID **6984** (**powershell.exe** ) reaching out to **192.168.0.30:22** , suggesting lateral movement. Also, as we know from previous analysis, the binary **windows-update.exe**  is also part of the chain of execution we are investigating and was placed for persistence purposes in the `C:\Users\operator\AppData\Roaming\Microsoft\Windows\StartMenu\Programs\Startup\` directory. It is listening on port **4443** , which makes sense to be set up like that since it seems to be the one listening for instructions. Let’s now move on to confirm this and spot which active listening ports are.
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ cat netscan.txt |grep LISTENING
 0x990b236b3310	TCPv4	0.0.0.0	445	0.0.0.0	0	LISTENING	4	System	2025-05-07 07:08:50.000000 UTC
 [REDACTED]
@@ -225,7 +225,7 @@ In the previous task, we discovered that **updater.exe**  (PID **10032** ) was c
  This matches the chain we had already suspected: A **Word** document opened by the user, followed by the execution of three suspicious binaries in sequence, **pddfupdater.exe** , **windows-update.exe** , leading to **updater.exe** . On the other hand, from the **cmdline** plugin output that we already have (we can execute the command to get the output again by typing: `vol -f THM-WIN-001_071528_07052025.mem windows.cmdline > cmdline.txt`), we can try to determine how it was invoked. Let's inspect with the following command to filter by process ID `cat cmdline.txt | grep 10032`
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ cat cmdline.txt | grep 10032
 10032	updater.exe	"C:\Users\operator\Downloads\updater.exe"
 ```
@@ -235,7 +235,7 @@ user@tryhackme~$ cat cmdline.txt | grep 10032
  Scanning for Code Injection: Detecting Meterpreter We’ll now inspect whether any foreign code was injected into updater.exe. Volatility’s windows.malfind plugin is useful for detecting memory regions with suspicious execution permissions (like [PAGE_EXECUTE_READWRITE](https://learn.microsoft.com/en-us/windows/win32/memory/memory-protection-constants#:~:text=2003%20with%20SP1.-,PAGE_EXECUTE_READWRITE,-0x40)), or shellcode that was injected at runtime using the command `vol -f THM-WIN-001_071528_07052025.mem windows.malfind --pid 10032 > malfind_10032.txt`. Then, let's analyze the output using cat, as displayed below.
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ cat malfind_10032.txt 
 Volatility 3 Framework 2.26.0
 
@@ -278,7 +278,7 @@ rule meterpreter_reverse_tcp_shellcode {
  The rule below is designed to detect Metasploit's **reverse_tcp** shellcode by matching a combination of known byte patterns and strings commonly found in such payloads. It triggers if at least **5**  of the listed patterns are present. Let's execute the command `vol -f THM-WIN-001_071528_07052025.mem windows.vadyarascan --pid 10032 --yara-file meterpreter.yar` to see if we can have match. This will scan only the memory regions allocated to the specified process, increasing the accuracy of detection. If the condition is met, it strongly suggests the presence of Meterpreter shellcode.
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ vol -f THM-WIN-001_071528_07052025.mem windows.vadyarascan --pid 10032 --yara-file meterpreter.yar
 Volatility 3 Framework 2.26.0
 Progress:  100.00		PDB scanning finished                        
@@ -339,7 +339,7 @@ In the previous step, we discovered that updater.exe had been injected with shel
  We'll begin by confirming again that the network session is tied to **powershell.exe** . Re-analyzing the output of the command `vol -f THM-WIN-001_071528_07052025.mem windows.netscan`, which we previously saved in netscan.txt. We’ll search for any connection entries associated with the **powershell.exe**  process using grep, as shown below.
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ cat netscan.txt |grep powershell
 0x990b29ab8010	TCPv4	192.168.1.192	55987	192.168.0.30	22	ESTABLISHED	6984	powershell.exe	2025-05-07 07:15:15.000000 UTC                                    ..ta
 ```
@@ -349,7 +349,7 @@ user@tryhackme~$ cat netscan.txt |grep powershell
  After that, we could look for interesting strings, but since we are already familiar with the connection we spotted, we can search for the IP we observed the connection made to, **192.168.0.30** . We can achieve that with the command strings, as shown below.
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ strings pid.6984.dmp|grep "192.168.0.30"
 $client=New-Object Net.Sockets.TcpClient; $client.Connect("192.168.0.30",22); while($client.Connected){Start-Sleep 1}
 $client=New-Object Net.Sockets.TcpClient; $client.Connect("192.168.0.30",22); while($client.Connected){Start-Sleep 1}
@@ -362,7 +362,7 @@ $client=New-Object Net.Sockets.TcpClient; $client.Connect("192.168.0.30",22); wh
  After creating the dump, we can search for the known domain `attacker.thm` by using the `strings` command in combination with `grep`, as shown below.
 
    Example Terminal 
-```Example Terminal 
+```bash
 user@tryhackme~$ strings pid.10084.dmp |grep "attacker.thm"
 attacker.thm
 http://attacker.thm/updater.exe
@@ -376,7 +376,7 @@ Connected to external-attacker.thm:25 successfully.[REDACTED]
  Next, we’ll search for the term **POST** to check if any **HTTP** requests were made, possibly as part of a data exfiltration attempt. We'll use the**`-C 8`**  option with `grep `to display **8** lines before and after each match for better context.
 
    Example Terminal 
-```Example Terminal 
+```bash
 ubuntu@tryhackme:~$ strings pid.10084.dmp |grep "POST" -C 8
 bad cast
 attacker.thm

@@ -97,7 +97,7 @@ Download Task Files To run the script, use `./server.py` and it will start liste
 
 AttackBox Terminal
 
-```AttackBox Terminal
+```bash
 root@attackbox:~# cd ~/Rooms/AoC2025/Day02
 root@attackbox:~/Rooms/AoC2025/Day02# ./server.py
 Starting server on http://0.0.0.0:8000
@@ -115,7 +115,7 @@ To start the tool, type `setoolkit` into the terminal, and it will present you w
 
 AttackBox Terminal
 
-```AttackBox Terminal
+```bash
 root@attackbox:~# setoolkit
 [...]
  Select from the menu:
@@ -136,7 +136,7 @@ Choosing `1` will display another menu with the type of social engineering attac
 
 AttackBox Terminal
 
-```AttackBox Terminal
+```bash
 Select from the menu:
 
    1) Spear-Phishing Attack Vectors
@@ -159,7 +159,7 @@ Now, we would be asked to select between two options. One option allows us to se
 
 AttackBox Terminal
 
-```AttackBox Terminal
+```bash
 Social Engineer Toolkit Mass E-Mailer
 
    There are two options on the mass e-mailer: the first is to email one person. The second option
@@ -203,7 +203,7 @@ An example interaction is shown in the terminal below.
 
 AttackBox Terminal
 
-```AttackBox Terminal
+```bash
 set:mailer>1
 set:phishing> Send email to:factory@wareville.thm
 

@@ -113,7 +113,7 @@ You might wonder where to start analyzing the memory dump. Let's start with a hi
 The following `volatility` plugins extract information from EPROCESS: `pslist`, `pstree`, `psscan`, `malfind`, `getsids`, `handles`, `dlllist`, `cmdline`, `envars` and `ldrmodules`. In the terminal below, you can find the fields these modules target:
 
    EPROCESS STRUCTURE 
-```EPROCESS STRUCTURE 
+```bash
 struct _EPROCESS { 
     HANDLE UniqueProcessId; // PID (Process ID) 
     LIST_ENTRY ActiveProcessLinks; // Link in active process list (Used to keep track of all active processes) 
@@ -131,7 +131,7 @@ struct _EPROCESS {
 The following `volatility` plugins extract information from ETHREAD: `threads`, `ldrmodules`, `apihooks` and `malfind`. In the terminal below, you can find the fields these modules target:
 
    THREAD STRUCTURE 
-```THREAD STRUCTURE 
+```bash
 struct _ETHREAD { 
     CLIENT_ID Cid; // Thread and Process IDs 
     LARGE_INTEGER CreateTime; // Thread creation time 
@@ -149,7 +149,7 @@ struct _ETHREAD {
 The following `volatility` plugins extract information from the Process Environment Block: `cmdline`, `envars`, `ldrmodules` and `malfind`. In the terminal below, you can find the fields these modules target:
 
    PEB STRUCTURE 
-```PEB STRUCTURE 
+```bash
 struct _PEB { 
     BOOLEAN BeingDebugged; // Debug flag
     PVOID ImageBaseAddress; // Base address of executable 
@@ -164,7 +164,7 @@ struct _PEB {
 The following `volatility` plugins extract information from the Thread Environment Block: `threads` and `malfind`. In the terminal below, you can find the fields these modules target:
 
    TEB STRUCTURE 
-```TEB STRUCTURE 
+```bash
 struct _TEB { 
     PVOID EnvironmentPointer; // Pointer to env block 
     CLIENT_ID ClientId; // Thread + Process IDs 
@@ -212,14 +212,14 @@ Status:OffStart MachineYou refreshed your knowledge of Windows memory and proces
  Verifying the Memory Dump Open a shell on the analysis VM and navigate to `/home/ubuntu`. Then use the `md5sum` command to calculate the MD5 hash of the memory dump. **Note: You don't need to enter the command. We have already pre-calculated the hash for you. Due to restrained resources it could take up to five minutes to calculate an MD5 hash.**
 
    Calculate MD5 Hash 
-```Calculate MD5 Hash 
+```bash
 ubuntu@tryhackme:~$ md5sum THM-WIN-001_071528_07052025.mem > newhash.txt
 ```
 
    Then, compare the newly calculated hash with the hash that you received from your colleague who did the memory acquisition:
 
    Compare Hashes 
-```Compare Hashes 
+```bash
 ubuntu@tryhackme:~$ diff acquisitionhash.txt newhash.txt
 ```
 
@@ -236,14 +236,14 @@ ubuntu@tryhackme:~$ diff acquisitionhash.txt newhash.txt
  Navigate to the VM and open a terminal. Now, enter the commands below to extract the active processes from the memory dump and save them in a text file. **Note: Due to size of the memory dump and limited resources, it can take up to a minute until the command finishes running.**
 
    Extract Processes 
-```Extract Processes 
+```bash
 ubuntu@tryhackme:~$ vol3 -f THM-WIN-001_071528_07052025.mem windows.pslist > pslist.txt
 ```
 
    Now, use `cat` to display the content of `pslist.txt` and analyze the output. Here is a tip: pipe the output to the command `less` to get a scrollable output. You can then **press space to scroll through the output** . You can press `q` to exit.
 
    Display Extracted Processes 
-```Display Extracted Processes 
+```bash
 ubuntu@tryhackme:~$ cat pslist.txt | less
 Volatility 3 Framework 2.26.2
 PID PPID ImageFileName Offset(V) Threads Handles SessionId Wow64 CreateTime ExitTime File output
@@ -296,7 +296,7 @@ PID PPID ImageFileName Offset(V) Threads Handles SessionId Wow64 CreateTime Exit
  Continue with the VM and enter the following commands to compare the `pslist.txt` file to the `baseline.txt` file located in `~\baseline\` (Note: the baseline file was extracted from the Task Manager, so you need to prepare it first):
 
    Comparing with Baseline 
-```Comparing with Baseline 
+```bash
 ubuntu@tryhackme:~$ awk 'NR >3{print $2}' baseline/baseline.txt | sort | uniq > baseline_procs.txt
 ubuntu@tryhackme:~$ awk 'NR >3{print $3}' pslist.txt | sort | uniq > current_procs.txt
 ubuntu@tryhackme:~$ comm -13 baseline_procs.txt current_procs.txt
@@ -377,14 +377,14 @@ explorer.exe (PID: 1500)
  Continuing with the VM, enter the following command to generate a tree structure that shows the memory dump's process parent-child relationships. **Note: Due to size of the memory dump and limited resources, it can take up to a minute until the command finishes running.**
 
    Show Process Tree 
-```Show Process Tree 
+```bash
 ubuntu@tryhackme:~$ vol3 -f THM-WIN-001_071528_07052025.mem windows.pstree > processtree.txt
 ```
 
    The output shown with the `cat` command is quite overwhelming. You can use the `cut` command to process the `processtree.txt` file and only display the PID, PIDD, and image name values. Enter the following command to accomplish this:
 
    Parse Process Tree 
-```Parse Process Tree 
+```bash
 ubuntu@tryhackme:~$ cut -d$'\t' -f1,2,3 processtree.txt
 PID             PPID    ImageFileName
 [REDACTED]
@@ -477,14 +477,14 @@ Until now, you have focused on uncovering and linking processes that were part o
  PSSCAN Continuing with the VM, enter the command shown below to scan for processes that were not part of the active processes list. **Note: Due to size of the memory dump and limited resources, it can take up to three minutes until the command finishes running.**
 
    PSSCAN 
-```PSSCAN 
+```bash
 ubuntu@tryhackme:~$ vol3 -f THM-WIN-001_071528_07052025.mem windows.psscan > psscan.txt
 ```
 
    You can compare the results of `psscan` with the results of `pslist` to uncover hidden processes. You first need to prepare the output files before comparing them. Enter the following commands to extract the PID and process name from the `psscan.txt` and `pslist.txt` files and save the output to a new file.
 
    Prepare Files 
-```Prepare Files 
+```bash
 ubuntu@tryhackme:~$ awk '{print $1,$3}' pslist.txt | sort > pslist_processed.txt
 ubuntu@tryhackme:~$ awk '{print $1,$3}' psscan.txt | sort > psscan_processed.txt
 ```
@@ -492,7 +492,7 @@ ubuntu@tryhackme:~$ awk '{print $1,$3}' psscan.txt | sort > psscan_processed.txt
    Then, you can compare both files to uncover hidden processes:
 
    Prepare Files 
-```Prepare Files 
+```bash
 ubuntu@tryhackme:~$ comm -23 psscan_processed.txt pslist_processed.txt
 5548 sihost.exe5592 svchost.exe5736 svchost.exe5748 svchost.exe5752 taskhostw.exe5828 svchost.exe5908 svchost.exe5972 ctfmon.exe8708 svchost.exe9040 vmtoolsd.exe
 ```
@@ -512,14 +512,14 @@ ubuntu@tryhackme:~$ comm -23 psscan_processed.txt pslist_processed.txt
  PSXVIEW Now, run the `windows.psxview` module. `windows.psxview` is a great way to do multiple tests in one and cross-reference the results. You should look for the processes that are not listed in the results of `pslist` but are listed in the other tests. Enter the following command to run the `windows.psxview` module. **Note: Due to size of the memory dump and limited resources, it can take up to three minutes until the command finishes running.**
 
    PSXVIEW 
-```PSXVIEW 
+```bash
 ubuntu@tryhackme:~$ vol3 -f THM-WIN-001_071528_07052025.mem windows.psxview > psxview.txt
 ```
 
    You can then use `awk` to filter the results and display all the lines where the `pslist` test equals false, as shown below:
 
    Filter Results 
-```Filter Results 
+```bash
 ubuntu@tryhackme:~$ awk 'NR==3 || $4 == "False"' psxview.txt
 Offset(Virtual) Name            PID     pslist  psscan  thrdscan  csrss   Exit Time
 0xac80001ca080  svchost.exe     5828    False   True    False     False
@@ -565,14 +565,14 @@ During the previous tasks, you uncovered a potentially malicious chain of proces
  Finding the Path Using the `windows.dlllist` module, you can uncover the path of the main executable and its linked DLLs. Continuing with the VM, run the module `windows.dlllist` on the processes you noted in task 5 ( `WINWORD.exe`, `pdfupdater.exe`, `updater.exe`, `windows-update`, `cmd.exe`, `conhost.exe`, `powershell.exe`). Enter the following commands to dump the `WINWORD.exe` process. **Note: Due to size of the memory dump and limited resources, it can take up to two minutes until the command finishes running.**
 
    Check Results 
-```Check Results 
+```bash
 ubuntu@tryhackme:~$ vol3 -f THM-WIN-001_071528_07052025.mem windows.dlllist --pid 5252 > 5252_dlllist.txt
 ```
 
    **Now, do the same for all other processes.**  Then, check every file with `cat`, look for the path of the main executable, and note it down.
 
    Check Results 
-```Check Results 
+```bash
 ubuntu@tryhackme:~$ cat 5252_dlllist.txt
 Volatility 3 Framework 2.26.2
 Progress:  100.00               PDB scanning finished
@@ -590,7 +590,7 @@ PID   Process Base  Size      Name                  Path                        
  You must dump and analyze the processes' memory to confirm that these processes are malicious. You can then extract the executable and run the strings command to see if any malicious indicators are present quickly. In most cases, you will pass the executable to a malware analyst for further investigation. Below, are the commands to dump the process with PID 5252. Follow the same steps to dump the memory of the other processes; you can exclude the cmd.exe, PowerShell.exe, and conhost.exe processes. Other `volatility` modules can analyze these processes better. **Note: Due to size of the memory dump and limited resources, it can take up to one minute until the command finishes running.**
 
    Dump Process Memory 
-```Dump Process Memory 
+```bash
 ubuntu@tryhackme:~$ mkdir 5252
 ubuntu@tryhackme:~$ cd 5252
 ubuntu@tryhackme:~/5252$ vol3 -f ../THM-WIN-001_071528_07052025.mem windows.dumpfiles --pid 5252
@@ -610,7 +610,7 @@ ubuntu@tryhackme:~/5252$ vol3 -f ../THM-WIN-001_071528_07052025.mem windows.dump
  The process 5252 is the Windows Word process. Look for `.docm` or `.dotm` files and note your findings. Note: All the dumped files have the extension `.img` appended. You can verify the type of the file by using the file command.
 
    Find Macro Files 
-```Find Macro Files 
+```bash
 ubuntu@tryhackme:~$ ls 5252 | grep -E ".docm|.dotm" -i
 file.0x990b2ae077d0.0x990b2a3f5d70.SharedCacheMap.Normal.dotm.vacb
 file.0x990b2ae077d0.0x990b2b916cd0.DataSectionObject.Normal.dotm.dat
@@ -622,7 +622,7 @@ file.0x990b2ae0ab60.0x990b2a8b4b30.DataSectionObject.cv-resume-test.docm.dat
    Continue with the other processes and focus on finding `.exe` and `.dat` files. You can skip the processes `cmd.exe`, `conhost.exe`, and `PowerShell.exe`. These processes will be analyzed in the next rooms. You can use the following `grep` command to filter for `.exe` and `.dat` files.
 
    Find Executables 
-```Find Executables 
+```bash
 ubuntu@tryhackme:~$ ls 3392 10084 10032 | grep -E ".exe|.dat" -i
 file.0x990b2ae26720.0x990b286fa140.ImageSectionObject.updater.exe.img
 file.0x990b2846e310.0x990b282f5b70.DataSectionObject.cversions.2.db.dat

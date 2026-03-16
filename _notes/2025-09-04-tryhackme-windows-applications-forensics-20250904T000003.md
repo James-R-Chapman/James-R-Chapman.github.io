@@ -149,7 +149,7 @@ NOTE: The values above are only examples and do not reflect the malicious events
 Similarly, let's inspect the events generated in the Windows Event Logs. However, in this instance, we will use PowerShell commands to view the logs related to Windows services. Given that, fire up a PowerShell instance and use the command below to list service creation events.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 # System Channel = Event ID 7045
 PS C:\Users\Administrator> Get-WinEvent -FilterHashTable @{LogName='System';ID='7045'} | fl
 
@@ -270,21 +270,21 @@ In the previous sections, we have used the Task Scheduler application and Notepa
  For starters, fire up a PowerShell window and execute the command below to list all enabled scheduled tasks.
 
    Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Get-ScheduledTask | Where-Object {$_.State —ne "Disabled"}
 ```
 
   Alternatively, you can also use **schtasks.exe**  to get the same information. The command below lists all scheduled tasks, renders them in a CSV format and excludes all disabled tasks using **findstr.exe** .
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> schtasks.exe /query /fo CSV | findstr /V Disabled
 ```
 
   Next, let's list all enabled scheduled tasks sorted by their creation date. Moreover, we will output the creation date and author to add more context to each task.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 # List of all scheduled tasks, sorted by their creation date
 PS C:\Users\Administrator> Get-ScheduledTask | Where-Object {$_.Date —ne $null —and $_.State —ne "Disabled"} | Sort-Object Date | select Date,TaskName,Author,State,TaskPath | ft
 ```
@@ -304,7 +304,7 @@ User Execution Context`(Get-ScheduledTask -TaskName REPLACE_WITH_ACTUAL_TASKNAME
 Lastly, we can combine all these into a single script to list all scheduled tasks sorted by their creation date, together with all the significant information.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 # List all enabled scheduled tasks with creation date and command to be executed, sorted by date and printing all additional information
 $tasks = Get-ScheduledTask | Where-Object {$_.Date —ne $null —and $_.State —ne "Disabled" —and $_.Actions.Execute —ne $null} | Sort-Object Date
 
@@ -417,14 +417,14 @@ In the previous sections, we have used multiple GUI applications to inspect and 
 For starters, fire up a PowerShell window and execute the command below to list all running services set to run automatically.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Get-Service | Where-Object {$_.Status -eq "Running" -and $_.StartType -eq "Automatic"}
 ```
 
   Next, let's add the binary these services execute using the command below.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator>
 $services = Get-Service | Where-Object {$_.Status -eq "Running" -and $_.StartType -eq "Automatic"}
 
@@ -450,12 +450,12 @@ foreach ($service in $services) {
 NOTE: The PowerShell script is already stored in the `C:\Tools\` directory. Ensure the current PowerShell window allows script loading since we will use the mentioned PowerShell script above (Execution context must be in bypass mode).
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> powershell.exe -ep bypass
 ```
 
      Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Import-Module C:\Tools\Get-RegWriteTime.ps1; 
 $services = Get-Service | Where-Object {$_.Status -eq "Running" -and $_.StartType -eq "Automatic"}
 
@@ -483,7 +483,7 @@ foreach ($service in $services) {
 Next, there might be cases where the malicious service has stopped after running its initial payload, like when the service binary immediately migrates into another process by injecting a malicious shellcode. Given this, reviewing all the stopped services that run automatically on boot is also essential to determine potential outliers.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Import-Module C:\Tools\Get-RegWriteTime.ps1;
 $services = Get-Service | Where-Object {$_.Status -eq "Stopped" -and $_.StartType -eq "Automatic"}
 
@@ -560,7 +560,7 @@ Mozilla Firefox
 Firefox's browsing data are stored in the user's `AppData\Roaming\Mozilla\Firefox\Profiles` directory. This contains the Firefox profiles' directories in the following regex format - `[a-z0-9]{8}\.default.*`. Given this, use the command below to enumerate each user directory and see if any Firefox artefacts are available.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> ls C:\Users\ | foreach {ls "C:\Users\$_\AppData\Roaming\Mozilla\Firefox\Profiles" 2>$null}
 ```
 
@@ -673,7 +673,7 @@ Google Chrome
 Google Chrome's browsing data are stored in the user's `AppData\Local\Google\Chrome\User Data` directory. In addition, the default Chrome user profile is stored in the `Default` directory. Like the previous task, let's enumerate each user directory and see if any Google Chrome artefacts are available using the command below.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> ls C:\Users\ | foreach {ls "C:\Users\$_\AppData\Local\Google\Chrome\User Data\Default" 2>$null | findstr Directory}
 ```
 
@@ -687,7 +687,7 @@ Scenario: Malicious Browser Extension
 Another good use case for browser forensics is malicious browser extensions. Given this, we will analyse installed Chrome extensions to determine if a malicious one is deployed. To start with, navigate to the Chrome's extensions directory. As you can see, this location contains another set of directories named with the unique identifier of each browser extension.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> cd 'C:\Users\mike.myers\AppData\Local\Google\Chrome\User Data\Default\Extensions\'
 PS C:\Users\mike.myers\AppData\Local\Google\Chrome\User Data\Default\Extensions> ls
 
@@ -703,7 +703,7 @@ d-----         3/3/2024   7:11 PM                Temp
   Now, navigate to one of the extension directories and open its `manifest.json` file. This file defines the structure and behaviour of the extension.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\mike.myers\AppData\Local\Google\Chrome\User Data\Default\Extensions> cd .\nchfdofnmealimhgfkncdfkionopnanf\1.0_0\
 
 PS C:\Users\mike.myers\AppData\Local\Google\Chrome\User Data\Default\Extensions\nchfdofnmealimhgfkncdfkionopnanf\1.0_0> cat manifest.json
@@ -743,7 +743,7 @@ chrome.runtime.onMessage.addListener(
 Since the files to be investigated are JavaScript files, it just boils down to conducting a source code review on the files mentioned in the background and content_scripts field. Now, let's check the contents of the background.js file.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\mike.myers\AppData\Local\Google\Chrome\User Data\Default\Extensions\nchfdofnmealimhgfkncdfkionopnanf\1.0_0> cat .\background.js
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
@@ -757,7 +757,7 @@ chrome.runtime.onMessage.addListener(
 Now, let's proceed to the contents of the `script.js` file.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\mike.myers\AppData\Local\Google\Chrome\User Data\Default\Extensions\nchfdofnmealimhgfkncdfkionopnanf\1.0_0> cat .\script.js
 var keys = '';
 var current = document.URL;
@@ -819,7 +819,7 @@ Microsoft Edge
 Since Microsoft Edge is built with Chromium, most of Microsoft Edge's browsing metadata files are similar to Google Chrome's structure. These metadata files are stored in the user's `AppData\Local\Microsoft\Edge\User Data\Default` directory. Again, let's enumerate each user directory and see if any Microsoft Edge artefacts are available using the command below.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> ls C:\Users\ | foreach {ls "C:\Users\$_\AppData\Local\Microsoft\Edge\User Data\Default" 2>$null | findstr Directory}
 ```
 
@@ -845,7 +845,7 @@ Note that the cached metadata can only be considered as a piece of supporting in
 Given this, let's use another tool to parse the other metadata files without opening them individually. Start a PowerShell window and execute the command to start [Hindsight](https://github.com/obsidianforensics/hindsight)'s GUI view.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> C:\Tools\hindsight_gui.exe
 
 ################################################################################
@@ -954,7 +954,7 @@ The first application to be analysed for this task is Microsoft Outlook, a commo
 To get started, let's recursively search for each user's directory and look for the `AppData\Local\Microsoft\Outlook\` directory.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> ls C:\Users\ | foreach {ls "C:\Users\$_\AppData\Local\Microsoft\Outlook\" 2>$null | findstr Directory}
 ```
 
@@ -988,7 +988,7 @@ Nowadays, threat actors deliver varying attachments, such as encrypted archives 
 Lastly, it is also possible to determine if the user has opened the file directly using the Outlook client. To see this, navigate to the same user's `AppData\Local\Microsoft\Windows\INetCache\Content.Outlook` directory.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> ls -rec C:\Users\jane.adams\AppData\Local\Microsoft\Windows\INetCache\Content.Outlook
 
     Directory: C:\Users\jane.adams\AppData\Local\Microsoft\Windows\INetCache\Content.Outlook
@@ -1044,7 +1044,7 @@ As we all know, Microsoft Teams is the messaging platform in the Office Suite. G
 To start with, the metadata generated by the application is stored in the user's `AppData\Roaming\Microsoft\Teams` directory. Let's recursively search for each user directory to see if any Teams artefacts are available.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> ls C:\Users\ | foreach {ls "C:\Users\$_\AppData\Roaming\Microsoft\Teams" 2>$null | findstr Directory}
 ```
 
@@ -1053,7 +1053,7 @@ PS C:\Users\Administrator> ls C:\Users\ | foreach {ls "C:\Users\$_\AppData\Roami
 From the discovered directory, we will focus on the `IndexedDB` folder, which mainly contains the interesting artefacts that apply when reviewing chat history and file attachments.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> ls C:\Users\mike.myers\AppData\Roaming\Microsoft\Teams\IndexedDB\
 ```
 
@@ -1064,7 +1064,7 @@ PS C:\Users\Administrator> ls C:\Users\mike.myers\AppData\Roaming\Microsoft\Team
 To parse the Teams metadata, execute the following command below:
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> C:\Tools\ms_teams_parser.exe -f C:\Users\mike.myers\AppData\Roaming\Microsoft\Teams\IndexedDB\https_teams.microsoft.com_0.indexeddb.leveldb\ -o output.json
 ```
 
@@ -1091,7 +1091,7 @@ message
 You may have observed that it is tedious to inspect the contents of the output manually. But don't worry; from here, we will use some PowerShell commands to start the analysis. First, let's parse all the contact information and store the MRI and userPrincipalName in a hashtable. This will be used as a lookup table to correlate the creator's value in each message. Once you execute the command below, you will see the list of MRI and userPrincipalName key-value pairs.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> $teams_metadata = cat .\output.json | ConvertFrom-Json
 $users = @{}
 
@@ -1107,7 +1107,7 @@ $users | fl
   Then, we want to combine the messages with identical conversation IDs to view the messages in each conversation thread.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> $teams_metadata = cat .\output.json | ConvertFrom-Json
 $messages = @{}
 # Combine all conversations/messages with the same ID
@@ -1125,7 +1125,7 @@ $messages | fl
   Lastly, we can parse each message entry, sort it based on the creation date and render only the essential details. The combined snippets of the samples above will result in the script below.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> $teams_metadata = cat .\output.json | ConvertFrom-Json
 $users = @{}
 $messages = @{}
@@ -1177,7 +1177,7 @@ Aside from emails, chat messaging applications are now also leveraged by threat 
  To apply this in our current PowerShell code, we can add a snippet that parses the properties field and collects the file attachment information. Try running the script rendered below to view all conversation threads and the file attachment details, if there are any.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> $teams_metadata = cat .\output.json | ConvertFrom-Json
 $users = @{}
 $messages = @{}

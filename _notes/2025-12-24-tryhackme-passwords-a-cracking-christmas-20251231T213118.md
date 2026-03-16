@@ -109,7 +109,7 @@ Use the `file` command or open the file with a hex viewer. This helps pick the r
 
 File Command
 
-```File Command
+```bash
 ubuntu@tryhackme:~/Desktop$ file flag.pdf      ubuntu@tryhackme:~/Desktop$ file flag.zip
 ```
 
@@ -127,7 +127,7 @@ Example: PDF with `pdfcrack` and `rockyou.txt`:
 
 PdfCrack Command
 
-```PdfCrack Command
+```bash
 ubuntu@tryhackme:~/Desktop$ pdfcrack -f flag.pdf -w /usr/share/wordlists/rockyou.txt
 PDF version 1.7
 Security Handler: Standard

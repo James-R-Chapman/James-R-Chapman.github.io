@@ -64,7 +64,7 @@ Status:OffStart MachineIn the previous room, [Memory Analysis Introduction](http
  Volatility has already been installed on the machine attached to this room and can be accessed under the `Desktop/volatility3` directory.
 
    Volatility Installation 
-```Volatility Installation 
+```bash
 ubuntu@tryhackme:~/Desktop$ git clone https://github.com/volatilityfoundation/volatility3.git
 ubuntu@tryhackme:~/Desktop$ cd volatility3
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -h
@@ -146,7 +146,7 @@ Memory Acquisition Methodologies Memory acquisition is a foundational step in fo
  Given that our memory file was obtained from a Windows VM running on VMware, we can extract details about its profile with the command below:
 
    Volatility Windows Info 
-```Volatility Windows Info 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.info
 Volatility 3 Framework 2.26.2
 WARNING  volatility3.framework.layers.vmware: No metadata file found alongside VMEM file. A VMSS or VMSN file may be required to correctly process a VMEM file. These should be placed in the same directory with the same file name, e.g. Investigation-1.vmem and Investigation-1.vmss.
@@ -183,35 +183,35 @@ When we want to analyse details on processes and network connections from our me
  Active Process Enumeration The most basic way of listing processes is by using `pslist`. This plugin enumerates active processes from the doubly-linked list that keeps track of processes in memory, equivalent to the process list in the task manager. The output from this plugin will include all current and terminated processes and their exit times.
 
    Volatility Process Enumeration 
-```Volatility Process Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.pslist
 ```
 
    Hidden Process Enumeration Some malware, typically rootkits, will, in an attempt to hide their processes, unlink themselves from the list. By unlinking themselves from the list, you will no longer see their processes when using `pslist`. To combat this evasion technique, we can use `psscan`. This technique of listing processes will locate processes by finding data structures that match `_EPROCESS`. While this technique can help with evasion countermeasures, it can also result in false positives; therefore, we must be careful.
 
    Volatility Process Enumeration 
-```Volatility Process Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.psscan
 ```
 
    Process Hierarchy Enumeration The third process plugin, `pstree`, does not offer any other kind of special techniques to help identify evasion like the last two plugins. However, this plugin will list all processes based on their parent process ID, using the same methods as `pslist`. This can be useful for an analyst to get a complete story of the processes and what may have occurred at the extraction time.
 
    Volatility Process Enumeration 
-```Volatility Process Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.pstree
 ```
 
    File, Registry, and Thread Enumeration Inspecting files and the registry is also vital during a memory forensic investigation. We can use the plugin `handles` to look into the details and handles of files and threads from a host.
 
    Volatility Files Inspecting 
-```Volatility Files Inspecting 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.handles
 ```
 
    Network Connection Enumeration Now that we know how to identify processes, we also need to have a way to identify the network connections present at the time of extraction on the host machine. The `netstat` will attempt to identify all memory structures with a network connection.
 
    Volatility Network Enumeration 
-```Volatility Network  Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.netstat
 ```
 
@@ -220,14 +220,14 @@ ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigatio
  TCP/UDP Socket Enumeration We can also identify network sockets and their linked processes from a memory file. To do this, we can use the plugin `netscan`. This will recover active and closed TCP/UDP connections, associated process IDs, local and remote ports, and IPs using memory pool scanning.
 
    Volatility TCP/UDP Enumeration 
-```Volatility TCP/UDP Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.netscan
 ```
 
    DLL Enumeration The last plugin we will cover is `dlllist`. This plugin will list all DLLs associated with processes at extraction time. This can be especially useful once you have analysed further and filtered the output to a specific DLL that might indicate a specific type of malware you believe to be on the system.
 
    Volatility DLL Enumeration 
-```Volatility DLL Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.dlllist
 ```
 
@@ -278,14 +278,14 @@ Advanced threats can execute solely in memory, avoiding disk artefacts. Volatili
  ![Image 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1746596337616.png)
 
    Volatility Malware Enumeration 
-```Volatility Malware Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.malfind
 ```
 
    Another helpful plugin is `vadinfo`. This displays detailed information about virtual memory descriptors, which is useful when manually investigating suspicious memory regions and heap allocations.
 
    Volatility Malware Enumeration 
-```Volatility Malware Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.vadinfo
 ```
 
@@ -312,7 +312,7 @@ Forensic analysts must be equipped to detect manipulation deep within the operat
  Volatility 3’s `windows.ssdt` plugin enables analysts to inspect this table for any irregularities.
 
    Volatility SSDT Hook Enumeration 
-```Volatility SSDT Hook Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.ssdt
 ```
 
@@ -321,14 +321,14 @@ ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigatio
  Kernel Module Enumeration The `windows.modules` plugin lists drivers and kernel modules currently loaded into memory. Each entry includes metadata such as base address, size, and file path.
 
    Volatility Kernel Module Enumeration 
-```Volatility Kernel Module Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.modules
 ```
 
    Driver Scanning While `windows.modules` lists known drivers, it can miss hidden or unlinked ones. The `windows.driverscan` plugin scans raw memory for DRIVER_OBJECT structures that may have been unlinked from standard lists.
 
    Volatility Kernel Module Enumeration 
-```Volatility Kernel Module Enumeration 
+```bash
 ubuntu@tryhackme:~/Desktop/volatility3$ python3 vol.py -f ~/Desktop/Investigations/Investigation-1.vmem windows.driverscan
 ```
 

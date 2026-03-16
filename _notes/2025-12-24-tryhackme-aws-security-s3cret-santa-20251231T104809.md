@@ -59,7 +59,7 @@ We will see the following output when we run this command.
 
 Checking AWS CLI Configuration
 
-```Checking AWS CLI Configuration
+```bash
 user@machine$ aws sts get-caller-identity{    "UserId": "AIDAU2VYTBGYOHNOCJMX3",    "Account": "332173347248",    "Arn": "arn:aws:iam::332173347248:user/sir.carrotbane"}
 ```
 
@@ -102,7 +102,7 @@ Consider the following hypothetical policy
 
 IAM Policy example
 
-```IAM Policy example
+```bash
 {  "Version": "2012-10-17",  "Statement": [    {      "Sid": "AllowSpecificUserReadAccess",      "Effect": "Allow",      "Principal": {        "AWS": "arn:aws:iam::123456789012:user/Alice"      },      "Action": [        "s3:GetObject"      ],      "Resource": "arn:aws:s3:::my-private-bucket/*"    }  ]}
 ```
 
@@ -308,7 +308,7 @@ The output will provide us the credentials we need to assume this role, specific
 
 Setting the Temporary Credentials to Assume Role
 
-```Setting the Temporary Credentials to Assume Role
+```bash
 user@machine$ export AWS_ACCESS_KEY_ID="ASIAxxxxxxxxxxxx"user@machine$ export AWS_SECRET_ACCESS_KEY="abcd1234xxxxxxxxxxxx"user@machine$ export AWS_SESSION_TOKEN="FwoGZXIvYXdzEJr..."
 ```
 

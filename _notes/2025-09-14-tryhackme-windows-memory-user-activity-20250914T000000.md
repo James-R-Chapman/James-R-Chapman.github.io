@@ -143,7 +143,7 @@ struct SESSION{
  Logged Sessions We can explore the sessions using Volatility. Let's run the command `vol -f THM-WIN-001_071528_07052025.mem windows.sessions > sessions.txt` to save the output to a file `sessions.txt` for further analysis.
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$vol -f THM-WIN-001_071528_07052025.mem windows.sessions > sessions.txtubuntu@tryhackme$ cat sessions.txt 
 Volatility 3 Framework 2.26.0
 
@@ -197,7 +197,7 @@ N/A         -             1884        MemCompression      -                     
  Volatility locates loaded registry hives by scanning memory for instances of the **CMHIVE** kernel structure (this structure is undocumented, but we can find some information about it [here](https://www.nirsoft.net/kernel_struct/vista/CMHIVE.html)). These hives are typically loaded into memory by the Windows kernel during boot or user login. The **windows.registry.hivelist**  plugin walks through the kernel's HiveList. Each entry contains the virtual memory address of the hive and the path where it was originally stored on disk (e.g., **C:\Users\<USERNAME>\NTUSER.DAT** ).
 
   Let's use the command `vol -f THM-WIN-001_071528_07052025.mem windows.registry.hivelist > hivelist.txt` to inspect and save the output to the file**hivelist.txt,**  and analyze the output:       Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$ vol -f THM-WIN-001_071528_07052025.mem windows.registry.hivelist > hivelist.txtubuntu@tryhackme$ cat hivelist.txt
 Volatility 3 Framework 2.26.0
 
@@ -225,7 +225,7 @@ Offset	FileFullPath	File output
  Let's perform the command `vol -f THM-WIN-001_071528_07052025.mem windows.registry.userassist > userassist.txt` and investigate the output by looking at it using `cat userassist.txt`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$ cat userassist.txt
 Volatility 3 Framework 2.26.0
 
@@ -329,7 +329,7 @@ typedef struct _RTL_USER_PROCESS_PARAMETERS {
  The above command will save the command's output to the file **cmdline.txt** **.**  We can analyze it to look for suspicious information.
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$ cat cmdline.txt 
 Volatility 3 Framework 2.26.0
 
@@ -369,7 +369,7 @@ PID	Process	Args
  Let's now examine the content of **handles.txt** , where our output was saved.
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$ cat handles.txt |grep WINWORD
 [REDACTED]5252	WINWORD.EXE	0xbe8c69e24e20	0xd00	Key	0x20019	MACHINE\SOFTWARE\CLASSES\WOW6432NODE\CLSID\{76765B11-3F95-4AF2-AC9D-EA55D8994F1A}
 5252	WINWORD.EXE	0x990b29014c60	0xd04	Event	0x1f0003	-
@@ -444,7 +444,7 @@ typedef struct _SECTION_OBJECT_POINTERS {
  Once we have access to that file dump, we can inspect it as we did when we identified a **DOTM** file with potential. Often, Macro-enabled files, such as **DOCM** , will have templates in **DOTM** files. This is the type of file we already found in the previous task by dumping the process **WINWORD.EXE.**  We can search for it again using the grep command:
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$ ls 5252/|grep dotm
 file.0x990b2ae077d0.0x990b2a3f5d70.SharedCacheMap.Normal.dotm.vacb
 file.0x990b2ae077d0.0x990b2b916cd0.DataSectionObject.Normal.dotm.dat
@@ -453,7 +453,7 @@ file.0x990b2ae077d0.0x990b2b916cd0.DataSectionObject.Normal.dotm.dat
    Great, so let's copy the file to our home directory with the command `cp 5252/file.0x990b2ae077d0.0x990b2b916cd0.DataSectionObject.Normal.dotm.dat .` and let's inspect it again, and confirm it's a Word document file as we previously did using the `file` command and corroborate the file type as **Word** .
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$ file file.0x990b2ae077d0.0x990b2b916cd0.DataSectionObject.Normal.dotm.dat
 file.0x990b2ae077d0.0x990b2b916cd0.DataSectionObject.Normal.dotm.dat: Microsoft Word 2007+
 ```
@@ -461,7 +461,7 @@ file.0x990b2ae077d0.0x990b2b916cd0.DataSectionObject.Normal.dotm.dat: Microsoft 
    Confirm Macro Execution Let's unzip the .dat file using the command `unzip`, and inspect the files. Let's examine the word/ directory that was unzipped. We will find a VBA file called **vbaProject.bin** . If there's a macro or potential malicious code, it should be there, so we will extract it using `olevba` (part of the [oletools](https://github.com/decalage2/oletools/blob/master/oletools/olevba.py) suite) with the command `olevba word/vbaProject.bin`
 
    Terminal 
-```Terminal 
+```bash
 ubuntu@tryhackme$ olevba word/vbaProject.bin 
 XLMMacroDeobfuscator: pywin32 is not installed (only is required if you want to use MS Excel)
 [REDACTED] 

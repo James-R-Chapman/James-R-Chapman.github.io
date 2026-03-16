@@ -113,7 +113,7 @@ Accessing the File System
 While the disk and devices used may differ depending on the requirements and the environment, the process is similar for all disks physically or virtually attached to the Linux OS. Once we have our preparation setup and logging our steps, let's execute the `df` command to see the attached devices on the target machine.
 
     Example Terminal  
-```Example Terminal 
+```bash
 user@tryhackme$ df
 Filesystem     1K-blocks    Used Available Use% Mounted on
 /dev/root       40581564 7776284  32788896  20% /
@@ -143,7 +143,7 @@ tmpfs             200760       4    200756   1% /run/user/1001
 We can still list block devices using the `lsblk` command with the `-a` option to list all devices, as shown below.
 
 Example Terminal  
-```Example Terminal 
+```bash
 user@tryhackme$ lsblk -a
 NAME    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 loop0     7:0    0  25.2M  1 loop /snap/amazon-ssm-agent/7993
@@ -171,7 +171,7 @@ xvdh    202:112  0     1G  0 disk
 We can get more info about the device using the `losetup` command with the `-l` option to list the device and the assigned interface path, in this case `/dev/loop11`.
 
 Forensic Imaging  
-```Forensic Imaging 
+```bash
 user@tryhackme$ sudo losetup -l /dev/loop11
 NAME        SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                 DIO LOG-SEC
 /dev/loop11         0      0         0  0 /home/ubuntu/example1.img   0     512
@@ -182,7 +182,7 @@ NAME        SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                 DIO LOG-SEC
 It is possible to acquire further information like the UUID of the image using the `blkid` with the interface as an argument, as demonstrated in the following example.
 
    Forensic Imaging  
-```Forensic Imaging 
+```bash
 user@tryhackme$ sudo blkid /dev/loop11
 /dev/loop11: UUID="1895de04-f9ee-4b8b-b49d-9ef55770073c" TYPE="ext4"
 ```
@@ -240,7 +240,7 @@ To start, let's execute the `dc3dd` command with the following parameters:
 Below, we can observe the command output of `dc3dd` using the parameters mentioned.
 
    Forensic Imaging  
-```Forensic Imaging 
+```bash
 user@tryhackme$ sudo dc3dd if=/dev/loop11 of=example1.img log=imaging_loop11.txt
 
 dc3dd 7.2.646 started at 2024-06-28 22:58:59 +0000
@@ -265,7 +265,7 @@ dc3dd completed at 2024-06-28 22:59:12 +0000
 From the output above, we can confirm that the operation seemed to be successful and that we created a file of the same size, as shown below.
 
    Forensic Imaging  
-```Forensic Imaging 
+```bash
 user@tryhackme$ ls -alh example1.img 
 -rw-r--r-- 1 root root 1.1G Jun 28 22:28 example1.img
 ```
@@ -293,7 +293,7 @@ Methods for integrity checking include using tools that automatically calculate 
 Let's again list the block devices on our system using the command `lsblk` with `-l` to list the devices.
 
     Example Terminal  
-```Example Terminal 
+```bash
 user@tryhackme$ sudo lsblk -l
 loop0    7:0    0  25.2M  1 loop /snap/amazon-ssm-agent/7993
 loop1    7:1    0  26.3M  1 loop /snap/amazon-ssm-agent/9881
@@ -315,7 +315,7 @@ xvdh   202:112  0     1G  0 disk
   We can observe that the device is still listed in `/dev/loop11`. Let's ensure our imaging process was successful. To do that, let's calculate the MD5 hash of the image we created, `example1.img`, and let's do the same for the device`/dev/loop11`. The results should match.
 
    Example Terminal  
-```Example Terminal 
+```bash
 user@tryhackme$ sudo md5sum example1.img 
 483ca14c7524b8667974a922662b87e8  example1.img
 
@@ -348,7 +348,7 @@ Docker ImagesWhile not strictly an image, it creates a snapshot of a Docker cont
 As we observed before, our disk assigned to the loop interface `loop11` is not mounted as the command `df` displays.
 
    Forensic Imaging  
-```Forensic Imaging 
+```bash
 user@tryhackme$ df -h
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/root       40581564 8626756  31938424  22% /
@@ -382,7 +382,7 @@ Let's mount it using the `mount` command
 - After that, we can verify by exploring the mount point we created using the `ls` command.
 
    Forensic Imaging  
-```Forensic Imaging 
+```bash
 user@tryhackme$ ls /mnt/example1/
 dir01  dir03  dir05  dir07  dir09  dir11  dir13  dir15  dir17  dir19  dir21  dir23  dir25
 dir02  dir04  dir06  dir08  dir10  dir12  dir14  dir16  dir18  dir20  dir22  dir24  lost+found

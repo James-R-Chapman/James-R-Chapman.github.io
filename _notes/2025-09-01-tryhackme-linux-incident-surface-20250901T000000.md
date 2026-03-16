@@ -159,7 +159,7 @@ This command will create an executable file named simple in the same directory,
 
    Compiling and Running the Process
  
-```Compiling and Running the Process 
+```bash
 root@tryhackme:/home/activities/processes# gcc simple.c -o /tmp/simple
 root@tryhackme:/home/activities/processes# /tmp/simple
 ```
@@ -309,7 +309,7 @@ The above commands will create an account "attacker" and added into the sudo gro
 
    Creating Backdoor Account
  
-```Creating Backdoor Account 
+```bash
 ubuntu@tryhackme:/home$ sudo useradd attacker -G sudo
 ubuntu@tryhackme:/home$ sudo passwd attacker
 New password: 
@@ -329,7 +329,7 @@ One of the key places we could begin looking at would be the logs. All common lo
 
   Listing /var/log directory
  
-```Listing /var/log directory 
+```bash
 ubuntu@tryhackme:/home$ cd /var/log/
 ubuntu@tryhackme:/var/log$ ls -al
 total 3108
@@ -364,7 +364,7 @@ Let's use the following command to search for all user account creation activiti
 
   Examining auth.log
  
-```Examining auth.log 
+```bash
 ubuntu@tryhackme:/var/log$ sudo su
 root@tryhackme:/var/log# cat auth.log | grep useradd
 Sep  5 21:18:19 tryhackme sudo:   ubuntu : TTY=pts/0 ; PWD=/home ; USER=root ; COMMAND=/usr/sbin/useradd attacker -G sudo
@@ -383,7 +383,7 @@ Another configuration file called passwd also contains information about the use
 
   Examining /etc/passwd
  
-```Examining /etc/passwd 
+```bash
 root@tryhackme:/var/log# cat /etc/passwd
 ---
 ----------
@@ -399,7 +399,7 @@ fwupd-refresh:x:130:136:fwupd-refresh user,,,:/run/systemd:/usr/sbin/nologin
 attacker:x:1001:1001::/home/attacker:/bin/sh
 ```
 
-```Examining /etc/passwd 
+```bash
 
 ```
 
@@ -428,7 +428,7 @@ To create a malicious cron job, we can modify the crontab file or use the cronta
 
   Adding a cronjob
  
-```Adding a cronjob 
+```bash
 # Edit this file to introduce tasks to be run by cron.
 # 
 # Each task to run has to be defined through a single line
@@ -614,7 +614,7 @@ To create the package, follow the steps mentioned below:
 
    Create Package Directory
  
-```Create Package Directory 
+```bash
 root@tryhackme:~# mkdir malicious-package
 root@tryhackme:/malicious-package# mkdir DEBIAN
 ```
@@ -655,7 +655,7 @@ echo "something suspicious"
 
   Change the Permission
  
-```Change the Permission 
+```bash
 root@tryhackme:# chmod 755 malicious-package/DEBIAN/postinst
 ```
 
@@ -665,7 +665,7 @@ The following command is used to build the package, as shown below.
 
   Build the Package
  
-```Build the Package 
+```bash
 root@tryhackme:# dpkg-deb --build malicious-package
 ```
 
@@ -675,7 +675,7 @@ The following command will install the suspicious package on the disk.
 
   Install the Package
  
-```Install the Package 
+```bash
 root@tryhackme: dpkg -i malicious-package.deb
 ```
 
@@ -698,7 +698,7 @@ The command `dpkg -l` will display all the installed packages on the disk. We ca
 We can also look at the dpkg.log file, as shown below.
 
     Installed Packages  
-```Installed Packages 
+```bash
 ubuntu@tryhackme:/home$ grep " install " /var/log/dpkg.log
 2024-06-13 06:47:05 install linux-image-5.15.0-1063-aws:amd64 <none> 5.15.0-1063.69~20.04.1
 2024-06-13 06:47:06 install linux-aws-5.15-headers-5.15.0-1063:all <none> 5.15.0-1063.69~20.04.1

@@ -130,7 +130,7 @@ Open **SantaStealer.ps1** , located on the VM's Desktop in Visual Studio by doub
 
 PowerShell Terminal
 
-```PowerShell Terminal
+```bash
 PS C:\Users\Administrator> cd .\Desktop\
 PS C:\Users\Administrator\Desktop> .\SantaStealer.ps1
 ```

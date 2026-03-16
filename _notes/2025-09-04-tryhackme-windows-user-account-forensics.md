@@ -187,7 +187,7 @@ Windows logs user-related events like creating, modifying, or deleting an accoun
  We first need to export the NTDS.dit file along with the SYSTEM hive. Enter the following command:
 
    PowerShell: Administrator Mode 
-```PowerShell: Administrator Mode 
+```bash
 C:\> ntdsutil.exe "activate instance ntds" "ifm" "create full C:\Exports" quit quit
 ```
 
@@ -208,7 +208,7 @@ C:\> ntdsutil.exe "activate instance ntds" "ifm" "create full C:\Exports" quit q
  The command in DSInternals to extract the boot key is as follows:
 
    PowerShell: Administrator Mode 
-```PowerShell: Administrator Mode 
+```bash
 C:\> $bootKey = Get-BootKey -SystemHivePath 'C:\Exports\registry\SYSTEM'
 ```
 
@@ -217,14 +217,14 @@ C:\> $bootKey = Get-BootKey -SystemHivePath 'C:\Exports\registry\SYSTEM'
  To fetch the account details, we then call the `Get-ADDBAccount` cmdlet, passing the path to the NTDS.dit and the boot key:
 
    PowerShell: Administrator Mode 
-```PowerShell: Administrator Mode 
+```bash
 C:\> Get-ADDBAccount -All -DBPath 'C:\Exports\Active Directory\NTDS.dit' -BootKey $bootKey
 ```
 
    Here is a short snippet of what the output would look like:
 
    PowerShell: Administrator Mode 
-```PowerShell: Administrator Mode 
+```bash
 ...
 DistinguishedName: CN=Michael Ascot,CN=Users,DC=tryhatme,DC=com
 Sid: S-1-5-**-**********-**********-********-**** Guid: 4ccc32f2-6695-43b8-8d9e-bb11b2e3bbc6

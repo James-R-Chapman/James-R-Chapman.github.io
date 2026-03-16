@@ -85,7 +85,7 @@ PCAP, I Convert Ye to Zeek logs Let's get started! A neat feature of Zeek is tha
 
 RITA walkthrough
 
-```RITA walkthrough
+```bash
 ubuntu@tryhackme$ ls
 Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos  pcaps  zeek_logs
 ```
@@ -96,7 +96,7 @@ The `zeek_logs` directory contains Zeek logs. These were created by parsing a PC
 
 RITA walkthrough
 
-```RITA walkthrough
+```bash
 ubuntu@tryhackme$ zeek readpcap pcaps/AsyncRAT.pcap zeek_logs/asyncrat
 Starting the Zeek docker container
 Zeek logs will be saved to /home/ubuntu/zeek_logs/asyncrat
@@ -106,7 +106,7 @@ Let's examine the logs created. Navigate to `/home/ubuntu/zeek_logs/asyncrat` an
 
 RITA walkthrough
 
-```RITA walkthrough
+```bash
 ubuntu@tryhackme$ cd /home/ubuntu/zeek_logs/asyncrat/ && ls
 capture_loss.log  dns.log    http.log         known_services.log  notice.log  packet_filter.log  software.log  stats.log  x509.log
 conn.log          files.log  known_hosts.log  loaded_scripts.log  ocsp.log    reporter.log       ssl.log       weird.log
@@ -119,7 +119,7 @@ Enter the command below to import the Zeek logs and let RITA do its work. Once y
 
 RITA walkthrough
 
-```RITA walkthrough
+```bash
 ubuntu@tryhackme$ rita import --logs ~/zeek_logs/asyncrat/ --database asyncrat
 [REDACTED]
 2025-10-23T10:56:58Z INF Initiating new import... dataset=asyncrat directory=/tmp/zeek_logs rebuild=false rolling=false started_at="2025-10-23 10:56:58.079568235 +0000 UTC m=+0.013974881"
@@ -136,7 +136,7 @@ Now that RITA has parsed and analyzed our data, we can view the results by enter
 
 RITA walkthrough
 
-```RITA walkthrough
+```bash
 ubuntu@tryhackme$ rita view asyncrat
 ```
 
