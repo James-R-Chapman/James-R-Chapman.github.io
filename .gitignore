@@ -1,2 +1,4 @@
 *.zip
 *.ZIP
+scripts/build_thm_posts.sh
+scripts/sync_thm_notes.sh
