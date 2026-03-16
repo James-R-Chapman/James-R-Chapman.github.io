@@ -7,15 +7,5 @@ layout: default
     {{ page.date | date: "%B %-d, %Y" }}
     {% if page.hubs %} | {{ page.hubs }}{% endif %}
   </p>
-  {% if page.tags %}
-    <p class="muted">
-      Tags:
-      {% if page.tags.first %}
-        {{ page.tags | join: ", " }}
-      {% else %}
-        {{ page.tags }}
-      {% endif %}
-    </p>
-  {% endif %}
   {{ content }}
 </article>
