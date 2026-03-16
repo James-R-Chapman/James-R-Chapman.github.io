@@ -330,7 +330,7 @@ sudo python3 -m http.server 8080
 Now, after around a minute, you should get the flag!
 
 Terminal
-```Terminal 
+```bash
 root@attackbox ~ [1]> sudo python3 -m http.server 8080 
 Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) 
 - - [18/Jan/2024 10:49:51] "GET /flag=THM{REDACTED} HTTP/1.1" 404 -w

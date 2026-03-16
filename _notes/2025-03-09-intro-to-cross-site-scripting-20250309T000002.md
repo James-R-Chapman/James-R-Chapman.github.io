@@ -426,7 +426,7 @@ Start MachineFor the last task, we will go over a Blind XSS vulnerability. Ensur
  Using the AttackBox, let’s set up a listening server using Netcat. If we want to listen on port 9001, we issue the command `nc -l -p 9001`. The `-l` option indicates that we want to use Netcat in listen mode, while the `-p` option is used to specify the port number. To avoid the resolution of hostnames via DNS, we can add `-n`; moreover, to discover any errors, running Netcat in verbose mode by adding the `-v` option is recommended. The final command becomes `nc -n -l -v -p 9001`, equivalent to `nc -nlvp 9001`.
 
     nc  
-```nc 
+```bash
 user@machine$ nc -nlvp 9001
 Listening on [0.0.0.0] (family 0, port 9001)
 ```

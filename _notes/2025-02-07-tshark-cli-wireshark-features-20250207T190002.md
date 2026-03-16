@@ -72,7 +72,7 @@ TShark can provide colourised outputs to help analysts speed up the analysis and
 
     View in colour
 
-```View in colour
+```bash
 user@ubuntu$ tshark -r colour.pcap --color
 ```
 
@@ -84,7 +84,7 @@ Protocol hierarchy helps analysts to see the protocols used, frame numbers, and 
 
     View protocol hierarchy
 
-```View protocol hierarchy
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z io,phs -q
 ===================================================================
 Protocol Hierarchy Statistics
@@ -107,7 +107,7 @@ After viewing the entire packet tree, you can focus on a specific protocol as sh
 
     View protocol hierarchy
 
-```View protocol hierarchy
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z io,phs,udp -q
 ===================================================================
 Protocol Hierarchy Statistics
@@ -126,7 +126,7 @@ The packet lengths tree view helps analysts to overview the general distribution
 
     View packet lengths tree
 
-```View packet lengths tree
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z plen,tree -q
 
 =========================================================================================================================
@@ -181,7 +181,7 @@ wlan
 
   View IPv4 endpoints
 
-```View IPv4 endpoints
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z endpoints,ip -q
 ================================================================================
 IPv4 Endpoints
@@ -200,7 +200,7 @@ The conversations view helps analysts to overview the traffic flow between two p
 
     View IPv4 conversations
 
-```View IPv4 conversations
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z conv,ip -q
 ================================================================================
 IPv4 Conversations
@@ -217,7 +217,7 @@ Statistics | Expert Info
 The expert info view helps analysts to view the automatic comments provided by Wireshark. If you are unfamiliar with the "Wireshark Expert Info", visit task 4 in the [Wireshark: The Basics](https://tryhackme.com/room/wiresharkthebasics) room of the [Wireshark module](https://tryhackme.com/module/wireshark). Use the `-z expert -q` parameters to view the expert information.
 View expert info
 
-```View expert info
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z expert -q
 
 Notes (3)
@@ -295,7 +295,7 @@ This option provides statistics on IPv4 and IPv6 packets, as shown below. Having
 
     Sample IPv4 protocol types
 
-```Sample IPv4 protocol types
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z ptype,tree -q
 ==========================================================================================================================
 IPv4 Statistics/IP Protocol Types:
@@ -314,7 +314,7 @@ Having the summary of the hosts in a single view is useful as well. Especially w
 
   Available hosts
 
-```Available hosts
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z ip_hosts,tree -q
 ===========================================================================================================================
 IPv4 Statistics/All Addresses:
@@ -333,7 +333,7 @@ For complex cases and in-depth analysis, you will need to correlate the finding 
 
   Source and destination addresses
 
-```Source and destination addresses
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z ip_srcdst,tree -q
 ==========================================================================================================================
 IPv4 Statistics/Source and Destination Addresses:
@@ -357,7 +357,7 @@ In some cases, you will need to focus on the outgoing traffic to spot the used s
 
   Destinations and ports
 
-```Destinations and ports
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z dests,tree -q
 =============================================================================================================================
 IPv4 Statistics/Destinations and Ports:
@@ -381,7 +381,7 @@ This option provides statistics on DNS packets by summarising the available info
 
     DNS statistics
 
-```DNS statistics
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z dns,tree -q
 ===========================================================================================================================
 DNS:
@@ -408,7 +408,7 @@ This option provides statistics on HTTP packets by summarising the load distribu
 
   HTTP packet statistics
 
-```HTTP packet statistics
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z http,tree -q
 =============================================================================================================================
 HTTP/Packet Counter:
@@ -496,7 +496,7 @@ This option helps analysts to follow traffic streams similar to Wireshark. The q
 
   Follow TCP stream
 
-```Follow   TCP   stream
+```bash
 user@ubuntu$ tshark -r demo.pcapng -z follow,tcp,ascii,1 -q
 ===================================================================
 Follow: tcp,ascii
@@ -540,7 +540,7 @@ This option helps analysts to extract files from DICOM, HTTP, IMF, SMB and TFTP.
 
   Export objects
 
-```Export objects
+```bash
 # Extract the files from HTTP traffic.
 user@ubuntu$ tshark -r demo.pcapng --export-objects http,/home/ubuntu/Desktop/extracted-by-tshark -q
 
@@ -559,7 +559,7 @@ This option helps analysts to detect and collect cleartext credentials from FTP,
 
   Find cleartext credentials
 
-```Find cleartext credentials
+```bash
 user@ubuntu$ tshark -r credentials.pcap -z credentials -q
 ===================================================================
 Packet     Protocol         Username         Info
@@ -656,7 +656,7 @@ You can filter any field by using the field names as shown below.
 
   Extract fields
 
-```Extract fields
+```bash
 user@ubuntu$ tshark -r demo.pcapng -T fields -e ip.src -e ip.dst -E header=y -c 5
 ip.src ip.dst
 145.254.160.237 65.208.228.223
@@ -679,7 +679,7 @@ Usage `http.server contains "Apache"`
 
         Contains filter
 
-```Contains filter
+```bash
 user@ubuntu$ tshark -r demo.pcapng -Y 'http.server contains "Apache"'
    38   4.846969 65.208.228.223 ? 145.254.160.237 HTTP/XML HTTP/1.1 200 OK
 
@@ -701,7 +701,7 @@ Usage `http.request.method matches "(GET|POST)"`
 
         Matches filter
 
-```Matches filter
+```bash
 user@ubuntu$ tshark -r demo.pcapng -Y 'http.request.method matches "(GET|POST)"'
     4   0.911310 145.254.160.237 ? 65.208.228.223 HTTP GET /download.html HTTP/1.1
    18   2.984291 145.254.160.237 ? 216.239.59.99 HTTP GET /pagead/ads?client=ca-pub-2309191948673629&random=1084443430285&
@@ -750,7 +750,7 @@ Extract Hostnames
 
     Extract hostnames
 
-```Extract hostnames
+```bash
 user@ubuntu$ tshark -r hostnames.pcapng -T fields -e dhcp.option.hostname
 92-rkd
 92-rkd
@@ -769,7 +769,7 @@ The above example shows how to extract hostnames from DHCP packets with TShark. 
 
     Extract hostnames
 
-```Extract hostnames
+```bash
 user@ubuntu$ tshark -r hostnames.pcapng -T fields -e dhcp.option.hostname | awk NF | sort -r | uniq -c | sort -r
      26 202-ac
      18 92-rkd
@@ -795,7 +795,7 @@ Show the output/results from high occurrences to less. Extract DNS Queries
 
     Matches filter
 
-```Matches filter
+```bash
 user@ubuntu$ tshark -r dns-queries.pcap -T fields -e dns.qry.name | awk NF | sort -r | uniq -c | sort -r
      96 connectivity-check.ubuntu.com.rhodes.edu
      94 connectivity-check.ubuntu.com
@@ -811,7 +811,7 @@ Extract User Agents
 
     Matches filter
 
-```Matches filter
+```bash
 user@ubuntu$ tshark -r user-agents.pcap -T fields -e http.user_agent | awk NF | sort -r | uniq -c | sort -r
       6 Mozilla/5.0 (Windows; U; Windows NT 6.4; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.237 Safari/534.10
       5 Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:100.0) Gecko/20100101 Firefox/100.0

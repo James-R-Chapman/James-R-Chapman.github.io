@@ -194,7 +194,7 @@ Note that each request shares the same client IP and user agent. Response codes 
  Auditd A native Linux utility that tracks and records events, creating an audit trail. Rules can be created for `auditd`, which determine what is logged in the `audit.log`. Rules can be highly configured to match specific conditions, such as when certain programs are run or files are modified in a particular directory. In the example below, `ausearch` is used to search for any logs matching the `web_shell` rule.
 
    Ausearch Usage for Audit logs 
-```Ausearch Usage for Audit logs 
+```bash
 user@tryhackme$ ausearch -k web_shell
 time->Wed Jul 23 06:20:36 2025  // A log matching the web_shell rule
 "name = /uploads/webshell.php"
@@ -253,7 +253,7 @@ Can be used by attackers to evade detection. Be on the lookout for names that de
 You can use `find` to search for recently modified scripts. In the example below, it is used to search the `/var/www` directory for `.php` files modified between two specific dates using the `-newerct` option. Another helpful tool, `grep`, can be used to track down suspicious functions like `eval(` within files. In the example below, we use it to search the WordPress directory `wp-content`.
 
    Find & Grep Command Usage to Locate Specific Files 
-```Find & Grep Command Usage to Locate Specific Files 
+```bash
 user@tryhackme$ find /var/www -type f -name "*.php" -newerct "2025-07-01" ! -newerct "2025-08-01"
 /var/www/html/uploads/awebshell.php          // Web shell created between the dates above.
 

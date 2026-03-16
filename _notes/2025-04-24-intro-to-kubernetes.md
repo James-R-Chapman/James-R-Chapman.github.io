@@ -297,7 +297,7 @@ kubectl get pods -n example-namespace
  
 The output for this command would look something like this: 
     Terminal  
-```Terminal 
+```bash
 user@tryhackme$ kubectl get pods -n example-namespace
 NAME          READY   STATUS              RESTARTS   AGE
 example-pod   1/1     Running             0          2m18s
@@ -315,7 +315,7 @@ kubectl describe pod example-pod -n example-namespace
  
 This would give you back some details about the erroring pod. For example: 
     Terminal  
-```Terminal 
+```bash
 user@tryhackme$ kubectl describe pod example-pod -n example-namespace
 
 Name:             example-pod

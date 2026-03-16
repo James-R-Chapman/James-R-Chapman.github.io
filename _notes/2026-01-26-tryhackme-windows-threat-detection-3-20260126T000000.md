@@ -110,7 +110,7 @@ Persistence Overview Data stealer infections usually have a very short lifespan:
  Let's focus on the second method now and see how you or threat actors can manage users on Windows. The first option is to use the graphical utility by searching for "Computer Management" or by launching `lusrmgr.msc`. The second option is to use a command line, like in the example below:
 
    CMD and PowerShell Commands to Manage Users 
-```CMD and PowerShell Commands to Manage Users 
+```bash
 # 1. Two methods to create the "mr.backd00r" user
 CMD C:\> net user "mr.backd00r" "p@ssw0rd!" /add
 PS  C:\> New-LocalUser "mr.backd00r" -Password [...]

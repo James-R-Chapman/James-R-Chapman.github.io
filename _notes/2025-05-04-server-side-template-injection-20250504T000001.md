@@ -380,7 +380,7 @@ python3 sstimap.py -X POST -u 'http://ssti.thm:8002/mako/' -d 'page='
  This command attempts to detect the SSTI vulnerability using tailored payloads.
 
     Using SSTImap 
-```Using SSTImap 
+```bash
 user@tryhackme $ python3 sstimap.py -X POST -u 'http://ssti.thm:8002/mako/' -d 'page='           
 
     ╔══════╦══════╦═══════╗ ▀█▀

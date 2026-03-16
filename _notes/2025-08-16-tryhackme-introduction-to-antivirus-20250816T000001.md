@@ -220,7 +220,7 @@ Machine IP: MACHINE_IP  Username: thm  Password: TryHackM3
  
 
   Connect to the VM via the RDP client 
-```Connect to the VM via the RDP client 
+```bash
 user@machine$ xfreerdp /v:MACHINE_IP /u:thm /p:TryHackM3
 ```
 
@@ -269,7 +269,7 @@ Generally speaking, AV detection can be classified into three main approaches:
  
 
    Command Prompt 
-```Command Prompt 
+```bash
 c:\>"c:\Program Files\ClamAV\clamscan.exe" c:\Users\thm\Desktop\Samples
 Loading:    22s, ETA:   0s [========================>]    8.61M/8.61M sigs
 Compiling:   4s, ETA:   0s [========================>]       41/41 tasks
@@ -305,7 +305,7 @@ LibClamAV debug: FP SIGNATURE: 44d88612fea8a8f36de82e1278abb02f:68:Win.Test.EICA
  
 
    Command Prompt 
-```Command Prompt 
+```bash
 c:\>"c:\Program Files\ClamAV\sigtool.exe" --md5 c:\Users\thm\Desktop\Samples\eicar.com
 44d88612fea8a8f36de82e1278abb02f:68:eicar.com
 ```
@@ -330,7 +330,7 @@ c:\>"c:\Program Files\ClamAV\sigtool.exe" --md5 c:\Users\thm\Desktop\Samples\eic
  
 
    Generate an MD5 hash 
-```Generate an MD5 hash 
+```bash
 C:\Users\thm\Desktop\Samples>"c:\Program Files\ClamAV\sigtool.exe" --md5 backdoor2.exe
 75047189991b1d119fdb477fef333ceb:6144:backdoor2.exe
 ```
@@ -344,7 +344,7 @@ C:\Users\thm\Desktop\Samples>"c:\Program Files\ClamAV\sigtool.exe" --md5 backdoo
  
 
    Generate our new database 
-```Generate our new database 
+```bash
 C:\Users\thm\Desktop\Samples>"c:\Program Files\ClamAV\sigtool.exe" --md5 backdoor2.exe > thm.hdb
 ```
 
@@ -357,7 +357,7 @@ C:\Users\thm\Desktop\Samples>"c:\Program Files\ClamAV\sigtool.exe" --md5 backdoo
  
 
    Re-scanning backdoor2.exe using the new database! 
-```Re-scanning backdoor2.exe using the new database! 
+```bash
 C:\Users\thm\Desktop\Samples>"c:\Program Files\ClamAV\clamscan.exe" -d thm.hdb backdoor2.exe
 Loading:     0s, ETA:   0s [========================>]        1/1 sigs
 Compiling:   0s, ETA:   0s [========================>]       10/10 tasks
@@ -382,7 +382,7 @@ C:\Users\thm\Desktop\Samples\backdoor2.exe: backdoor2.exe.UNOFFICIAL FOUND
  
 
    Command Prompt 
-```Command Prompt 
+```bash
 C:\Users\thm\Desktop\Samples>strings AV-Check.exe | findstr pdb
 C:\Users\thm\source\repos\AV-Check\AV-Check\obj\Debug\AV-Check.pdb
 ```
@@ -421,7 +421,7 @@ rule thm_demo_rule {
  
 
    Scanning using the Yara rule 
-```Scanning using the Yara rule 
+```bash
 C:\Users\thm>"c:\Program Files\ClamAV\clamscan.exe" -d Desktop\Files\thm-demo-1.yara Desktop\Samples
 Loading:     0s, ETA:   0s [========================>]        1/1 sigs
 Compiling:   0s, ETA:   0s [========================>]       40/40 tasks
@@ -479,7 +479,7 @@ rule thm_demo_rule {
  
 
    Scanning using the Yara rule 
-```Scanning using the Yara rule 
+```bash
 C:\Users\thm>"c:\Program Files\ClamAV\clamscan.exe" -d Desktop\Files\thm-demo-2.yara Desktop\Samples
 Loading:     0s, ETA:   0s [========================>]        1/1 sigs
 Compiling:   0s, ETA:   0s [========================>]       40/40 tasks
@@ -616,12 +616,12 @@ Once it is compiled, we can find the path of the compiled version in the output 
  
 
     Command Prompt!
-```Command Prompt! 
+```bash
 C:\> SharpEDRChecker.exe
 ```
 
     ➜  SharpEDRChecker's Summary
-```SharpEDRChecker's Summary 
+```bash
 [!] Directory Summary:
    [-] C:\Program Files\Windows Defender : defender
    [-] C:\Program Files\Windows Defender Advanced Threat Protection : defender, threat

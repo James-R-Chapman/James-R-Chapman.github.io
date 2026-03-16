@@ -194,7 +194,7 @@ There are multiple ways to use John the Ripper to crack simple hashes. We’ll w
  To use hash-identifier, you can use `wget` or `curl` to download the Python file `hash-id.py` from its GitLab [page](https://gitlab.com/kalilinux/packages/hash-identifier/-/raw/kali/master/hash-id.py). Then, launch it with `python3 hash-id.py` and enter the hash you’re trying to identify. It will give you a list of the most probable formats. These two steps are shown in the terminal below.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ wget https://gitlab.com/kalilinux/packages/hash-identifier/-/raw/kali/master/hash-id.py
 $ python3 hash-id.py
    #########################################################################

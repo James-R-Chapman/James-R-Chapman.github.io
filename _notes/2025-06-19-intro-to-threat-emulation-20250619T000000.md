@@ -287,7 +287,7 @@ The lab environment needed for the exercise should be effectively set up, and se
  **4.2. Implementation of TTP**  This is where the deployment of actual TTPs happens. In our case scenario, an Initial Access payload for FIN7 would be created and obfuscated using an RTF document, delivered through a spear phishing email. The lures used by attackers such as FIN7 tend to be convincing using DOCX and RTF files with malicious Windows Shortcut File (.LNK) embedded. A code snippet demonstrating this execution based on the [CTID FIN7 Emulation plan](https://github.com/center-for-threat-informed-defense/adversary_emulation_library/tree/master/fin7/Emulation_Plan/Scenario_1#step-1---initial-breach-evaluations-step-11) would look as follows:
 
     Malicious File Execution: T1204.002  
-```Malicious File Execution: T1204.002 
+```bash
 # Copy 2-list.rtf to <domain_admin> Desktop on hotelmanager.
 sudo smbclient -U '<domain_full>\<domain_admin>' //<hotelmanager_ip>/C$ -c "put fin7/Resources/Step1/SQLRat/2-list.rtf Users\\<domain_admin>.<domain>\\Desktop\\2-list.rtf"
 

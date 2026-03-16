@@ -360,7 +360,7 @@ Since a PE file's information can be easily extracted using a Hex editor or a to
  Let's see the information in the PE Sections heading in the output:
 
    PE Check utility 
-```PE Check utility 
+```bash
 user@machine$ pecheck zmsuz3pinwl
 PE check for 'zmsuz3pinwl':
 Entropy: 7.978052 (Min=0.0, Max=8.0)

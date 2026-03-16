@@ -117,7 +117,7 @@ When using a command, unless otherwise specified, it will perform its default be
 Using our `ls` example, `ls` informs us that there is only one folder named "folder1" as highlighted in the screenshot below. Note that the contents in the screenshots below are only examples.
 
     Using ls to view the contents of a directory  
-```Using ls to view the contents of a directory 
+```bash
 tryhackme@linux2:~$ ls
 folder1
 tryhackme@linux2:~$
@@ -135,7 +135,7 @@ tryhackme@linux2:~$
   Commands that accept these will also have a` --help` option. This option will list the possible options that the command accepts, provide a brief description and example of how to use it.
 
     Listing the options we can use with ls  
-```Listing the options we can use with ls 
+```bash
 tryhackme@linux2:~$ ls --help
 Usage: ls [OPTION]... [FILE]...
 List information about the FILEs (the current directory by default).
@@ -178,7 +178,7 @@ The manual pages are a great source of information for both system commands and 
 To access this documentation, we can use the `man `command and then provide the command we want to read the documentation for. Using our ls example, we would use `man ls` to view the manual pages for `ls` like so:
 
     Listing the options we can use with ls  
-```Listing the options we can use with ls 
+```bash
 tryhackme@linux2:~$ man ls
 LS(1)                                               User Commands                                               LS(1)
 
@@ -253,7 +253,7 @@ CommandFull NamePurposetouchtouchCreate filemkdirmake directoryCreate a foldercp
 Creating files and folders on Linux is a simple process. First, we'll cover creating a file. The touch command takes exactly one argument -- the name we want to give the file we create. For example, we can create the file "note" by using `touch note`. It's worth noting that touch simply creates a blank file. You would need to use commands like echo or text editors such as nano to add content to the blank file.
 
     Using touch to create a new file  
-```Using touch to create a new file 
+```bash
 tryhackme@linux2:~$ touch note
 tryhackme@linux2:~$ ls           
 folder1 note
@@ -262,7 +262,7 @@ folder1 note
    This is a similar process for making a folder, which just involves using the `mkdir` command and again providing the name that we want to assign to the directory. For example, creating the directory "mydirectory" using `mkdir mydirectory`.
 
     Creating a new directory with mkdir  
-```Creating a new directory with mkdir 
+```bash
 tryhackme@linux2:~$ mkdir mydirectory
 tryhackme@linux2:~$ ls           
 folder1 mydirectory note
@@ -275,14 +275,14 @@ folder1 mydirectory note
 `rm` is extraordinary out of the commands that we've covered so far. You can simply remove files by using `rm`. However, you need to provide the `-R` switch alongside the name of the directory you wish to remove.
 
     Using rm to remove a file  
-```Using rm to remove a file 
+```bash
 tryhackme@linux2:~$ rm note
 tryhackme@linux2:~$ ls           
 folder1 mydirectory
 ```
 
       Using rm recursively to remove a directory  
-```Using rm recursively to remove a directory 
+```bash
 tryhackme@linux2:~$ rm -R mydirectory
 tryhackme@linux2:~$ ls           
 folder1
@@ -301,7 +301,7 @@ Copying and moving files is an important functionality on a Linux machine. Start
 `cp` copies the entire contents of the existing file into the new file. In the screenshot below, we are copying "note" to "note2".
 
     Using cp to copy a file  
-```Using cp to copy a file 
+```bash
 tryhackme@linux2:~$ cp note note2
 tryhackme@linux2:~$ ls           
 folder1 note note2
@@ -310,7 +310,7 @@ folder1 note note2
    Moving a file takes two arguments, just like the cp command. However, rather than copying and/or creating a new file, `mv` will merge or modify the second file that we provide as an argument. Not only can you use `mv` to move a file to a new folder, but you can also use `mv `to rename a file or folder. For example, in the screenshot below, we are renaming the file "note2" to be named "note3". "note3" will now have the contents of "note2".
 
     Using mv to move a file  
-```Using mv to move a file 
+```bash
 tryhackme@linux2:~$ mv note2 note3
 tryhackme@linux2:~$ ls           
 folder1 note note3
@@ -325,7 +325,7 @@ What is often misleading and often catches people out is making presumptions fro
 So far, the files we have used in our examples haven't had an extension. Without knowing the context of why the file is there -- we don't really know its purpose. Enter the `file` command. This command takes one argument. For example, we'll use `file` to confirm whether or not the "note" file in our examples is indeed a text file, like so `file note`.
 
     Using file to determine the contents of a file  
-```Using file to determine the contents of a file 
+```bash
 tryhackme@linux2:~$ file note
 note: ASCII text
 ```
@@ -371,7 +371,7 @@ As you would have already found out by now, certain users cannot access certain 
 In our previous tasks, we learned how to extend the use of commands through flags and switches. Take, for example, the `ls` command, which lists the contents of the current directory. When using the `-l `switch, we can see ten columns such as in the screenshot below. However, we're only interested in the first three columns:
 
     Using ls -lh to list the permissions of all files in the directory  
-```Using ls -lh to list the permissions of all files in the directory 
+```bash
 tryhackme@linux2:~$ ls -lh
 -rw-r--r-- 1 cmnatic cmnatic 0 Feb 19 10:37 file1
 -rw-r--r-- 8 cmnatic cmnatic 0 Feb 19 10:37 file2
@@ -403,7 +403,7 @@ The `su` command takes a couple of switches that may be of relevance to you. For
 Simply, by providing the `-l `switch to `su`, we start a shell that is much more similar to the actual user logging into the system - we inherit a lot more properties of the new user, i.e., environment variables and the likes.
 
     Using su to switch to user2 interactively  
-```Using su to switch to user2 interactively 
+```bash
 tryhackme@linux2:~$ su user2
 Password:
 user2@linux2:/home/tryhackme$
@@ -412,7 +412,7 @@ user2@linux2:/home/tryhackme$
    For example, when using `su` to switch to "user2", our new session drops us into our previous user's home directory.
 
     Using su to switch to user2 interactively  
-```Using su to switch to user2 interactively 
+```bash
 tryhackme@linux2:~$ su -l user2
 Password:
 user2@linux2:~$ pwd
@@ -460,7 +460,7 @@ For example, the sudoers file highlighted in the screenshot below contains a lis
 Also highlighted below are the "**passwd** " and "**shadow** " files. These two files are special for Linux as they show how your system stores the passwords for each user in encrypted formatting called sha512.
 
     Some notable contents of the /etc directory  
-```Some notable contents of the /etc directory 
+```bash
 tryhackme@linux2:/etc$ ls
 shadow passwd sudoers sudoers.d
 ```
@@ -472,7 +472,7 @@ shadow passwd sudoers sudoers.d
 The "/var" directory, with "var" being short for variable data, is one of the main root folders found on a Linux install. This folder stores data that is frequently accessed or written by services or applications running on the system. For example, log files from running services and applications are written here (**/var/log** ), or other data that is not necessarily associated with a specific user (i.e., databases and the like).
 
     Some notable contents of the /var directory  
-```Some notable contents of the /var directory 
+```bash
 tryhackme@linux2:/var$ ls
 backups log opt tmp
 ```
@@ -484,7 +484,7 @@ backups log opt tmp
 Unlike the **/home**  directory, the **/root**  folder is actually the home for the "root" system user. There isn't anything more to this folder other than just understanding that this is the home directory for the "root" user. But, it is worth a mention as the logical presumption is that this user would have their data in a directory such as "**/home/root** " by default.
 
     Some notable contents of the /root directory  
-```Some notable contents of the /root directory 
+```bash
 root@linux2:~# ls
 myfile myfolder passwords.xlsx
 ```
@@ -498,7 +498,7 @@ This is a unique root directory found on a Linux install. Short for "temporary",
 What's useful for us in pentesting is that any user can write to this folder by default. Meaning once we have access to a machine, it serves as a good place to store things like our enumeration scripts.
 
     Some notable contents of the /tmp directory  
-```Some notable contents of the /tmp directory 
+```bash
 root@linux2:/tmp# ls
 todelete trash.txt rubbish.bin
 ```

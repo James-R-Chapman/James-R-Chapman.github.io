@@ -324,7 +324,7 @@ Start MachineCreating an IaC Pipeline Now that we have learned the basics about 
  Vagrantfile Let's start by taking a look at the Vagrantfile:
 
  Vagrantfile
-```Vagrantfile 
+```bash
 Vagrant.configure("2") do |config|
   # DB server will be the backend for our website
   config.vm.define "dbserver"  do |cfg|
@@ -380,7 +380,7 @@ The first machine that will be provisioned is the `dbserver`. Working through th
 
 The second machine that will be provisioned is the `webserver`. Similar to the `dbserver` machine, it will be connected to the network and use Docker as its provider. However, there are some slight differences. Firstly, the webserver will expose SSH. Since we are using Docker, we have to alter some of the default Vagrant configurations to allow Vagrant to connect via SSH. This includes changing the username and the private key that will be used for the connection. Secondly, we can see that an Ansible playbook will be executed on the container by looking at the following line:
 
-```Terminal 
+```bash
 cfg.vm.provision "shell", inline: "ansible-playbook /vagrant/provision/web-playbook.yml"
 ```
 
@@ -388,7 +388,7 @@ cfg.vm.provision "shell", inline: "ansible-playbook /vagrant/provision/web-playb
 
  Ansible Playbook Let's start by reviewing the `web-playbook.yml` file:
 
-```Terminal 
+```bash
 - hosts: localhost
   connection: all
   roles:
@@ -400,7 +400,7 @@ cfg.vm.provision "shell", inline: "ansible-playbook /vagrant/provision/web-playb
  To better understand what the webapp role will entail, we can start by reviewing the `~/iac/provision/roles/webapp/tasks/main.yaml` file:
 
  
-```Terminal 
+```bash
 - include_tasks: "db-setup.yml"
 - include_tasks: "app-setup.yml"
 ```
@@ -408,7 +408,7 @@ cfg.vm.provision "shell", inline: "ansible-playbook /vagrant/provision/web-playb
  This shows us that there will be two main portions to the Ansible provisioning. At this point, it is worth taking a look as well at the default values in the `~/iac/provision/roles/webapp/defaults/main.yml` file:
 
  
-```Terminal 
+```bash
 db_name: BucketList
 db_user: root
 db_password: mysecretpasswd
@@ -423,7 +423,7 @@ api_key: superapikey
 
 Let's take a look at the `db-setup.yml` file:
 
-```Terminal 
+```bash
 - name: Create temp folder for SQL scripts 
   ansible.builtin.file: 
     path: /tmp/sql state: directory
@@ -455,7 +455,7 @@ From the script, we can see that 7 tasks will be performed. Reading through thes
 
 Let's take a look at how Ansible would inject those variables from before. Take a look at the `Create DB` task's shell command:
 
-```Terminal 
+```bash
 shell: mysql -u {{ db_user }} -p{{ db_password }} -h {{ db_host }} < /tmp/sql/createdb.sql
 ```
 
@@ -463,7 +463,7 @@ As you can see, the three variables of `db_user`, `db_password`, and `db_host` w
 
  Ansible allows us to take this a step further. Let's take a look at the actual `createdb.sql` file:
 
-```Terminal 
+```bash
 drop DATABASE IF EXISTS {{ db_name }};
 
 CREATE DATABASE {{ db_name }};
@@ -486,7 +486,7 @@ As we can see, these variables are even injected into the file templates that wi
 Lastly, let's take a look at the `app-setup.yml` file:
 
  
-```Terminal 
+```bash
 - name: Copy web application files
   shell: cp -r /vagrant/provision/roles/webapp/templates/app /
 
@@ -507,7 +507,7 @@ This file only has two tasks. The first copies the artefacts required for the we
  Once our pipeline has provisioned the machines, we can verify that they are running using the `docker ps` command:
 
  Terminal
-```Terminal 
+```bash
 ubuntu@tryhackme:~$ docker ps 
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                    NAMES 
 04fc30613dd6   mysql     "docker-entrypoint.s…"   18 minutes ago   Up 18 minutes   3306/tcp, 33060/tcp      iac_dbserver_1706019401 

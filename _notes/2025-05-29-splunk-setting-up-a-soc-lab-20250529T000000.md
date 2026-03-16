@@ -99,7 +99,7 @@ This task will explore installing and configuring Splunk on a Linux machine. Con
 For the sake of simplicity, the Splunk installer is already downloaded at the location `~/Downloads/splunk`
 
     Splunk setup  
-```Splunk setup 
+```bash
 ubuntu@coffely:~/Downloads/splunk/$ ls
 splunk_installer.tgz splunkforwarder.tgz
 ```
@@ -107,7 +107,7 @@ splunk_installer.tgz splunkforwarder.tgz
 **Note:**  Make sure, to run `sudo su` to change to the root user before applying commands.
 
  Splunk Lab  
-```Splunk setup 
+```bash
 ubuntu@coffely:~/Downloads/splunk/$ sudo su
 root@coffely:~/Downloads/splunk/$
 ```
@@ -117,7 +117,7 @@ Splunk Installation
 Splunk installation is as simple as running a command. You will need to uncompress Splunk by running the following command.
 
     Splunk Installation  
-```Splunk Installation 
+```bash
 root@coffely:~/Downloads/splunk/$ tar xvzf splunk_installer.tgz
 splunk/
 splunk/splunk-9.0.3-dd0128b1f8cd-linux-2.6-x86_64-manifest
@@ -142,7 +142,7 @@ splunksetup
  After the installation is complete, a new folder named `splunk` will be created, as shown below. Let's now move this folder to the `/opt/` directory and start working on Splunk from there.
 
     Splunk setup  
-```Splunk setup 
+```bash
 root@coffely:~/Downloads/splunk/$ ls
 splunk splunk_installer.tgz splunkforwarder.tgz
 root@coffely:~/Downloads/splunk/$ mv splunk /opt/
@@ -153,7 +153,7 @@ root@coffely:~/Downloads/splunk/$ mv splunk /opt/
  The above step unzips the Splunk installer and installs all the necessary binaries and files on the system. Once installed, go to the directory `/opt/splunk/bin` and run the following command to start Splunk `./splunk start --accept-license`. As it is the first time we are starting the Splunk instance, it will ask the user for admin credentials. Create a user account and proceed.
 
     Splunk Installation  
-```Splunk Installation 
+```bash
 root@coffely:~/Downloads/splunk/# cd /opt/splunk/bin
 root@coffely:/opt/splunk/bin#./splunk start --accept-license
 This appears to be your first time running this version of Splunk.
@@ -207,7 +207,7 @@ Command: splunk start
 The `splunk start` command is used to start the Splunk server. This command starts all the necessary Splunk processes and enables the server to accept incoming data. If the server is already running, this command will have no effect.
 
     Splunk start  
-```Splunk start 
+```bash
 root@coffely:/opt/splunk#./bin/splunk start
 Splunk> Finding your faults, just like mom.
 ....
@@ -225,7 +225,7 @@ The Splunk web interface is at http://coffely:8000
   As mentioned in the output, the Splunk dashboard will be accessible within the VM at `HTTP://coffely:8000` Command: splunk stop The `splunk stop` command is used to stop the Splunk server. This command stops all the running Splunk processes and disables the server from accepting incoming data. If the server is not running, this command will have no effect.
 
    Splunk stop  
-```Splunk stop 
+```bash
 root@tryhackme:/opt/splunk#./bin/splunk stop
  ...some output ommitted ...
 ```
@@ -233,7 +233,7 @@ root@tryhackme:/opt/splunk#./bin/splunk stop
    Command: splunk restart The `splunk restart` command is used to restart the Splunk server. This command stops all the running Splunk processes and then starts them again. This is useful when changes have been made to the Splunk configuration files or when the server needs to be restarted for any other reason.
 
    splunk: restart  
-```splunk: restart 
+```bash
 root@tryhackme:/opt/splunk#./bin/splunk restart
 ...some output ommitted ...
 ```
@@ -241,7 +241,7 @@ root@tryhackme:/opt/splunk#./bin/splunk restart
    Command: splunk status The `splunk status` command is used to check the status of the Splunk server. This command will display information about the current state of the server, including whether it is running or not, and any errors that may be occurring.
 
    Splunk: Start  
-```Splunk: Start 
+```bash
 root@coffely:/opt/splunk#./bin/splunk status
 splunkd is running (PID: 2158).
 splunk helpers are running (PIDs: 2159 2301 2351 2437).
@@ -250,7 +250,7 @@ splunk helpers are running (PIDs: 2159 2301 2351 2437).
   Command: splunk add oneshot The `splunk add oneshot` command is used to add a single event to the Splunk index. This is useful for testing purposes or for adding individual events that may not be part of a larger data stream.
 
    splunk: add oneshot  
-```splunk: add oneshot 
+```bash
 root@coffely:/opt/splunk#./bin/splunk add oneshot
 ...some output ommitted ...
 ```
@@ -258,7 +258,7 @@ root@coffely:/opt/splunk#./bin/splunk add oneshot
 Command: splunk search The `splunk search` command is used to search for data in the Splunk index. This command can be used to search for specific events, as well as to perform more complex searches using Splunk's search language.
 
     Splunk: search  
-```Splunk: search 
+```bash
 root@coffely:/opt/splunk#./bin/splunk search coffely 
 WARNING: Server Certificate Hostname Validation is disabled. Please see server.conf/[sslConfig]/cliVerifyServerName for details.
 Feb 18 21:09:04 coffley ubuntu: coffely-has-the-best-coffee-in-town
@@ -269,7 +269,7 @@ Feb 18 13:48:17 coffely ubuntu: COFFELY
   Command: splunk helpThe most important command is the help command which provides all the help options.
 
    splunk HELP Command  
-```splunk HELP Command 
+```bash
 root@tryhackme:/opt/splunk#./bin/splunk help
 Welcome to Splunk's Command Line Interface (CLI).
 
@@ -337,7 +337,7 @@ Universal forwarders can be downloaded from the official [Splunk website](https:
 For this task, the 64-bit version of Linux Forwarder is already downloaded in the folder `~/Downloads/splunk`.
 
     splunk: Forwarder  
-```splunk: Forwarder 
+```bash
 ubuntu@coffely:~/Downloads/splunk# ls
 splunk_installer.tgz splunkforwarder.tgz
 ```
@@ -347,7 +347,7 @@ Install Forwarder
 Change the user to sudo, unpack, and install the forwarder with the following command.
 
      splunk: Forwarder  
-```splunk: Forwarder 
+```bash
 ubuntu@coffely:~/Downloads/splunk# sudo su
 root@coffely:/home/ubuntu/Downloads/splunk# tar xvzf splunkforwarder.tgz
 splunkforwarder/
@@ -365,7 +365,7 @@ splunkforwarder/etc/log-debug.cfg
   The above command will install all required files in the folder `splunkforwarder`. Next, we will move this folder to `/opt/` path with the command `mv splunkforwarder /opt/`. We will run the Splunk forwarder instance now and provide it with the new credentials as shown below:
 
    Splunk Installation  
-```Splunk Installation 
+```bash
 root@coffey:~/Downloads/splunk# mv splunkforwarder /opt/
 root@coffey:~/Downloads/splunk# cd /opt/splunkforwarder
 root@coffey:/opt/splunkforwarder# ./bin/splunk start --accept-license
@@ -444,7 +444,7 @@ Click the **New Index**  button, fill out the form, and click **Save** to create
 It's time to configure the forwarder to ensure it sends the data to the right destination. Back in the Linux host terminal, go to the `/opt/splunkforwarder/bin` directory:
 
     Splunk: Forwarder  
-```Splunk: Forwarder 
+```bash
 root@coffely:/opt/splunkforwarder/bin# ./splunk add forward-server MACHINE_IP:9997
 WARNING: Server Certificate Hostname Validation is disabled. Please see server.conf/[sslConfig]/cliVerifyServerName for details.
 Splunk username: splunkadmin
@@ -461,7 +461,7 @@ Linux stores all its important logs into the `/var/log` file, as shown below. In
 Next, we will tell Splunk forwarder which logs files to monitor. Here, we tell Splunk Forwarder to monitor the `/var/log/syslog` file.
 
     Ingest syslog file 
-```Ingest syslog file 
+```bash
 root@coffely:/opt/splunkforwarder/bin# ./splunk add monitor /var/log/syslog -index Linux_host
 WARNING: Server Certificate Hostname Validation is disabled. Please see server.conf/[sslConfig]/cliVerifyServerName for details.
 Added monitor of '/var/log/syslog'.
@@ -471,7 +471,7 @@ Exploring Inputs.conf
 We can also open the **inputs.conf**  file located in `/opt/splunkforwarder/etc/apps/search/local`, and look at the configuration added after the commands we used above.
 
      Inputs.conf 
-```Inputs.conf 
+```bash
 root@coffely:/opt/splunkforwarder/etc/apps/search/local# ls
 inputs.conf
 ```
@@ -479,7 +479,7 @@ inputs.conf
   We can view the content of the `input.conf` using the cat command.
 
    Inputs.conf 
-```Inputs.conf 
+```bash
 root@coffely:/opt/splunkforwarder/etc/apps/search/local# cat inputs.conf
 [monitor:///var/log/syslog]
 disabled = false
@@ -489,12 +489,12 @@ index = Linux_host
   Utilizing Logger UtilityLogger is a built-in command line tool to create test logs added to the syslog file. As we are already monitoring the syslog file and sending all logs to the Splunk, the log we generate in the next step can be found with Splunk logs. To run the command, use the following command. 
 
     Logger: syslog  
-```Logger: syslog 
+```bash
 tryhackme@coffely:/opt/splunkforwarder/bin# logger "coffely-has-the-best-coffee-in-town"
 ```
 
       Logger: syslog  
-```Logger: syslog 
+```bash
 tryhackme@coffely:/tryhackme@coffleylab:/opt/splunkforwarder/bin# tail -1 /var/log/syslog
 ```
 

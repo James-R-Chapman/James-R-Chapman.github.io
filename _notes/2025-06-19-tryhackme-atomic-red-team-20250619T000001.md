@@ -89,7 +89,7 @@ Atomics refers to different testing techniques based on the MITRE ATT&CK Framewo
 Each Atomic typically contain two files, both of which are named by their MITRE ATT&CK Technique ID:
 
     T1003.001 - OS Credential Dumping: LSASS Memory  
-```T1003.001 - OS Credential Dumping: LSASS Memory 
+```bash
 user@ATOMIC$ ls -lh T1003.001/
 -rw-r--r--   1 user  user       300B Jan 4 22:57 T1003.001.md
 -rw-r--r--   1 user  user       500B Jan 4 22:58 T1003.001.yaml
@@ -112,7 +112,7 @@ The first few fields are already given based on their field names:
 - **atomic_tests**  - List of atomic tests, which details how every test is executed.
 
     T1003.001 - OS Credential Dumping: LSASS Memory  
-```T1003.001 - OS Credential Dumping: LSASS Memory 
+```bash
 user@ATOMIC$ cat T1003.001/T1003.001.yaml
 
 attack_technique: T1003.001
@@ -130,7 +130,7 @@ atomic_tests:
 - **input_arguments** -**** Required**** values**** during the execution, resorts to the default value if nothing is supplied.
 
     T1003.001 - OS Credential Dumping: LSASS Memory  
-```T1003.001 - OS Credential Dumping: LSASS Memory 
+```bash
 ...
 - name: Dump LSASS.exe Memory using ProcDump
   auto_generated_guid: 0be2230c-9ab3-4ac2-8826-3199b9a0ebf8
@@ -168,7 +168,7 @@ atomic_tests:
 - **elevation_required** -**** A**** boolean value that dictates if an admin privilege is required.
 
     T1003.001 - OS Credential Dumping: LSASS Memory  
-```T1003.001 - OS Credential Dumping: LSASS Memory 
+```bash
 ...
   dependency_executor_name: powershell
   dependencies:
@@ -242,14 +242,14 @@ Note: If the VM is not visible, use the blue Show Split View button at the top-r
 Open a PowerShell window with ExecutionPolicy set to bypass inside the provided Virtual Machine. This ignores all security warning prompts while loading the module.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator>powershell -ExecutionPolicy bypass
 ```
 
    Then load the module using the **Import-Module**  cmdlet specifying the location of the **Invoke-AtomicRedTeam** **.psd1**  file.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Import-Module "C:\Tools\invoke-atomicredteam\Invoke-AtomicRedTeam.psd1" -Force
 
 PS C:\Users\Administrator> $PSDefaultParameterValues = @{"Invoke-AtomicTest:PathToAtomicsFolder"="C:\Tools\AtomicRedTeam\atomics"}
@@ -260,7 +260,7 @@ PS C:\Users\Administrator> $PSDefaultParameterValues = @{"Invoke-AtomicTest:Path
 You can confirm if the module is successfully loaded once the **help**  cmdlet provides information about **Invoke-AtomicTest** .
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> help Invoke-AtomicTest
 
 NAME
@@ -291,7 +291,7 @@ Before going to the emulation proper, let's first discuss the importance of unde
 We have previously elaborated the contents of an Atomic file, which contains mostly how the emulation works from start to finish. However, navigating through the GIT repository and reading the information about the techniques you want to emulate may be gruesome. With that in mind, this module can use a parameter that provides the details inside an Atomic file - **ShowDetailsBrief**  and **ShowDetails** .
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1127 -ShowDetailsBrief
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -302,7 +302,7 @@ T1127-2 Lolbin Jsc.exe compile javascript to dll
 The output shows that **ShowDetailsBrief**  lists the available tests in the specified Atomic and its corresponding Atomic Test number.
 
       Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1127 -ShowDetails
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -340,7 +340,7 @@ It may not be direct, but these two parameters are significant in executing emul
 Remember that every Atomic test may require some dependencies, such as binaries and files needed for execution. Below is the excerpt of Atomic T1127-1's**** dependency section using the **ShowDetails**  parameter**.**
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 Dependencies:
 Description: JavaScript code file must exist on disk at specified location (C:\Tools\AtomicRedTeam\atomics\T1127\src\hel
 lo.js)
@@ -362,7 +362,7 @@ ols\AtomicRedTeam\atomics\T1127\src\hello.js"
    It is crucial to verify if the dependencies are met before executing the tests, and this can be done by using the **CheckPrereqs**  parameter. In the case of **Atomic T1127-1** , the file from **C:\Tools\AtomicRedTeam\atomics\T1127\src\hello.js**  should exist.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1127 -CheckPrereqs
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -377,7 +377,7 @@ Prerequisites met: T1127-2 Lolbin Jsc.exe compile javascript to dll
 **Note: Usage of the GetPrereqs feature may fail since the provided instance has no outbound internet connection.**
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1127 -GetPrereqs
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -410,7 +410,7 @@ Executes all tests under Atomic T1127N/A`Invoke-AtomicTest T1127-2`
 Executes Atomic Test #2 of T1127 As an example, let's now see the tests in action with Atomic T1053.005 - Scheduled Task/Job: Scheduled Task.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1053.005 -ShowDetailsBrief
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -444,7 +444,7 @@ Done executing test: T1053.005-2 Scheduled task Local
 As mentioned throughout the room, cleaning up the mess of emulating different techniques is VERY IMPORTANT. The Invoke-AtomicRedTeam module also has the option to execute the cleanup commands to revert every footprint left by the tests. This can be done by using the **Cleanup**  parameter.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> schtasks /tn T1053_005_OnLogon
 
 Folder: \
@@ -558,7 +558,7 @@ TacticTechnique IDTechniqueInitial AccessT1566.001Spearphishing AttachmentExecut
 DiscoveryT1083File and Directory DiscoveryDiscoveryT1082System Information DiscoveryDiscoveryT1016System Network Configuration DiscoveryDiscoveryT1049System Network Connections DiscoveryDiscoveryT1007System Service DiscoveryDiscoveryT1087.001Account Discovery: Local AccountWe have extracted nine (9) out of all the techniques in MITRE ATT&CK. The next thing we need to do is to determine if an Atomic exists for these techniques.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator>ls C:\Tools\AtomicRedTeam\atomics | Where-Object Name -Match "T1566.001|T1203|T1059.003|T1083|T1082|T1016|T1049|T1007|T1087.001"
 
     Directory: C:\Tools\AtomicRedTeam\atomics
@@ -578,7 +578,7 @@ d-----         1/3/2023   5:21 PM                T1566.001
    Eight out of nine techniques are available to be emulated. Before executing the tests, we must verify each technique and list all known tests for each Atomic.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> 'T1566.001','T1059.003','T1083','T1082','T1016','T1049','T1007','T1087.001' | ForEach-Object {echo "Enumerating $_"; Invoke-AtomicTest $_ -ShowDetailsBrief }
 Enumerating T1566.001
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
@@ -612,7 +612,7 @@ T1082-8 Windows MachineGUID Discovery
    In addition, we need to check the prerequisites of each Atomic before starting the emulation.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator>'T1566.001','T1059.003','T1083','T1082','T1016','T1049','T1007','T1087.001' | ForEach-Object {echo "Enumerating $_"; Invoke-AtomicTest $_ -CheckPrereqs }
 Enumerating T1566.001
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
@@ -674,7 +674,7 @@ Try installing prereq's with the -GetPrereqs switch
 The only thing left now is to emulate the Atomics. Unlike the PowerShell command snippets above, we will only execute the tests one at a time. This is to observe the emulation and not be overwhelmed by the terminal output.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator>Invoke-AtomicTest T1059.003-3
 ```
 
@@ -735,7 +735,7 @@ Observing Telemetry
 The easiest way to understand different TTPs is to see them first-hand. We will learn and observe how techniques work by checking the events/logs generated by the Atomic tests. For this section, let's use the tests from Atomic T1547.001, which is all about Boot or Logon Autostart Execution: Registry Run Keys / Startup FolderPermalink.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1547.001 -CheckPrereqs
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -780,7 +780,7 @@ Prerequisites met: T1547.001-16 secedit used to create a Run key in the HKLM Hiv
  For this task, we will view logs generated by Atomics through Sysmon. Let's fire up the Event Viewer and navigate to `Applications and Services > Microsoft > Windows > Sysmon`. Once done, clear the existing records and start executing the first test.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTestT1547.001 -TestNumbers 1
 PathToAtomicsFolder = C: \Tools\AtomicRedTeam\atomics
 
@@ -844,7 +844,7 @@ For a quick recap, Aurora is a Windows endpoint agent that uses Sigma rules and 
 To run Aurora, open a PowerShell window. Then navigate to **C:\Tools\Aurora**  and execute **aurora-agent-64.exe** .
 
     Administrator: C:\Windows\System32\cmd.exe  
-```Administrator: C:\Windows\System32\cmd.exe 
+```bash
 C:\Users\Administrator>cd C:\Tools\Aurora
 C:\Tools\Aurora> .\aurora-agent-64.exe
 ```
@@ -852,7 +852,7 @@ C:\Tools\Aurora> .\aurora-agent-64.exe
    Wait for the message that states **Aurora Agent started** before going back to the execution of Atomic Test T1547.001-2. Once the tool has successfully loaded, proceed to the next Atomic Test.
 
     Administrator: Windows PowerShell  
-```Administrator: Windows PowerShell 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1547.001 -TestNumbers 2
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -922,7 +922,7 @@ Custom Input Arguments
 Going back to the contents of the Atomic files, the **input_argument** field defines a hashtable wherein the key is the input name, and the value is another hashtable specifying the input arguments. Let's use the Create Account: Local Account technique as an example to expound this further.
 
     T1136.001 - Create Account: Local Account  
-```T1136.001 - Create Account: Local Account 
+```bash
 user@ATOMIC$ cat T1136.001/T1136.001.yaml
 ...
   input_arguments:
@@ -954,7 +954,7 @@ Knowing these, executing this Atomic test will create a user named T1136.001_CMD
 We can test this out and verify it manually by executing Atomic Test #3 of T1136.001.
 
     powershell.exe  
-```powershell.exe 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1136.001 -TestNumbers 3
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -965,7 +965,7 @@ Done executing test: T1136.001-3 Create a new user in a command prompt
 ```
 
       powershell.exe  
-```powershell.exe 
+```bash
 PS C:\Users\Administrator> net user
 
 User accounts for \\ATOMIC
@@ -983,7 +983,7 @@ For this, we can either use one of these two parameters:
 - **PromptForInputArgs** - set the values of the input arguments interactively
 
     powershell.exe  
-```powershell.exe 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1136.001 -TestNumbers 3 -PromptForInputArgs
 ```
 
@@ -991,7 +991,7 @@ PS C:\Users\Administrator> Invoke-AtomicTest T1136.001 -TestNumbers 3 -PromptFor
 - **InputArgs**  - pass a hashtable that contains the key-value pair of input arguments and its values
 
     powershell.exe  
-```powershell.exe 
+```bash
 PS C:\Users\Administrator> $customArgs = @{ "username" = "THM_Atomic"; "password" = "p@ssw0rd" }
 PS C:\Users\Administrator> Invoke-AtomicTest T1136.001 -TestNumbers 3 -InputArgs $customArgs
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
@@ -1006,7 +1006,7 @@ Done executing test: T1136.001-3 Create a new user in a command prompt
 The result can then be verified by checking the local users via **net.exe** . The user **THM_Atomic**  was successfully created, as shown in the output below.
 
     powershell.exe  
-```powershell.exe 
+```bash
 PS C:\Users\Administrator> net user
 
 User accounts for \\ATOMIC
@@ -1020,7 +1020,7 @@ The command completed successfully.
    Lastly, these parameters can be used in conjunction with the **cleanup**  parameter. Given the case, you need to specify the values used to revert successfully after the execution.
 
     powershell.exe  
-```powershell.exe 
+```bash
 PS C:\Users\Administrator> Invoke-AtomicTest T1136.001 -TestNumbers 3 -PromptForInputArgs -Cleanup
 PathToAtomicsFolder = C:\Tools\AtomicRedTeam\atomics
 
@@ -1053,7 +1053,7 @@ The Atomic GUI is a web-based form that users can fill out to generate the YAML 
 To start the web application, execute **Start-AtomicGUI**  via PowerShell.
 
     powershell.exe  
-```powershell.exe 
+```bash
 PS C:\Users\Administrator> Start-AtomicGui
 Stopped all AtomicGUI Dashboards
 

@@ -72,7 +72,7 @@ There are a few options that you can use, all with a variety of friendliness and
 It is easy to get started with Nano! To create or edit a file using nano, we simply use `nano filename` -- replacing "filename" with the name of the file you wish to edit.
 
     Introducing Nano  
-```Introducing Nano 
+```bash
 tryhackme@linux3:/tmp# nano myfile
   GNU nano 4.8                                             myfile                                                       
 
@@ -83,7 +83,7 @@ tryhackme@linux3:/tmp# nano myfile
    Once we press enter to execute the command, `nano` will launch! Where we can just begin to start entering or modifying our text. You can navigate each line using the "up" and "down" arrow keys or start a new line using the "Enter" key on your keyboard.
 
     Using Nano to write text  
-```Using Nano to write text 
+```bash
 tryhackme@linux3:/tmp# nano myfile
   GNU nano 4.8                                             myfile                                             Modified  
 
@@ -170,7 +170,7 @@ Ubuntu machines come pre-packaged with python3. Python helpfully provides a ligh
 Python3's "HTTPServer" will serve the files in the directory where you run the command, but this can be changed by providing options that can be found within the manual pages. Simply, all we need to do is run `python3 -m  http.server` in the terminal to start the module! In the snippet below, we are serving from a directory called "webserver", which has a single named "file".
 
     Using Python to start a web server  
-```Using Python to start a web server 
+```bash
 tryhackme@linux3:/webserver# python3 -m http.server
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 ```
@@ -178,14 +178,14 @@ Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 Now, let's use `wget `to download the file using the MACHINE_IP address and the name of the file. Remember, because the python3 server is running port 8000, you will need to specify this within your wget command. For example:
 
     An example wget command of a web server running on port 8000  
-```An example wget command of a web server running on port 8000 
+```bash
 tryhackme@mymachine:~# wget http://MACHINE_IP:8000/myfile
 ```
 
 Note, you will need to open a new terminal to use `wget` and leave the one that you have started the Python3 web server in. This is because, once you start the Python3 web server, it will run in that terminal until you cancel it.
 
  Let's take a look in the snippet below as an example:   Downloading a file from our webserver using wget  
-```Downloading a file from our webserver using wget 
+```bash
 tryhackme@linux3:/tmp# wget http://MACHINE_IP:8000/file
 
 2021-05-04 14:26:16  http://127.0.0.1:8000/file

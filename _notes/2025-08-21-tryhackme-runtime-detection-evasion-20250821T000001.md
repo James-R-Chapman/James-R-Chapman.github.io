@@ -106,7 +106,7 @@ AMSI (**A** nti-**M** alware **S** can **I** nterface) is a PowerShell security 
   These response codes will only be reported on the backend of AMSI or through third-party implementation. If AMSI detects a malicious result, it will halt execution and send the below error message.
 
     AMSI Error Response  
-```AMSI Error Response 
+```bash
 PS C:Users\Tryhackme> 'Invoke-Hacks'
 At line:1 char:1
 + "Invoke-Hacks"
@@ -416,7 +416,7 @@ $d=$null;$qcgcjblv=[$(('Sys'+'tem').NoRMALizE([CHar](70*66/66)+[CHaR](77+34)+[cH
  The syntax for using amsitrigger is relatively straightforward; you need to specify the file or URL and what format to scan the file. Below is an example of running amsitrigger.
 
     AMSI Trigger Example  
-```AMSI Trigger Example 
+```bash
 C:\Users\Tryhackme\Tools>AmsiTrigger_x64.exe -i "bypass.ps1" -f 3
 $MethodDefinition = "
 

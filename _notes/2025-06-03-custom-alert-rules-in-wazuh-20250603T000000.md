@@ -52,7 +52,7 @@ Start the virtual machine in split-screen view by clicking on the green "Start M
 Download Task FilesOne of the many features of Wazuh is that it can ingest logs from different sources and generate alerts based on their contents. However, various logs can have varied data types and structures. To manage this, Wazuh uses Decoders that use regex to extract only the needed data for later use.
 Understanding DecodersTo help us better understand what Decoders are and how they work, let us look at how logs from a tool like Sysmon (System Monitor) are processed. As a popular tool, there is already a pre-existing decoder for this listed in the `windows_decoders.xml` file on [Wazuh's Github page](https://github.com/wazuh/wazuh-ruleset/tree/b26f7f5b75aab78ff54fc797e745c8bdb6c23017/decoders). This file can also be downloaded for your reference by clicking on the "Download Task Files" button on the top right corner of this task.
     windows_decoders.xml  
-```windows_decoders.xml 
+```bash
 <decoder name="Sysmon-EventID#1_new">
     <parent>windows</parent>     
     <type>windows</type>     
@@ -75,7 +75,7 @@ There are a whole lot more options that can be set for decoders. For now, we are
 For us to know what data is to be extracted, we need to look at an example log entry from Sysmon:
 
     Sysmon Log  
-```Sysmon Log 
+```bash
 Mar 29 13:36:36 WinEvtLog: Microsoft-Windows-Sysmon/Operational: INFORMATION(1): Microsoft-Windows-Sysmon: SYSTEM: NT AUTHORITY: WIN-P57C9KN929H: Process Create:  UtcTime: 2017-03-29 11:36:36.964  ProcessGuid: {DB577E3B-9C44-58DB-0000-0010B0983A00}  ProcessId: 3784  Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  CommandLine: "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-file" "C:\Users\Alberto\Desktop\test.ps1"  CurrentDirectory: C:\Users\Alberto\Desktop\  User: WIN-P57C9KN929H\Alberto  LogonGuid: {DB577E3B-89E5-58DB-0000-0020CB290500}  LogonId: 0x529cb  TerminalSessionId: 1  IntegrityLevel: Medium  Hashes: MD5=92F44E405DB16AC55D97E3BFE3B132FA,SHA256=6C05E11399B7E3C8ED31BAE72014CF249C144A8F4A2C54A758EB2E6FAD47AEC7  ParentProcessGuid: {DB577E3B-89E6-58DB-0000-0010FA3B0500}  ParentProcessId: 2308  ParentImage: C:\Windows\explorer.exe  ParentCommandLine: C:\Windows\Explorer.EXE
 ```
 
@@ -134,7 +134,7 @@ Once in the Wazuh dashboard, access the "Ruleset Test" tool page by doing the fo
 Once on the Ruleset Test page, paste the example Sysmon log entry above into the textbox and click the "Test" button. This will output the following results:
 
     Ruleset Test Output  
-```Ruleset Test Output 
+```bash
 **Phase 1: Completed pre-decoding. 
     full event:  Mar 29 13:36:36 WinEvtLog: Microsoft-Windows-Sysmon/Operational: INFORMATION(1): Microsoft-Windows-Sysmon: SYSTEM: NT AUTHORITY: WIN-P57C9KN929H: Process Create:  UtcTime: 2017-03-29 11:36:36.964  ProcessGuid: {DB577E3B-9C44-58DB-0000-0010B0983A00}  ProcessId: 3784  Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe  CommandLine: "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-file" "C:\Users\Alberto\Desktop\test.ps1"  CurrentDirectory: C:\Users\Alberto\Desktop\  User: WIN-P57C9KN929H\Alberto  LogonGuid: {DB577E3B-89E5-58DB-0000-0020CB290500}  LogonId: 0x529cb  TerminalSessionId: 1  IntegrityLevel: Medium  Hashes: MD5=92F44E405DB16AC55D97E3BFE3B132FA,SHA256=6C05E11399B7E3C8ED31BAE72014CF249C144A8F4A2C54A758EB2E6FAD47AEC7  ParentProcessGuid: {DB577E3B-89E6-58DB-0000-0010FA3B0500}  ParentProcessId: 2308  ParentImage: C:\Windows\explorer.exe  ParentCommandLine: C:\Windows\Explorer.EXE  
     timestamp: Mar 29 13:36:36 
@@ -173,7 +173,7 @@ Once on the Ruleset Test page, paste the example Sysmon log entry above into the
 As for the other data like "processGuid", "processId", etc.), they were extracted by a separate decoder block, like the one below:
 
     windows_decoders.xml  
-```windows_decoders.xml 
+```bash
 <decoder name="Sysmon-EventID#1_new">
     <parent>windows</parent>
     <type>windows</type>
@@ -213,7 +213,7 @@ Understanding Rules
 Here is an example of an alert rule that looks for the "svchost.exe" string in the "sysmon.image" field:
 
     sysmon_rules.xml  
-```sysmon_rules.xml 
+```bash
 <rule id="184666" level="12">
         <if_group>sysmon_event1</if_group>
         <field name="sysmon.image">svchost.exe</field>
@@ -240,7 +240,7 @@ Testing the Rule
 Go back to the "Ruleset Test" page. Paste the exact log entry we used in the previous task. The result should be the same, but this time, we will focus on Phase 3 of the output.
 
     Ruleset Test Output  
-```Ruleset Test Output 
+```bash
 **Phase 3: Completed filtering (rules). 
     id: 184665 
     level: - 
@@ -263,14 +263,14 @@ Go back to the "Ruleset Test" page. Paste the exact log entry we used in the pre
 Right now, the output shows that the triggered rule ID is `184665`. This is not the rule block that we examined above, which has the ID of `184666`. The reason for this is that `184666` is looking for "svchost.exe" in the "sysmon.image" field option. For this rule to trigger, we need to change "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" to "C:\WINDOWS\system32\svchost.exe", as shown below:
 
    Sysmon Log  
-```Sysmon Log 
+```bash
 Mar 29 13:36:36 WinEvtLog: Microsoft-Windows-Sysmon/Operational: INFORMATION(1): Microsoft-Windows-Sysmon: SYSTEM: NT AUTHORITY: WIN-P57C9KN929H: Process Create:  UtcTime: 2017-03-29 11:36:36.964  ProcessGuid: {DB577E3B-9C44-58DB-0000-0010B0983A00}  ProcessId: 3784  Image: C:\WINDOWS\system32\svchost.exe  CommandLine: "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-file" "C:\Users\Alberto\Desktop\test.ps1"  CurrentDirectory: C:\Users\Alberto\Desktop\  User: WIN-P57C9KN929H\Alberto  LogonGuid: {DB577E3B-89E5-58DB-0000-0020CB290500}  LogonId: 0x529cb  TerminalSessionId: 1  IntegrityLevel: Medium  Hashes: MD5=92F44E405DB16AC55D97E3BFE3B132FA,SHA256=6C05E11399B7E3C8ED31BAE72014CF249C144A8F4A2C54A758EB2E6FAD47AEC7  ParentProcessGuid: {DB577E3B-89E6-58DB-0000-0010FA3B0500}  ParentProcessId: 2308  ParentImage: C:\Windows\explorer.exe  ParentCommandLine: C:\Windows\Explorer.EXE
 ```
 
    When this is done, press the "Test" button again to run the Ruleset Test. The output should now be different, especially in Phase 3:
 
     Ruleset Test Output  
-```Ruleset Test Output 
+```bash
 **Phase 3: Completed filtering (rules). 
     id: 184666 
     level: 12 
@@ -320,7 +320,7 @@ In Wazuh, rules are processed based on several factors determining rule order. O
 We've seen the `if_group` option in the previous task, but there are other "if" condition prerequisites like the `if_sid` option shown below:
 
     sysmon_rules.xml  
-```sysmon_rules.xml 
+```bash
 <rule id="184667" level="0">
     <if_sid>184666</if_sid>
     <field name="sysmon.parentImage">\\services.exe</field>
@@ -340,14 +340,14 @@ Go back to the "Ruleset Test" page. Paste the exact log entry we used in the pre
 The log entry should now look like the one below:
 
     Sysmon Log  
-```Sysmon Log 
+```bash
 Mar 29 13:36:36 WinEvtLog: Microsoft-Windows-Sysmon/Operational: INFORMATION(1): Microsoft-Windows-Sysmon: SYSTEM: NT AUTHORITY: WIN-P57C9KN929H: Process Create:  UtcTime: 2017-03-29 11:36:36.964  ProcessGuid: {DB577E3B-9C44-58DB-0000-0010B0983A00}  ProcessId: 3784  Image: C:\WINDOWS\system32\svchost.exe  CommandLine: "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-file" "C:\Users\Alberto\Desktop\test.ps1"  CurrentDirectory: C:\Users\Alberto\Desktop\  User: WIN-P57C9KN929H\Alberto  LogonGuid: {DB577E3B-89E5-58DB-0000-0020CB290500}  LogonId: 0x529cb  TerminalSessionId: 1  IntegrityLevel: Medium  Hashes: MD5=92F44E405DB16AC55D97E3BFE3B132FA,SHA256=6C05E11399B7E3C8ED31BAE72014CF249C144A8F4A2C54A758EB2E6FAD47AEC7  ParentProcessGuid: {DB577E3B-89E6-58DB-0000-0010FA3B0500}  ParentProcessId: 2308  ParentImage: C:\Windows\services.exe  ParentCommandLine: C:\Windows\Explorer.EXE
 ```
 
    Pressing the "Test" button would then output the following:
 
     Ruleset Test Output  
-```Ruleset Test Output 
+```bash
 **Phase 3: Completed filtering (rules). 
     id: 184667 
     level: - 
@@ -393,7 +393,7 @@ We've previously looked at how Wazuh processes Sysmon logs from Windows, so this
 To help us better understand how to build our custom rule, let's look at an example of an auditd log:
 
     Auditd Log  
-```Auditd Log 
+```bash
 type=SYSCALL msg=audit(1479982525.380:50): arch=c000003e syscall=2 success=yes exit=3 a0=7ffedc40d83b a1=941 a2=1b6 a3=7ffedc40cce0 items=2 ppid=432 pid=3333 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=2 comm="touch" exe="/bin/touch" key="audit-wazuh-w" type=CWD msg=audit(1479982525.380:50):  cwd="/var/log/audit" type=PATH msg=audit(1479982525.380:50): item=0 name="/var/log/audit/tmp_directory1/" inode=399849 dev=ca:02 mode=040755 ouid=0 ogid=0 rdev=00:00 nametype=PARENT type=PATH msg=audit(1479982525.380:50): item=1 name="/var/log/audit/tmp_directory1/malware.py" inode=399852 dev=ca:02 mode=0100644 ouid=0 ogid=0 rdev=00:00 nametype=CREATE type=PROCTITLE msg=audit(1479982525.380:50): proctitle=746F756368002F7661722F6C6F672F61756469742F746D705F6469726563746F7279312F6D616C776172652E7079
 ```
 
@@ -402,7 +402,7 @@ type=SYSCALL msg=audit(1479982525.380:50): arch=c000003e syscall=2 success=yes e
 When Wazuh ingests the above log, the pre-existing rule below will get triggered because of the value of `<match>`:
 
     auditd_rules.xml  
-```auditd_rules.xml 
+```bash
 <rule id="80790" level="3">
     <if_group>audit_watch_write</if_group>
     <match>type=CREATE</match>
@@ -423,7 +423,7 @@ To do this, you need to do the following:
 4. Paste the following text at the end of the file:
 
     local_rules.xml  
-```local_rules.xml 
+```bash
 <group name="audit,">
    <rule id="100002" level="3"> 
         <if_sid>80790</if_sid> 
@@ -449,14 +449,14 @@ The rule above will get triggered if a file is created in the downloads, tmp, or
 Save the file and run the code below to restart wazuh-manager so it can load the new custom rules:
 
     Bash  
-```Bash 
+```bash
 systemctl restart wazuh-manager
 ```
 
    Go back to the Wazuh dashboard, access the "Ruleset Test" page and paste the sample auditd log entry found above. If all goes well, you should see the following "Phase 3" output:
 
     Ruleset Test Output  
-```Ruleset Test Output 
+```bash
 **Phase 3: Completed filtering (rules).
 	id: '100002'
 	level: '3'
@@ -489,7 +489,7 @@ From the results above, we can see that the custom rules that we created trigger
 You can fine-tune the custom rule by adding more child rules, each focusing on specific related data from the logs. For example, you can use the values decoded by `auditd` decoder, as shown in the Phase 2 results of the previous test.
 
 Ruleset Test Output
-```Ruleset Test Output 
+```bash
 **Phase 2: Completed decoding.
 	name: 'auditd'
 	parent: 'auditd'
@@ -513,7 +513,7 @@ Ruleset Test Output
 We can use the above data to make our detection rules as broad or as specific as needed. The following is an expanded version of `local_rules.xml` that incorporates more of the log's data.
 
     local_rules.xml  
-```local_rules.xml 
+```bash
 <group name="audit,">
    <rule id="100002" level="3"> 
         <if_sid>80790</if_sid> 

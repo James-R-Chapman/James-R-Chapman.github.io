@@ -670,7 +670,7 @@ This technique can only be executed with locally allocated memory but does not r
 The one-liner below is the most common form of the void function pointer, but we can break it down further to explain its components.
 
     Function Pointer  
-```Function Pointer 
+```bash
 ((void(*)())addressPointer)();
 ```
 

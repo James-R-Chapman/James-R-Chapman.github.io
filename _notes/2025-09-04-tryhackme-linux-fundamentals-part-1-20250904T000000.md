@@ -101,7 +101,7 @@ As we previously discussed, a large selling point of using OSs such as Ubuntu is
 The "Terminal" is purely text-based and is intimidating at first. However, if we break down some of the commands, after some time, you quickly become familiar with using the terminal!
 
     This is what a terminal looks like  
-```This is what a terminal looks like 
+```bash
 tryhackme@linux1:~$ enter commands here
 ```
 
@@ -114,7 +114,7 @@ whoamiFind out what user we're currently logged in as!
 See the snippets below for an example of each command being used
 
     Using echo  
-```Using echo 
+```bash
 tryhackme@linux1:~$ echo Hello
 Hello
 tryhackme@linux1:~$ echo "Hello Friend!"
@@ -128,7 +128,7 @@ Hello Friend!
  
 
    Using whoami to find out the username of who we're logged in as  
-```Using whoami to find out the username of who we're logged in as 
+```bash
 tryhackme@linux1:~$ whoami
 ```
 
@@ -171,7 +171,7 @@ So far we've only covered the "**echo** " and "**whoami** " commands. Not all th
  
 
    Using "ls" to list the contents of the current directory 
-```Using "ls" to list the contents of the current directory 
+```bash
 tryhackme@linux1:~$ ls
 'Important Files' 'My Documents' Notes Pictures
 ```
@@ -199,7 +199,7 @@ tryhackme@linux1:~$ ls
  Now that we know what folders exist, we need to use the "**cd** " command (short for **c** hange **d** irectory) to change to that directory. Say if I wanted to open the "Pictures" directory - I'd do "**cd Pictures** ". Where again, we want to find out the contents of this "Pictures" directory and to do so, we'd use "**ls** " again:
 
    Listing our new directory after we have used "cd" 
-```Listing our new directory after we have used "cd" 
+```bash
 tryhackme@linux1:~/Pictures$ ls
 dog_picture1.jpg dog_picture2.jpg dog_picture3.jpg dog_picture4.jpg
 ```
@@ -217,7 +217,7 @@ dog_picture1.jpg dog_picture2.jpg dog_picture3.jpg dog_picture4.jpg
  In the screenshot below, you can see how I have combined the use of "ls" to list the files within a directory called "Documents":
 
    Using "ls" to to list the contents of the current directory 
-```Using "ls" to to list the contents of the current directory 
+```bash
 tryhackme@linux1:~/Documents$ ls
 todo.txt
 tryhackme@linux1:~/Documents$ cat todo.txt
@@ -245,7 +245,7 @@ Here's something important for me to do later!
  Using the example machine from before, we are currently in the "Documents" folder — but where is this exactly on the Linux machine's filesystem? We can find this out using this "pwd" command like within the screenshot below:
 
    Using "pwd" to list the full path of the current directory 
-```Using "pwd" to list the full path of the current directory 
+```bash
 tryhackme@linux1:~/Documents$ pwd
 /home/ubuntu/Documents
 tryhackme@linux1:~/Documents$
@@ -300,7 +300,7 @@ This is where Linux starts to become a bit more intimidating to approach -- but 
  Take the snippet below; we can see a list of directories available to us:
 
    Using "ls" to list the contents of the current directory  
-```Using "ls" to list the contents of the current directory 
+```bash
 tryhackme@linux1:~$ ls
 Desktop Documents Pictures folder1
 tryhackme@linux1:~$
@@ -320,7 +320,7 @@ Let's start simple and assume that we already know the name of the file we're lo
 If we remember the filename, we can simply use `find -name passwords.txt` where the command will look through every folder in our current directory for that specific file like so:
 
     Using "find" to find a file with the name of "passwords.txt"  
-```Using "find" to find a file with the name of "passwords.txt" 
+```bash
 tryhackme@linux1:~$ find -name passwords.txt
 ./folder1/passwords.txt
 tryhackme@linux1:~$
@@ -332,7 +332,7 @@ tryhackme@linux1:~$
  We can simply use what's known as a wildcard (*) to search for anything that has .txt at the end. In our case, we want to find every .txt file that's in our current directory. We will construct a command such as `find -name *.txt` . Where "Find" has been able to *find*  every .txt file and has then given us the location of each one:
 
     Using "find" to find any file with the extension of ".txt"  
-```Using "find" to find any file with the extension of ".txt" 
+```bash
 tryhackme@linux1:~$ find -name *.txt
 ./folder1/passwords.txt
 ./Documents/todo.txt
@@ -352,7 +352,7 @@ That wasn't so tough, huh!
 Take for example, the access log of a web server. In this case, the access.log of a web server has 244 entries.
 
     Using "wc" to count the number of entries in "access.log"  
-```Using "wc" to count the number of entries in "access.log" 
+```bash
 tryhackme@linux1:~$ wc -l access.log
 244 access.log
 tryhackme@linux1:~$
@@ -363,7 +363,7 @@ tryhackme@linux1:~$
 We can use `grep `to search the entire contents of this file for any entries of the value that we are searching for. Going with the example of a web server's access log, we want to see everything that the IP address "81.143.211.90" has visited (note that this is fictional)
 
     Using "grep" to find any entries with the IP address of "81.143.211.90" in "access.log"  
-```Using "grep" to find any entries with the IP address of "81.143.211.90" in "access.log" 
+```bash
 tryhackme@linux1:~$ grep "81.143.211.90" access.log
 81.143.211.90 - - [25/Mar/2021:11:17 + 0000] "GET / HTTP/1.1" 200 417 "-" "Mozilla/5.0 (Linux; Android 7.0; Moto G(4))"
 tryhackme@linux1:~$
@@ -412,12 +412,12 @@ Let's cover these in a bit more detail.
  Let's say we wanted to create a file named "welcome" with the message "hey". We can run `echo hey > welcome` where we want the file created with the contents "hey" like so:
 
     Using the > Operator  
-```Using the > Operator 
+```bash
 tryhackme@linux1:~$ echo hey > welcome
 ```
 
       Using cat to output the "welcome" file  
-```Using cat to output the "welcome" file 
+```bash
 tryhackme@linux1:~$ cat welcome
 hey
 ```
@@ -431,12 +431,12 @@ Following on with our previous example where we have the file "welcome" that has
 The `>>` operator allows to append the output to the bottom of the file — rather than replacing the contents like so:
 
     Using the >> Operator  
-```Using the >> Operator 
+```bash
 tryhackme@linux1:~$ echo hello >> welcome
 ```
 
       Using cat to output the "welcome" file  
-```Using cat to output the "welcome" file 
+```bash
 tryhackme@linux1:~$ cat welcome
 hey
 hello

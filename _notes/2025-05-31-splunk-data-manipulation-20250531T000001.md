@@ -299,7 +299,7 @@ Great. A new Splunk app has been created successfully and it can be shown on the
  Go to the app directory `/opt/splunk/etc/apps` , where we can locate our newly created app `DataApp`, as shown below:
 
     App Directory  
-```App Directory 
+```bash
 root@tryhackme:/opt/splunk/etc/apps# ls 
 DataApp                        splunk-dashboard-studio
 SplunkForwarder                splunk_archiver
@@ -320,7 +320,7 @@ search
    Content within the App directory
 
     App Directory  
-```App Directory 
+```bash
 root@tryhackme:/opt/splunk/etc/apps# ls  DataApp
 bin  default  local  metadata
 ```
@@ -337,7 +337,7 @@ print("This is a sample log...")
  Let’s use python3 to run the file as shown below and see what output we get:
 
     python script  
-```python script 
+```bash
 root@tryhackme:/opt/splunk/etc/apps/DataApp/bin# python3 samplelogs.py 
 This is a sample log...
 ```

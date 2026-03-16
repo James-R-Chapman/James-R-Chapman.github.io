@@ -149,7 +149,7 @@ Uncoder.io
 Let's use the following set of IPs and feed them into Uncoder. Do take note that with recent updates, this requires setting up a free account on the uncoder.io website.
 
     ioc_list.txt  
-```ioc_list.txt 
+```bash
 117[.]213[.]7[.]8
 119[.]180[.]220[.]224
 144[.]202[.]127[.]44
@@ -175,7 +175,7 @@ The result of using the tool can be utilised in our Kibana Instance via the Disc
 To complete the task, answer the following questions using the set of IOCs below. You must use the same index and timeframe mentioned above.
 
     ioc_list.txt  
-```ioc_list.txt 
+```bash
 135[.]181[.]103[.]89
 185[.]224[.]126[.]215
 185[.]224[.]128[.]215
@@ -359,7 +359,7 @@ As discussed throughout the Detection Engineering Module, [Sigma](https://tryhac
 In this task, we will use the following Sigma rule to hunt for sinkholed domains.
 
     user@threatintel:~/  
-```user@threatintel:~/ 
+```bash
 author: TryHackMe User
 description: Sigma rule for sinkholed DNS queries 
 logsource:
@@ -405,7 +405,7 @@ The rule type to use. The value `any`****  will generate an alert for every succ
 Now that we have introduced ElastAlert, **access the machine via SSH using the provided credentials in Task 2 (user:tryhackme)**  and navigate to the **~/elastalert** directory. You may see that the directory contains a config file and a subdirectory.
 
     user@threatintel:~/elastalert  
-```user@threatintel:~/elastalert 
+```bash
 user@threatintel:~/elastalert$ ls
 config.yaml  rules
 user@threatintel:~/elastalert$ ls rules/
@@ -422,7 +422,7 @@ sinkhole.yaml
 The ElastAlert rule should be similar to the one below after executing the steps mentioned above.
 
     user@threatintel:~/elastalert/rules  
-```user@threatintel:~/elastalert/rules 
+```bash
 user@threatintel:~/elastalert/rules$ cat sinkhole.yaml
 alert:
 - debug
@@ -441,7 +441,7 @@ type: any
  After configuring the **sinkhole.yaml** rule, navigate back to the elastalert directory and start executing ElastAlert.
 
     user@threatintel:~/elastalert  
-```user@threatintel:~/elastalert 
+```bash
 user@threatintel:~/elastalert/rules$ cd ~/elastalert
 user@threatintel:~/elastalert$ elastalert --start 2023-02-16T00:00:00 --verbose 2>&1 | tee output.txt
 ```

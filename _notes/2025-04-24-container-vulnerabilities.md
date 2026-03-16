@@ -131,7 +131,7 @@ We can use a utility such as `capsh` which comes with the *libcap2-bin*  package
 Some capabilities of interest have been provided in the terminal snippet below.
 
     Listing capabilities of a privileged Docker Container  
-```Listing capabilities of a privileged Docker Container 
+```bash
 cmnatic@privilegedcontainer:~$ capsh --print 
 Current: = cap_chown, cap_sys_module, cap_sys_chroot, cap_sys_admin, cap_setgid,cap_setuid
 ```
@@ -191,7 +191,7 @@ How Does Docker Use Sockets
 When interacting with the Docker Engine (i.e. running commands such as `docker run`), this will be done using a socket (usually, this is done using a Unix socket unless you execute the commands to a remote Docker host). Recall that Unix sockets use filesystem permissions. This is why you must be a member of the Docker group (or root!) to run Docker commands, as you will need the permissions to access the socket owned by Docker.
 
    Verifying that our user is a part of the Docker group  
-```Verifying that our user is a part of the Docker group 
+```bash
 cmnatic@demo-container:~$ groups
 cmnatic sudo docker
 ```
@@ -203,7 +203,7 @@ Remember, containers interact with the host operating system using the Docker En
 ***Note:**  This location can vary based on the operating system and can even be manually set by the developer at runtime of the container.*
 
     Finding the docker.sock file in a container  
-```Finding the docker.sock file in a container 
+```bash
 cmnatic@demo-container:~$ ls -la /var/run | grep sock
 srw-rw---- 1 root docker 0 Dec 9 19:37 docker.sock
 ```
@@ -241,7 +241,7 @@ After executing the command, we should see that we have been placed into a new c
 So, let's see the contents of */*  by doing `ls /`
 
     Listing the contents of / on the new container (which will have the host operating system's files)  
-```Listing the contents of / on the new container (which will have the host operating system's files) 
+```bash
 root@alpine-container:~# ls /
 bin   dev  home  lib32  libx32      media  opt   root  sbin  srv       sys  usr
 boot  etc  lib   lib64  lost+found  mnt    proc  run   snap  swapfile  tmp  var
@@ -280,7 +280,7 @@ Enumerating: Finding Out if a Device Has Docker Remotely Accessible
 By default, the engine will run on **port 2375.** We can confirm this by performing an Nmap scan against your target (MACHINE_IP) from your AttackBox.
 
     Verifying if our target has Docker remotely accessible  
-```Verifying if our target has Docker remotely accessible 
+```bash
 cmnatic@attack-machine:~$ nmap -sV -p 2375 MACHINE_IP Starting Nmap 7.80 ( https://nmap.org ) at 2024-01-02 21:27 GMT
 Nmap scan report for docker-host (MACHINE_IP)
 Host is up (0.0018s latency).
@@ -292,7 +292,7 @@ PORT    STATE SERVICE VERSION
    Looks like it's open; we're going to use the `curl` command to start interacting with the exposed Docker daemon. Confirming that we can access the Docker daemon: `curl http://MACHINE_IP:2375/version`
 
    CURLing the Docker Socket  
-```CURLing the Docker Socket 
+```bash
 cmnatic@attack-machine:~$ curl http://MACHINE_IP:2375/version
 {
   "Platform": {
@@ -321,7 +321,7 @@ Executing Docker Commands on Our Target
 For this, we'll need to tell our version of Docker to send the command to our target (not our own machine). We can add the "-H" switch to our target. To test if we can run commands, we'll list the containers on the target: `docker -H tcp://MACHINE_IP:2375 ps`
 
     Listing the containers on our target  
-```Listing the containers on our target 
+```bash
 cmnatic@attack-machine:~$ docker -H tcp://MACHINE_IP:2375 ps
 CONTAINER ID   IMAGE        COMMAND               CREATED        STATUS         PORTS                               NAMES
 b4ec8c45414c   dockertest   "/usr/sbin/sshd -D"   10 hours ago   Up 7 minutes   0.0.0.0:22->22/tcp, :::22->22/tcp   priceless_mirzakhani
@@ -364,7 +364,7 @@ Namespaces are how containerisation is achieved! Processes can only "see" the pr
 
 Let's prove the concept of containerisation by comparing the number of processes on the host operating system, in comparison to the Docker container that the host is running (an apache2 web server):
     Listing running processes on a "normal" Ubuntu system  
-```Listing running processes on a "normal" Ubuntu system 
+```bash
 cmnatic@thm-dev:~$ ps aux
 USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 --cut for brevity--
@@ -389,7 +389,7 @@ Generally speaking, a Docker container will have very processes running. This is
 Determining if We're in a Container (Processes)Let's list the processes running in our Docker container using `ps aux`. It's important to note that we only have six processes running in this example. The difference in the number of processes is usually a great indicator that we're in a container.
 Additionally, the first process in the snippet below has a PID of 1. This is the first process that is running. PID 1 (usually init) is the ancestor (parent) for all future processes that are started. If, for whatever reason, this process is stopped, then all other processes are stopped too. 
     Listing running processes on a container  
-```Listing running processes on a container 
+```bash
 root@demo-container:~# ps aux
 USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root           1  0.2  0.2 166612 11356 ?        Ss   00:47   0:00 /sbin/init 
@@ -403,7 +403,7 @@ root          81  0.0 0.0 5888 2972 pts/0  R+ 00:52 ps aux
 How Can We Abuse NamespacesRecall cgroups (control groups) in a previous vulnerability. We are going to be using these in another method of exploitation. This attack abuses conditions where the container will share the same namespace as the host operating system (and therefore, the container can communicate with the processes on the host).
 You might see this in cases where the container relies on a process running or needs to "plug in" to the host such as the use of debugging tools. In these situations, you can expect to see the host's processes in the container when listing them via `ps aux`.
     Edge case: Determining if a container can interact with the host's processes  
-```Edge case: Determining if a container can interact with the host's processes 
+```bash
 root@demo-container:~# ps aux
 USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root           1  0.1  0.5 102796 11372 ?        Ss   11:40   0:03 /sbin/init
@@ -439,7 +439,7 @@ The ExploitFor this vulnerability, we will be using `nsenter` (namespace enter).
 You may need to "Ctrl + C" to cancel the exploit once or twice for this vulnerability to work, but as you can see below, we have escaped the docker container and can look around the host OS (showing the change in hostname)
 
     Using the command line of the container to run commands on the host 
-```Using the command line of the container to run commands on the host 
+```bash
 root@demo-container:~# hostname
 thm-docker-host
 ```

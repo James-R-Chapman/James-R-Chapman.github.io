@@ -54,7 +54,7 @@ Implementing secure communication and authentication methods such as those liste
  As the developer, you will need to create the Docker context on your device. Please see the code snippet below to create a context within Docker.
 
     Creating a new Docker context 
-```Creating a new Docker context 
+```bash
 client@thm:~# docker context create
 --docker host=ssh://myuser@remotehost
 --description="Development Environment" 
@@ -66,7 +66,7 @@ Successfully created context "development-environment-host"
    Once this has been completed, you can switch to this context, where all Docker-related commands will now be executed on the remote host.
 
     Using our newly created Docker context  
-```Using our newly created Docker context 
+```bash
 cmnatic@thm:~# docker context use development-environment-host
 
 Current context is now "development-environment-host"
@@ -93,14 +93,14 @@ TLS EncryptionThe Docker daemon can also be interacted with using HTTP/S. This i
  On the host (server) that you are issuing the commands from:
 
     Running Docker in TLS mode 
-```Running Docker in TLS mode 
+```bash
 server@thm:~# dockerd --tlsverify --tlscacert=myca.pem --tlscert=myserver-cert.pem --tlskey=myserver-key.pem -H=0.0.0.0:2376
 ```
 
    On the host (client) that you are issuing the commands from:
 
     Telling Docker (local) to authenticate using TLS 
-```Telling Docker (local) to authenticate using TLS 
+```bash
 client@thm:~# docker --tlsverify --tlscacert=myca.pem --tlscert=client-cert.pem --tlskey=client-key.pem -H=SERVERIP:2376 info
 ```
 
@@ -141,7 +141,7 @@ For example, a process such as an application can be restricted to only use a ce
 You can use the `docker inspect containername` command to view information about a container (including the resource limits set). If a resource limit is set to **0** , this means that no resource limits have been set.
 
     Using Docker inspect to list the resource limits set for a container. 
-```Using Docker inspect to list the resource limits set for a container. 
+```bash
 cmnatic@thm:~# docker inspect mycontainer
 --cropped for brevity--
             "Memory": 0,
@@ -196,14 +196,14 @@ This capability allows a process to modify the maximum limit of resources availa
  It's recommended assigning capabilities to containers individually rather than running containers with the `--privileged` flag (which will assign all capabilities). For example, you can assign the `NET_BIND_SERVICE` capability to a container running a web server on port 80 by including the `--cap-add=NET_BIND_SERVICE` when running the container.
 
     Assigning the NET_BIND_SERVICE capability to a container  
-```Assigning the NET_BIND_SERVICE capability to a container 
+```bash
 cmnatic@thm:~# docker run -it --rm --cap-drop=ALL --cap-add=NET_BIND_SERVICE mywebserver
 ```
 
    Finally, the command `capsh --print` can be used to determine what capabilities are assigned to a process.
 
    Using capsh to list the capabilities currently assigned  
-```Using capsh to list the capabilities currently assigned 
+```bash
 cmnatic@thm:~# capsh --print
 Current: =
 Bounding set = cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner
@@ -327,7 +327,7 @@ To create a Seccomp profile, you can simply create a profile using your favourit
  With our Seccomp profile now created, we can apply it to our container at runtime by using the` --security-opt seccomp` flag with the location of the Seccomp profile. For example:
 
     Applying our Seccomp profile when running a container  
-```Applying our Seccomp profile when running a container 
+```bash
 cmnatic@thm:~# docker run --rm -it --security-opt seccomp=/home/cmnatic/container1/seccomp/profile.json mycontainer
 ```
 
@@ -340,7 +340,7 @@ AppArmor is a similar security feature in Linux because it prevents applications
 This mechanism is a Mandatory Access Control (MAC) system that determines the actions a process can execute based on a set of rules at the operating system level. To use AppArmor, we first need to ensure that it is installed on our system:
 
     Checking if AppArmor is installed or not  
-```Checking if AppArmor is installed or not 
+```bash
 cmnatic@thm:~# sudo aa-status
 apparmor module is loaded.
 34 profiles are loaded.
@@ -396,14 +396,14 @@ First, let's create our AppArmor profile. You can use your favourite text editor
  Now that we have created the AppArmor profile, we will need to import this into the AppArmor program to be recognised.
 
     Importing our AppArmor profile into AppArmor  
-```Importing our AppArmor profile into AppArmor 
+```bash
 cmnatic@thm:~# sudo apparmor_parser -r -W /home/cmnatic/container1/apparmor/profile.json
 ```
 
    With our AppArmor profile now imported, we can apply it to our container at runtime by using the` --security-opt apparmor` flag with the location of the AppArmor profile. For example:
 
     Applying our AppArmor profile when running a container  
-```Applying our AppArmor profile when running a container 
+```bash
 cmnatic@thm:~# docker run --rm -it --security-opt apparmor=/home/cmnatic/container1/apparmor/profile.json mycontainer
 ```
 
@@ -495,7 +495,7 @@ GrypeThis tool is a modern and fast vulnerability scanner for Docker images[http
  An example of using the Docker Scout tool to analyse a Docker image has been provided in the terminal below. Please note this will need to be [installed](https://github.com/docker/scout-cli) beforehand. You can read the [Docker Scout](https://docs.docker.com/scout/) documentation to learn more.
 
     Using Docker Scout to scan our "nginx" image for vulnerabilities  
-```Using Docker Scout to scan our "nginx" image for vulnerabilities 
+```bash
 cmnatic@thm:~# docker scout cves local://nginx:latest
     ✓ SBOM of image already cached, 215 packages indexed
     ✗ Detected 22 vulnerable packages with a total of 45 vulnerabilities

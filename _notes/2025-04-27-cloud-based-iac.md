@@ -147,7 +147,7 @@ tfconfig/
  
 If we consider the example given above, if we were to define a vpc using this structure, it could be configured like so: 
     variables.tf  
-```variables.tf 
+```bash
 variable "vpc_cidr_block" {
  description = "CIDR block for the VPC"
  type = string #Set the type of variable (string,number,bool etc)
@@ -157,7 +157,7 @@ variable "vpc_cidr_block" {
 
 We are defining a VPC the same way as we did at the beginning of this task, except now we are storing it in a `variables.tf` file. We are doing this so we can reuse/reference it. This could be referenced in any module.tf file, for example, below, we have a code block for a module named `flynet_vpc_security`:
     flynet_vpc_security.tf  
-```flynet_vpc_security.tf 
+```bash
 cidr_block = var.vpc_cidr_block 
 #Variable can be referenced using var. followed by variable name
 ```
@@ -168,7 +168,7 @@ Finally, this module (and all other module tf files) would be collected and refe
 ```
 
     main.tf  
-```main.tf 
+```bash
 module "flynet_vpc_security" {
  source = "./flynet_vpc_security.tf" 
  #where module is defined (relative to current file)

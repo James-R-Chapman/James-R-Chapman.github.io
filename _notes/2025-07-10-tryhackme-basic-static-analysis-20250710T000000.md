@@ -190,7 +190,7 @@ We can use PEstudio to calculate the Imphash of a sample.
 Multiple utilities can be used in the attached VM to calculate ssdeep, like CyberChef. However, the ssdeep utility has been placed on the Desktop to make it easier. The following command shows the help menu of the utility.
 
    Finding similar files using ssdeep 
-```Finding similar files using ssdeep 
+```bash
 C:\Users\Administrator\Desktop>ssdeep-2.14.1\ssdeep.exe -h
 ssdeep version 2.14.1 by Jesse Kornblum and the ssdeep Project
 For copyright information, see man page or README.TXT.
@@ -220,7 +220,7 @@ C:\Users\Administrator\Desktop>
    Let's calculate the hashes of all the samples in the mal directory in the attached VM.
 
     Calculating ssdeep 
-```Calculating ssdeep 
+```bash
 C:\Users\Administrator\Desktop>ssdeep-2.14.1\ssdeep.exe mal\*
 ssdeep,1.1--blocksize:hash:hash,filename
 3072:C3twbyJdvGwRCf/swDQheOAmN4hMRl37G:8EacOAmN6C,"C:\Users\Administrator\Desktop\mal\1"
@@ -237,7 +237,7 @@ C:\Users\Administrator\Desktop>
    We can try the other options shown in the help file per the requirement. When we have the ssdeep hashes, we can match these hashes together to identify similar files. This helps us identify similar files if we have a bulk of data. The documentation link provided above has very good examples of usage. The following terminal window shows one of the examples relevant to our use case to match files. For this, we can use the `-d` operator. The `-r` operator runs the ssdeep utility recursively, and the `-l` operator outputs relative paths of the files.
 
     Finding matching files using ssdeep 
-```Finding matching files using ssdeep 
+```bash
 C:\Users\Administrator\Desktop>ssdeep-2.14.1\ssdeep -l -r -d Incoming Outgoing Trash
 Outgoing/Corporate Espionage/Our Budget.doc matches Incoming/Budget 2007.doc (99)
 Outgoing/Personnel Mayhem/Your Buddy Makes More Than You.doc matches Incoming/Salaries.doc (45)
@@ -294,7 +294,7 @@ Using Capa is simple. On the command prompt, we just point capa to the file we w
 The `-h` operator shows detailed options.
 
     Capa  
-```Capa 
+```bash
 C:\Users\Administrator\Desktop>capa -h
 usage: capa.exe [-h] [--version] [-v] [-vv] [-d] [-q] [--color {auto,always,never}] [-f {auto,pe,sc32,sc64,freeze}] [-b {vivisect,smda}] [-r RULES] [-t TAG] [-j] sample
 
@@ -353,7 +353,7 @@ C:\Users\Administrator\Desktop>
    We can test drive capa by running it against the binaries in the Desktop\mal directory. Please note that capa might take some time to complete the analysis. An example output is below.
 
     Capa example  
-```Capa example 
+```bash
 C:\Users\Administrator\Desktop>capa mal\1
 loading : 100%|████████████████████████████████████████████████████████████| 485/485 [00:00<00:00, 1552.05     rules/s]
 matching: 100%|██████████████████████████████████████████████████████████████| 288/288 [00:12<00:00, 22.23 functions/s]

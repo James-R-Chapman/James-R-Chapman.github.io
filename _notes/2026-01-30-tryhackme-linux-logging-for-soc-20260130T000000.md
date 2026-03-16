@@ -67,7 +67,7 @@ Log Format Contrary to a common belief, Linux-based systems are not immune to ma
  Working With Logs Unlike in Windows, Linux logs most events into plain text files. This means you can read the logs via any text editor without the need for specialized tools like Event Viewer. On the other hand, default Linux logs are less structured as there are no event codes and strict log formatting rules. Most Linux logs are located in the `/var/log` folder, so let's start the journey by checking the `/var/log/syslog` file - an aggregated stream of various system events:
 
    Syslog File Content 
-```Syslog File Content 
+```bash
 root@thm-vm:~$ cat /var/log/syslog | head
 [...]
 2025-08-13T13:57:49.388941+00:00 thm-vm systemd-timesyncd[268]: Initial clock synchronization to Wed 2025-08-13 13:57:49.387835 UTC.
@@ -82,7 +82,7 @@ root@thm-vm:~$ cat /var/log/syslog | head
  You will see thousands of events when reading the syslog file on the attached VM, but only a few are useful for SOC. That's why you must filter logs and narrow down your search as much as possible. For example, you can use the "grep" command to filter for the "CRON" keyword and see only the cronjob logs:
 
    Syslog Filtering 
-```Syslog Filtering 
+```bash
 # Or "grep -v CRON" to exclude "CRON" from results
 root@thm-vm:~$ cat /var/log/syslog | grep CRON
 2025-08-13T14:17:01.025846+00:00 thm-vm CRON[1042]: (root) CMD (cd / && run-parts --report /etc/cron.hourly)
@@ -95,7 +95,7 @@ root@thm-vm:~$ cat /var/log/syslog | grep CRON
  Lastly, let's say you hunt for all user logins, but don't know where to look for them. Linux system logs are stored in the `/var/log/` folder in plain text, so you can simply grep for related keywords like "login", "auth", or "session" in all log files there and narrow down your next searches:
 
    Discovering Logs 
-```Discovering Logs 
+```bash
 # List what's logged by your system (/var/log folder) 
 root@thm-vm:~$ ls -l /var/log
 drwxr-xr-x  2 root      root               4096 Aug 12 16:41 apt
@@ -139,7 +139,7 @@ Authentication Logs The first and often the most useful log file you want to mon
  Login and Logout Events There are many ways users authenticate into a Linux machine: locally, via SSH, using "sudo" or "su" commands, or automatically to run a cron job. Each successful logon and logoff is logged, and you can see them by filtering the events containing the "session opened" or "session closed" keywords:
 
    Local and Remote Logins 
-```Local and Remote Logins 
+```bash
 root@thm-vm:~$ cat /var/log/auth.log | grep -E 'session opened|session closed'
 # Local, on-keyboard login and logout of Bob (login:session)
 2025-08-02T16:04:43 thm-vm login[1138]: pam_unix(login:session): session opened for user bob(uid=1001) by bob(uid=0)
@@ -150,7 +150,7 @@ root@thm-vm:~$ cat /var/log/auth.log | grep -E 'session opened|session closed'
 ```
 
      Cron and Sudo Logins 
-```Cron and Sudo Logins 
+```bash
 root@thm-vm:~$ cat /var/log/auth.log | grep -E 'session opened|session closed'
 # Traces of some cron job launch running as root (cron:session)
 2025-08-06T19:35:01 thm-vm CRON[41925]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
@@ -162,7 +162,7 @@ root@thm-vm:~$ cat /var/log/auth.log | grep -E 'session opened|session closed'
    In addition to the system logs, the SSH daemon stores its own log of successful and failed SSH logins. These logs are sent to the same auth.log file, but have a slightly different format. Let's see the example of two failed and one successful SSH logins:
 
    SSH-Specific Events 
-```SSH-Specific Events 
+```bash
 root@thm-vm:~$ cat /var/log/auth.log | grep "sshd" | grep -E 'Accepted|Failed'
 # Common SSH log format: <is-successful> <auth-method> for <user> from <ip>
 2025-08-07T11:21:25 thm-vm sshd[3139]: Failed password for root from 222.124.17.227 port 50293 ssh2
@@ -173,7 +173,7 @@ root@thm-vm:~$ cat /var/log/auth.log | grep "sshd" | grep -E 'Accepted|Failed'
    Miscellaneous Events You can also use the same log file to detect user management events. This is easy if you know basic Linux commands: If [useradd](https://www.man7.org/linux/man-pages/man8/useradd.8.html) is a command to add new users, just look for a "useradd" keyword to see user creation events! Below is an example of what you can see in the logs: password change, user deletion, and then privileged user creation.
 
    User Management Events 
-```User Management Events 
+```bash
 root@thm-vm:~$ cat /var/log/auth.log | grep -E '(passwd|useradd|usermod|userdel)\['
 2023-02-01T11:09:55 thm-vm passwd[644]: password for 'ubuntu' changed by 'root'
 2025-08-07T22:11:11 thm-vm userdel[1887]: delete user 'oldbackdoor'
@@ -185,7 +185,7 @@ root@thm-vm:~$ cat /var/log/auth.log | grep -E '(passwd|useradd|usermod|userdel)
    Lastly, depending on system configuration and installed packages, you may encounter interesting or unexpected events. For example, you may find commands launched with sudo, which can help track malicious actions. In the example below, the "ubuntu" user used sudo to stop EDR, read firewall state, and finally access root via "sudo su":
 
    Commands Run With Sudo 
-```Commands Run With Sudo 
+```bash
 root@thm-vm:~$ cat /var/log/auth.log | grep -E 'COMMAND='
 2025-08-07T11:21:49 thm-vm sudo: ubuntu : TTY=pts/0 ; [...] COMMAND=/usr/bin/systemctl stop edr
 2025-08-07T11:23:18 thm-vm sudo: ubuntu : TTY=pts/0 ; [...] COMMAND=/usr/bin/ufw status numbered
@@ -223,7 +223,7 @@ Generic System Logs Linux keeps track of many other events scattered across file
  App-Specific Logs In SOC, you might also monitor a specific program, and to do this effectively, you need to use its logs. For example, analyze database logs to see which queries were run, mail logs to investigate phishing, container logs to catch anomalies, and web server logs to know which pages were opened, when, and by whom. You will explore these logs in the upcoming modules, but to give an overview, here is an example from the typical Nginx web server logs:
 
    Nginx Web Access Logs 
-```Nginx Web Access Logs 
+```bash
 root@thm-vm:~$ cat /var/log/nginx/access.log# Every log line corresponds to a web request to the web server
 10.0.1.12 - - [11/08/2025:14:32:10 +0000] "GET / HTTP/1.1" 200 3022
 10.0.1.12 - - [11/08/2025:14:32:14 +0000] "GET /login HTTP/1.1" 200 1056
@@ -235,7 +235,7 @@ root@thm-vm:~$ cat /var/log/nginx/access.log# Every log line corresponds to a we
    Bash History Another valuable log source is Bash history - a feature that records each command you run after pressing Enter. By default, commands are first stored in memory during your session, and then written to the per-user `~/.bash_history` file when you log out. You can open the `~/.bash_history` file to review commands from previous sessions or use the `history` command to view commands from both your current and past sessions:
 
    Bash History File and Command 
-```Bash History File and Command 
+```bash
 ubuntu@thm-vm:~$ cat /home/ubuntu/.bash_history
 echo "hello" > world.txt
 nano /etc/ssh/sshd_config
@@ -252,7 +252,7 @@ ubuntu@thm-vm:~$ history
    Although the Bash history file looks like a vital log source, it is rarely used by SOC teams in their daily routine. This is because it does not track non-interactive commands (like those initiated by your OS, cron jobs, or web servers) and has some other limitations. While you can [configure it](https://datawookie.dev/blog/2023/04/configuring-bash-history/) to be more useful, there are still a few issues you should know about:
 
    Bash History Limitations 
-```Bash History Limitations 
+```bash
 # Attackers can simply add a leading space to the command to avoid being logged
 ubuntu@thm-vm:~$  echo "You will never see me in logs!"
 
@@ -319,7 +319,7 @@ Audit Daemon Auditd (Audit Daemon) is a built-in auditing solution often used by
  Using Auditd You can view the generated logs in real time in `/var/log/audit/audit.log`, but it is easier to use the `ausearch` command, as it formats the output for better readability and supports filtering options. Let's see an example based on the rules from the example above by searching events matching the "proc_wget" key:
 
    Looking for "Wget" Execution 
-```Looking for "Wget" Execution 
+```bash
 root@thm-vm:~$ ausearch -i -k proc_wget
 ----
 type=PROCTITLE msg=audit(08/12/25 12:48:19.093:2219) : proctitle=wget https://files.tryhackme.thm/report.zip
@@ -343,7 +343,7 @@ type=SYSCALL msg=audit(08/12/25 12:48:19.093:2219) : arch=x86_64 syscall=execve 
  Now, let's look at the file events matching the "file_sshconf" key. As you may see from the terminal below, auditd tracked the change to the `/etc/ssh/sshd_config` file via the "nano" command. SOC teams often set up rules to monitor changes in critical files and directories (e.g., SSH configuration files, cronjob definitions, or system settings)
 
    Looking for SSH Configuration Changes 
-```Looking for SSH Configuration Changes 
+```bash
 root@thm-vm:~$ ausearch -i -k file_sshconf
 ----
 type=PROCTITLE msg=audit(08/12/25 13:06:47.656:2240) : proctitle=nano /etc/ssh/sshd_config

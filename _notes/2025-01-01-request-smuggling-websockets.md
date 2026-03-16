@@ -203,7 +203,7 @@ In this task's application, we will take advantage of an SSRF vulnerability to s
 We can use `nc` in our AttackBox to check if we can direct a request to ourselves. We should get a response similar to this one:
 
     AttackBox  
-```AttackBox 
+```bash
 user@attackbox$ nc -lvp 5555
 Listening on 0.0.0.0 5555
 Connection received on MACHINE_IP 52988
@@ -244,7 +244,7 @@ HTTPServer(("", int(sys.argv[1])), Redirect).serve_forever()
  Let's save the code to a file named myserver.py in our AttackBox and run it with the following command:
 
     AttackBox  
-```AttackBox 
+```bash
 user@attackbox$ python3 myserver.py 5555
 ```
 

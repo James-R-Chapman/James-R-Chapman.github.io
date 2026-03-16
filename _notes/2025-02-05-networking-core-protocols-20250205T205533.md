@@ -75,7 +75,7 @@ Do you remember the IP addresses of your favourite websites? Unless it is a priv
  If you want to look up the IP address of a domain from the command line, you can use a tool such as `nslookup`. Consider the example in the terminal below where we look up `example.com`.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ nslookup www.example.com
 Server:         127.0.0.53
 Address:        127.0.0.53#53
@@ -90,7 +90,7 @@ Address: 2606:2800:21f:cb07:6820:80da:af6b:8b2c
    The query above led to four packets. In the terminal below, we can see that the first and third packets send DNS queries for the A and AAAA records, respectively. The second and fourth packets show the DNS query responses.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ tshark -r dns-query.pcapng -Nn
     1 0.000000000 192.168.66.89 → 192.168.66.1 DNS 86 Standard query 0x2e0f A www.example.com OPT
     2 0.059049584 192.168.66.1 → 192.168.66.89 DNS 102 Standard query response 0x2e0f A www.example.com A 93.184.215.14 OPT
@@ -130,7 +130,7 @@ In the previous task, we covered how a domain name is resolved into an IP addres
  In the terminal output below, we have used the `whois` command to look up a domain whose WHOIS record is protected by privacy protection.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ whois [REDACTED].com
 [...]
 Domain Name: [REDACTED].COM
@@ -230,7 +230,7 @@ Unlike HTTP, which is designed to retrieve web pages, File Transfer Protocol (FT
  The command exchange via the FTP client is shown in the terminal below.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ ftp MACHINE_IP
 Connected to MACHINE_IP (MACHINE_IP).
 220 (vsFTPd 3.0.5)
@@ -293,7 +293,7 @@ As with browsing the web and downloading files, sending email needs its own prot
  The terminal below shows an example of an email sent via `telnet`. The SMTP server listens on TCP port 25 by default.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ telnet MACHINE_IP 25
 Trying MACHINE_IP...
 Connected to MACHINE_IP.
@@ -366,7 +366,7 @@ You’ve received an email and want to download it to your local mail client. Th
  In the terminal below, we can see a POP3 session over telnet. Since the POP3 server listens on TCP port 110 by default, the command to connect to the TELNET port is `telnet MACHINE_IP 110`. The exchange below retrieves the email message sent in the previous task.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ telnet MACHINE_IP 110
 Trying MACHINE_IP...
 Connected to MACHINE_IP.
@@ -455,7 +455,7 @@ POP3 is enough when working from one device, e.g., your favourite email client o
  Knowing that the IMAP server listens on TCP port 143 by default, we will use `telnet` to connect to `MACHINE_IP`’s port 143 and fetch the message we sent in an earlier task.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ telnet 10.10.41.192 143
 Trying 10.10.41.192...
 Connected to 10.10.41.192.

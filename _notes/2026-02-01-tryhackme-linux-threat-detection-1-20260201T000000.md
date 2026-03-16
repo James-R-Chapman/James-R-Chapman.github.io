@@ -109,7 +109,7 @@ SSH Breach Example Now, imagine a common real-world scenario: An IT administrato
  Detecting SSH Attacks On Linux, you don't need to learn a dozen fields like logon type to figure out what's going on, making log analysis more straightforward. Your starting point in detecting SSH attacks can be as simple as listing all successful SSH logins and analyzing a few fields. Let's imagine you queried the logs and found three successful SSH logins, each of which could indicate an attack. How would you distinguish bad from good?
 
    Successful SSH Logins 
-```Successful SSH Logins 
+```bash
 ubuntu@thm-vm:~$ cat /var/log/auth.log | grep -E 'Accepted'
 2025-08-19T14:00:02 thm-vm sshd[1013]: Accepted publickey for ansible from 10.14.105.255 port 18442 ssh2: [...]
 2025-08-20T12:56:49 thm-vm sshd[2830]: Accepted password for jsmith from 54.155.224.201 port 51058 ssh2
@@ -178,7 +178,7 @@ Linux and Public Services Linux systems often host public-facing services or app
  Web as Initial Access Any publicly exposed application can lead to a Linux breach, especially vulnerable web servers. Let's see an example: The IT team creates a simple web application called TryPingMe, where you can ping the specified IP online. Internally, the app runs a system command `ping -c 2 [YOUR-INPUT]` to test the connection, without any input filtering. The attackers would easily spot a [command injection](https://tryhackme.com/room/oscommandinjection) there, but can you spot the exploitation in the TryPingMe web logs?
 
    TryPingMe Web Logs 
-```TryPingMe Web Logs 
+```bash
 ubuntu@thm-vm:~$ cat /var/log/nginx/access.log
 10.2.33.10 - - [19/Aug/2025:12:26:07] "GET /ping?host=3.109.33.76 HTTP/1.1" 200 [...]
 10.12.88.67 - - [23/Aug/2025:09:32:22] "GET /ping?host=54.36.19.83 HTTP/1.1" 200 [...]
@@ -228,7 +228,7 @@ Building Process Tree One way to detect a service breach is to use application l
  Auditd and Process Tree Continuing the example, you begin by locating the suspicious command in the logs with `ausearch -i -x whoami`. Next, you walk up the process tree using the `--pid` option until you reach PID 1, the OS process. The tree eventually shows that `whoami` was launched by a Python web application (`/opt/mywebapp/app.py`). This immediately raises the question: Was the application breached and used as an entry point?
 
    Tracing Whoami Origin 
-```Tracing Whoami Origin 
+```bash
 ubuntu@thm-vm:~$ ausearch -i -x whoami # -x filters the results by the command name
 type=PROCTITLE msg=audit(08/25/25 16:28:18.107:985) : proctitle=whoami
 type=SYSCALL msg=audit(08/25/25 16:28:18.107:985) : syscall=execve success=yes exit=0 items=2 ppid=3905 pid=3907 auid=unset uid=ubuntu tty=(none) exe=/usr/bin/whoami key=exec
@@ -245,7 +245,7 @@ type=SYSCALL msg=audit(08/25/25 16:28:11.727:982) : syscall=execve success=yes e
    Next, you might wonder if `whoami` is simply part of the application's normal behavior. Maybe so, but that question would require web logs analysis, external research, or communication with the developers. What you can do instead is use the process tree to look for other, more dangerous commands launched by the app. By listing all child processes of `/opt/mywebapp/app.py`, you may find clearer evidence of the app's breach, like a malicious curl command!
 
    Listing All Child Processes 
-```Listing All Child Processes 
+```bash
 ubuntu@thm-vm:~$ ausearch -i --ppid 3898 | grep 'proctitle' # Use grep for a simpler output
 type=PROCTITLE msg=audit(08/25/25 16:28:17.101:983) : proctitle=/bin/sh -c whoami
 type=PROCTITLE msg=audit(08/25/25 16:28:18.230:985) : proctitle=/bin/sh -c ls -la

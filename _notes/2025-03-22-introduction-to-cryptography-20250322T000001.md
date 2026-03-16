@@ -270,7 +270,7 @@ Symmetric encryption requires the users to find a secure channel to exchange key
  The previous example was to understand the mathematics behind it better. To see real values for *p*  and *q* , let’s create a real keypair using a tool such as `openssl`.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ openssl genrsa -out private-key.pem 2048
 
 user@TryHackMe$ openssl rsa -in private-key.pem -pubout -out public-key.pem
@@ -410,7 +410,7 @@ Alice and Bob can communicate over an insecure channel. By insecure, we mean tha
  In the console output below, we can view the prime number `P` and the generator `G` using the command `openssl dhparam -in dhparams.pem -text -noout`. (This is similar to what we did with the RSA private key.)
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ openssl dhparam -out dhparams.pem 2048
 Generating DH parameters, 2048 bit long safe prime
 [...]
@@ -463,7 +463,7 @@ A cryptographic hash function is an algorithm that takes data of arbitrary size 
  In the terminal output below, we calculate the SHA256 hash values for three files of varying sizes: 4 bytes, 275 MB, and 5.2 GB. Using `sha256sum` to calculate the message digest for each of the three files, we get three completely different values that appear random. It is worth stressing that the length of the resulting message digest or checksum is the same, no matter how small or big the file is. In particular, the four-byte file `abc.txt` and the 5.2 GB file resulted in message digests of equal length independent of the file size.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ ls -lh
 total 5.5G
 -rw-r--r--. 1 strategos strategos    4  7月 21 12:46 abc.txt
@@ -484,7 +484,7 @@ c38bb113c89d8fec6475a9936411007c45563ecb7ce8acd5db7fb58c0872bda0  abc.txt
  In the following terminal output, we have two files, `text1.txt` and `text2.txt`, which are almost identical except for (literally) one bit being different; the letters `T` and `t` are different in one bit in their ASCII representation. Even though we have flipped only a single bit, it is evident that the SHA256 checksums are entirely different. Consequently, if we use a secure hash function algorithm, we can easily confirm whether any modifications have taken place. This can help protect against both intentional tampering and file transfer errors.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ hexdump text1.txt -C
 00000000  54 72 79 48 61 63 6b 4d  65 0a                    |TryHackMe.|
 0000000a
@@ -532,7 +532,7 @@ $ sha256sum text2.txt
  To calculate the HMAC on a Linux system, you can use any of the available tools such as `hmac256` (or `sha224hmac`, `sha256hmac`, `sha384hmac`, and `sha512hmac`, where the secret key is added after the option `--key`). Below we show an example of calculating the HMAC using `hmac256` and `sha256hmac` with two different keys.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ hmac256 s!Kr37 message.txt
 3ec65b7e80c5bf2e623e52e0528f1c6a74f605b10616621ba1c22a89fb244e65  message.txt
 
@@ -620,7 +620,7 @@ Using a key exchange such as the Diffie-Hellman key exchange allows us to agree 
  Then you will be asked to answer a series of questions, as shown in the console output below.
 
     Terminal  
-```Terminal 
+```bash
 user@TryHackMe$ openssl req -new -nodes -newkey rsa:4096 -keyout key.pem -out cert.csr
 [...]
 -----

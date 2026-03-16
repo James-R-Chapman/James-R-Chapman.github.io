@@ -82,7 +82,7 @@ Elasticsearch
  Installing Elasticsearch Let’s go through the process of installing Elasticsearch. The latest installation instance is placed on the path `/home/tools/elasticsearch`.
 
     Elasticsearch Installation  
-```Elasticsearch Installation 
+```bash
 analyst@tryhackme:/home/tools/elasticsearch# ls
 elasticsearch.deb
 ```
@@ -92,7 +92,7 @@ elasticsearch.deb
  **Note:**  Make sure to change the user to root using the command `sudo su`
 
     Elasticsearch Installation  
-```Elasticsearch Installation 
+```bash
 root@tryhackme:/home/tools/elasticsearch# dpkg -i elasticsearch.deb 
 Selecting previously unselected package elasticsearch.
 (Reading database ... 319953 files and directories currently installed.)
@@ -123,7 +123,7 @@ NOT starting on installation, please execute the following statements to configu
  The following commands will be used to make the Elasticsearch service persistent so that it gets started whenever the server restarts.
 
     Elasticsearch: Persistence  
-```Elasticsearch: Persistence 
+```bash
 root@tryhackme:/home/tools/elasticsearch# systemctl enable elasticsearch.service
 Created symlink /etc/systemd/system/multi-user.target.wants/elasticsearch.service → /lib/systemd/system/elasticsearch.service.
 root@tryhackme:/home/tools/elasticsearch# systemctl start elasticsearch.service
@@ -132,7 +132,7 @@ root@tryhackme:/home/tools/elasticsearch# systemctl start elasticsearch.service
    Elasticsearch Status Now that we have installed Elasticsearch successfully, let’s check its status to see if it's installed and running properly.
 
     Elasticsearch: Status  
-```Elasticsearch: Status 
+```bash
 root@tryhackme:/home/tools/elasticsearch# systemctl status elasticsearch.service
 ● elasticsearch.service - Elasticsearch
      Loaded: loaded (/lib/systemd/system/elasticsearch.service; enabled; vendor preset: enabled)
@@ -156,7 +156,7 @@ Configuring Elasticsearch
 We have successfully installed Elasticsearch on the Linux host. We will now make some changes to the configuration so that it’s accessible to other components as well.
 
  Important Configurations All important configuration files related to Elasticsearch can be found in the `/etc/elasticsearch` directory.    Elasticsearch: Directory  
-```Elasticsearch: Directory 
+```bash
 root@tryhackme:/home/tools/elasticsearch#cd /etc/elasticsearch/
 root@tryhackme:/etc/elasticsearch# ls
 certs                              elasticsearch.keystore  jvm.options    log4j2.properties  roles.yml  users_roles
@@ -187,7 +187,7 @@ elasticsearch-plugins.example.yml  elasticsearch.yml       jvm.options.d  role_m
  In this section, we see the two variables `network.host` and `http.port`. Uncomment these two and change the value of the `network.host` variable to `127.0.0.1` . As we are installing all these components on the same host, therefore we will update the `network.host` to `127.0.0.1`. Once these changes are made, save the document and restart the Elasticsearch service using the following command.
 
     Elasticsearch: Restart  
-```Elasticsearch: Restart 
+```bash
 root@tryhackme:/home/tools/elasticsearch#systemctl restart elasticsearch.service
 ```
 
@@ -230,7 +230,7 @@ Installing Logstash
 Let’s go through the process of installing Logstash. The latest installation instance is placed on the path `/home/tools/logstash`.
 
    Logstash  
-```Logstash 
+```bash
 root@tryhackme:/home/tools/logstash# ls
 logstash.deb
 ```
@@ -238,7 +238,7 @@ logstash.deb
    Run the following command `dpkg -i logstash.deb` as a root user to install the logstash on the server. It will take 1-2 minutes to get installed, as shown below:
 
     Logstash Installation  
-```Logstash Installation 
+```bash
 root@tryhackme:/home/tools/logstash# dpkg -i logstash.deb 
 Selecting previously unselected package logstash.
 (Reading database ... 321412 files and directories currently installed.)
@@ -254,7 +254,7 @@ Setting up logstash (1:8.8.0-1) ...
 We will use the following commands to make the Logstash service persistent:
 
     logstash: Persistence  
-```logstash: Persistence 
+```bash
 root@tryhackme:/home/tools/logstash# systemctl daemon-reload
 root@tryhackme:/home/tools/logstash# systemctl enable logstash.service
 root@tryhackme:/home/tools/logstash# systemctl start logstash.service
@@ -263,7 +263,7 @@ root@tryhackme:/home/tools/logstash# systemctl start logstash.service
    Logstash Status Now that we have installed Logstash successfully, let’s check its status to see if it's installed and running properly.
 
     Logstash: Status  
-```Logstash: Status 
+```bash
 root@tryhackme:/home/tools/logstash# systemctl status logstash.service
 ● logstash.service - logstash
      Loaded: loaded (/lib/systemd/system/logstash.service; enabled; vendor pres>
@@ -295,7 +295,7 @@ Jun 07 18:29:12 tryhackme logstash[482871]: Using bundled JDK: /usr/share/logsta
    Configuring Logstash In a typical installation of Logstash, the `/etc/logstash` directory is the default location for important configuration files.
 
     logstash: Directory  
-```logstash: Directory 
+```bash
 root@tryhackme:/etc/logstash# ls
 conf.d  jvm.options  log4j2.properties  logstash-sample.conf  logstash.yml  pipelines.yml  startup.options
 ```
@@ -349,7 +349,7 @@ conf.d  jvm.options  log4j2.properties  logstash-sample.conf  logstash.yml  pipe
  These changes will ensure Logstash looks at the configuration files every 3 seconds to see if there are any changes to the log sources which are being ingested.
 
     Logstash: Restart  
-```Logstash: Restart 
+```bash
 root@tryhackme:/etc/logstash# systemctl restart logstash.service
 ```
 
@@ -379,7 +379,7 @@ Installing Kibana  ![Image 5](https://tryhackme-images.s3.amazonaws.com/user-upl
 We have already explored the Kibana interface in the [InvestigatingwithELK](https://tryhackme.com/room/investigatingwithelk101) room. Let’s now go through the process of installing Kibana on the Ubuntu lab. The latest installation instance is placed on the path `/home/tools/kibana`.
 
 Kibana  
-```Kibana 
+```bash
 root@tryhackme:/home/tools/kibana# ls
 kibana.deb
 ```
@@ -387,7 +387,7 @@ kibana.deb
    Run the following command `dpkg -i kibana` as a root user to install the Kibana on the server. It will take 1-2 minutes to get installed, as shown below:
 
     Kibana Installation  
-```Kibana Installation 
+```bash
 root@tryhackme:/home/tools/kibana# dpkg -i kibana.deb 
 Selecting previously unselected package kibana.
 (Reading database ... 321252 files and directories currently installed.)
@@ -404,7 +404,7 @@ Created Kibana keystore in /etc/kibana/kibana.keystore
  Kibana: Persistence We will use the following commands to make the Kibana service persistent.
 
     Kibana: Persistence  
-```Kibana: Persistence 
+```bash
 root@tryhackme:/etc/kibana# systemctl daemon-reload
 root@tryhackme:/etc/kibana# systemctl enable kibana.service
 Created symlink /etc/systemd/system/multi-user.target.wants/kibana.service → /lib/systemd/system/kibana.service.
@@ -414,7 +414,7 @@ root@tryhackme:/etc/kibana# systemctl start kibana.service
    Kibana Status Now that we have installed Kibana successfully, let’s check its status to see if it's installed and running properly.
 
     Kibana: Status  
-```Kibana: Status 
+```bash
 root@tryhackme:/etc/kibana# systemctl status kibana.service
 ● kibana.service - Kibana
      Loaded: loaded (/lib/systemd/system/kibana.service; enabled; vendor preset: enabled)
@@ -441,7 +441,7 @@ Jun 07 14:08:34 tryhackme kibana[6251]: Go to http://localhost:5601/?code=475559
    Configuring Kibana The `/etc/kibana` path typically contains the configuration files for Kibana, an open-source data visualization and exploration tool. Here are the commonly found files in the `/etc/kibana` directory:
 
     Kibana: Directory  
-```Kibana: Directory 
+```bash
 root@tryhackme:/etc/kibana# ls
 kibana.keystore  kibana.yml  node.options
 ```
@@ -493,7 +493,7 @@ elasticsearch.hosts: ["http://localhost:9200"]
  Once the changes are made, and the config file is saved, its time to restart the Kibana server using the following command:
 
     Kibana: Restart  
-```Kibana: Restart 
+```bash
 root@tryhackme:/etc/kibana# systemctl restart kibana.service
 ```
 
@@ -1201,7 +1201,7 @@ output{
 ```
 
     Logstash  
-```Logstash 
+```bash
 root@tryhackme:/usr/share/logstash# ./bin/logstash -e 'input{stdin{}} output{stdout{}}'
 ......
 ......

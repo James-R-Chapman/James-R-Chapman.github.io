@@ -98,7 +98,7 @@ Situational Awareness After the criminals pass through the front door, do they k
 Discovery via CMD Discovery via the command line is the most common and easiest method available for threat actors. This is because it simply uses the existing commands like "whoami" or "ipconfig" that are available on all Windows machines by default; check out [this article](https://thedfirreport.com/2024/08/26/blacksuit-ransomware/#collection:~:text=The%20threat%20actor%20performed%20several%20discovery%20commands) for a real-world attack example. Luckily for the defenders, most of the launched commands are logged as new processes, like on the process tree below:
 
    Discovery Commands Coming From "invoice.pdf.exe" 
-```Discovery Commands Coming From "invoice.pdf.exe" 
+```bash
 C:\Users\victim\Downloads\invoice.pdf.exe
 ├── C:\Windows\System32\cmd.exe
 │   ├── ipconfig                                 // Show network settings
@@ -115,7 +115,7 @@ C:\Users\victim\Downloads\invoice.pdf.exe
    Discovery via GUI In cases where threat actors log in to the system interactively, like after the RDP breach, they are not limited to console commands (but they often use them anyway as a habit). With access to the graphical interface, nothing prevents attackers from using the same toolkit as you do: Apps & Programs, System Settings, Disk Management, or even Event Viewer. In this scenario, you won't see typical "whoami" commands but rather a process tree that looks like this:
 
    Process Tree for GUI Discovery 
-```Process Tree for GUI Discovery 
+```bash
 C:\Windows\System32\explorer.exe
 ├── C:\Windows\System32\cmd.exe                                   // Attacker can still use CMD!
 │   └── ...

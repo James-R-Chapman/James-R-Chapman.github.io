@@ -324,7 +324,7 @@ Overview As you have seen in the previous task, Sysmon can provide much more tha
 Overview PowerShell is a powerful tool built into Windows that attackers love to abuse. Mainly because it is both trusted and capable of malware download, system discovery, data exfiltration, and even advanced techniques like process injection. However, you won't capture its commands by just using process creation logs like the Sysmon event ID 1. Take a look at the command prompt below:
 
    Commands Entered in PowerShell Terminal 
-```Commands Entered in PowerShell Terminal 
+```bash
 PS C:\> Get-ChildItem
 PS C:\> Get-Content secrets.txt
 PS C:\> Get-LocalUser; Get-LocalGroup

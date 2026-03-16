@@ -188,7 +188,7 @@ To disable the unused Networking Devices, go to the `Control panel > System and 
 ![Image 12](https://tryhackme-images.s3.amazonaws.com/user-uploads/62a7685ca6e7ce005d3f3afe/room-content/381409d62e6ebaf2c542849dc941f58c.png)
 
 **Disable SMB protocol** SMB is a file-sharing protocol exploited by hackers in the wild. The protocol is primarily used for file sharing in a network; therefore, you must disable the protocol if your computer is not part of a network by issuing the [following ](https://docs.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3)command in PowerShell.    Administrator - Windows PowerShell  
-```Administrator - Windows PowerShell 
+```bash
 user@machine$ Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol
 Path          :
 Online        : True
@@ -203,7 +203,7 @@ The hosts file is located at `C:\Windows\System32\Drivers\etc\hosts`.
 
 **** **Mitigating Address Resolution Protocol Attack** The address resolution protocol resolves MAC addresses from given IP addresses saved in the workstations ARP cache. The ARP offers no authentication and accepts responses from any user in the network. An attacker can flood target systems with crafted ARP responses, which point to an attacker-controlled machine and put him in the middle of communication between the targeted hosts.You can check ARP entries using the command **`arp -a`**  in the command prompt. 
     Command Prompt  
-```Command Prompt 
+```bash
 user@machine$ arp -a
 Interface: 192.168.231.2 --- 0x5
   Internet Address      Physical Address      Type
@@ -266,7 +266,7 @@ You have already learned about this in [Windows Fundamentals 3](https://tryhackm
 **Microsoft Office Hardening** 
 Microsoft Office Suite is one of the most widely used application suites in all sectors, including financial, telecom, education, etc. Malicious actors abuse its functionality through macros, Flash applets, object linking etc., to achieve Remote Code Execution. Hardening of Microsoft Office may vary from person to person as legitimate functionality of Microsoft Office is exploited to gain access. For example, disabling macros in a University may be helpful as no one uses it; however, banks cannot disable macros as they heavily rely on complex invoices and formulas through macros. The attached VM contains a batch file based on best practices and [Microsoft Attack Surface Reduction Rules](https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-reference?view=o365-worldwide) for hardening Microsoft Office. To execute the script, right-click on the file office.bat on Desktop and Run as Administrator.
     Command Prompt - Administrator  
-```Command Prompt - Administrator 
+```bash
 harden@tryhackme$ office.bat (Work in Progress)
 Microsoft Office Hardened Successfully.
 ```

@@ -225,7 +225,7 @@ Let's find the malware-hosting IPs in our SoD, and create a detection mechanism 
  
 
    tal0nixIPdownloads.yml  
-```tal0nixIPdownloads.yml 
+```bash
 title:      "TryHackMe  - Lessons Learned"
 status: test
 description: Detects download of .exe files from tal0nix IP hosts found in the SoD

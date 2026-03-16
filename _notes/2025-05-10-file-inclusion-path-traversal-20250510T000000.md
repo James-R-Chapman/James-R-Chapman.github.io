@@ -178,7 +178,7 @@ RewriteEngine on Options -IndexesNo filter appliedRewriteEngine on Options -Inde
 Base Directory Breakout In web applications, safeguards are put in place to prevent path traversal attacks. However, these defences are not always foolproof. Below is the code of an application that insists that the filename provided by the user must begin with a predetermined base directory and will also strip out file traversal strings to protect the application from file traversal attacks:
 
     Sample Code  
-```Sample Code 
+```bash
 function containsStr($str, $subStr){
     return strpos($str, $subStr) !== false;
 }
@@ -212,7 +212,7 @@ if(isset($_GET['page'])){
  For example, imagine an application that mitigates LFI by filtering out `../`:
 
     Sample Script  
-```Sample Script 
+```bash
 $file = $_GET['file'];
 $file = str_replace('../', '', $file);
 
@@ -243,7 +243,7 @@ PHP Session Files PHP session files can also be used in an LFI attack, leading t
  For example, the vulnerable application hosted in [http://MACHINE_IP/sessions.php](http://machine_ip/sessions.php) contains the below code:
 
     Sample Code  
-```Sample Code 
+```bash
 if(isset($_GET['page'])){
     $_SESSION['page'] = $_GET['page'];
     echo "You're currently in" . $_GET["page"];
@@ -280,7 +280,7 @@ Log Poisoning Log poisoning is a technique where an attacker injects executable 
  For example, if an attacker sends a Netcat request to the vulnerable machine containing a PHP code:
 
     Sample Request  
-```Sample Request 
+```bash
 $ nc MACHINE_IP 80      
 <?php echo phpinfo(); ?>
 HTTP/1.1 400 Bad Request

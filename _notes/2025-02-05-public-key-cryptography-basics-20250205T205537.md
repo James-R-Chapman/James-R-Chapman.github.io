@@ -251,7 +251,7 @@ hubs:
 Authenticating the Server If you have used an SSH client before, you would know the confirmation prompt in the terminal output below.
 
     Terminal  
-```Terminal 
+```bash
 root@TryHackMe# ssh 10.10.244.173
 The authenticity of host '10.10.244.173 (10.10.244.173)' can't be established.
 ED25519 key fingerprint is SHA256:lLzhZc7YzRBDchm02qTX0qsLqeeiTCJg5ipOT0E/YM8.
@@ -271,7 +271,7 @@ Warning: Permanently added '10.10.244.173' (ED25519) to the list of known hosts.
  `ssh-keygen` is the program usually used to generate key pairs. It supports various algorithms, as shown on its manual page below.
 
     Terminal  
-```Terminal 
+```bash
 root@TryHackMe# man ssh-keygen
 [...]
 -t dsa | ecdsa | ecdsa-sk | ed25519 | ed25519-sk | rsa
@@ -291,7 +291,7 @@ Specifies the type of key to create. The possible values are “dsa”, “ecdsa
  Let’s generate a key pair with the default options.
 
     Terminal  
-```Terminal 
+```bash
 root@TryHackMe# ssh-keygen -t ed25519
 Generating public/private ed25519 key pair.
 Enter file in which to save the key (/home/strategos/.ssh/id_ed25519): 
@@ -318,7 +318,7 @@ The key's random art image is:
    In the above example, we didn’t use a passphrase to show you the content of the private key. Let’s look at the generated public key, `id_ed25519.pub`, and the generated private key, `id_ed25519`.
 
     Terminal  
-```Terminal 
+```bash
 strategos@g5000:~/.ssh$ cat id_ed25519.pub 
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINqNMqNhpXZGt6T8Q8bOplyTeldfWq3T3RyNJTmTMJq9 strategos@g5000
 strategos@g5000:~/.ssh$ cat id_ed25519
@@ -415,7 +415,7 @@ hubs:
  Below is an example of generating GPG. You are asked about the purpose of using `gpg`, whether signing only or signing and encrypting. Besides selecting the cryptographic algorithm, we needed to choose an expiry date for the generated key. Finally, we provided some information about us: our name, email address, and a comment usually about the purpose of this key.
 
     Terminal  
-```Terminal 
+```bash
 gpg --full-gen-key
 gpg (GnuPG) 2.4.4; Copyright (C) 2024 g10 Code GmbH
 This is free software: you are free to change and redistribute it.

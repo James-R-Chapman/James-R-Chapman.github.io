@@ -94,7 +94,7 @@ Now… no one wants to spend hours going back and forth trying to track down bad
 The process shown in the previous task can be quite arduous. To speed it up, we can automate it using scripts to split bytes over an interval for us. [Find-AVSignature](https://github.com/PowerShellMafia/PowerSploit/blob/master/AntivirusBypass/Find-AVSignature.ps1) will split a provided range of bytes through a given interval.
 
     Find-AVSignature  
-```Find-AVSignature 
+```bash
 PS C:\> . .\FInd-AVSignature.ps1
 PS C:\> Find-AVSignature
 
@@ -120,7 +120,7 @@ This script will result in 1 binaries being written to "C:\Users\TryHackMe"!
  Below is the basic syntax usage of ThreatCheck.
 
     ThreatCheck Help Menu  
-```ThreatCheck Help Menu 
+```bash
 C:\>ThreatCheck.exe --help
   -e, --engine    (Default: Defender) Scanning engine. Options: Defender, AMSI
   -f, --file      Analyze a file on disk
@@ -132,7 +132,7 @@ C:\>ThreatCheck.exe --help
  For our uses we only need to supply a file and optionally an engine; however, we will primarily want to use AMSITrigger when dealing with **AMSI**  (**A** nti-**M** alware **S** can **I** nterface), as we will discuss later in this task.
 
     ThreatCheck  
-```ThreatCheck 
+```bash
 C:\>ThreatCheck.exe -f Downloads\Grunt.bin -e AMSI
 	[+] Target file size: 31744 bytes
 	[+] Analyzing...
@@ -168,7 +168,7 @@ C:\>ThreatCheck.exe -f Downloads\Grunt.bin -e AMSI
  Below is the syntax usage of AMSITrigger
 
     AMSITrigger Help Menu  
-```AMSITrigger Help Menu 
+```bash
 C:\>amsitrigger.exe --help
 	-i, --inputfile=VALUE       Powershell filename
 	-u, --url=VALUE             URL eg. <https://10.1.1.1/Invoke-NinjaCopy.ps1>
@@ -188,7 +188,7 @@ C:\>amsitrigger.exe --help
  For our uses we only need to supply a file and the preferred format to report signatures.
 
     AMSI Trigger Example  
-```AMSI Trigger Example 
+```bash
 PS C:\> .\amsitrigger.exe -i bypass.ps1 -f 3
 [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
 ```

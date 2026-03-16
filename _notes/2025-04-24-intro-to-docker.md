@@ -60,7 +60,7 @@ In this room, we will use the Nginx image to run a web server within a container
 For example, `docker pull nginx`. Docker must know where to get this image (such as from a repository which we’ll come onto in a later task).
 Continuing with our example above, let’s download this Nginx image!
   A terminal showing the downloading of the "Nginx" image 
-```A terminal showing the downloading of the "Nginx" image 
+```bash
 cmnatic@thm:~$ docker pull nginx
 Using default tag: latest
 latest: Pulling from library/nginx
@@ -88,7 +88,7 @@ Docker Image x/y/z
 The `docker image` command, with the appropriate option, allows us to manage the images on our local system. To list the available options, we can simply do `docker image` to see what we can do. I’ve done this for you in the terminal below:
    A terminal showing the various arguments we can provide with "docker image"
  
-```A terminal showing the various arguments we can provide with "docker image" 
+```bash
 cmnatic@thm:~$ docker image
 
 Usage:  docker image COMMAND
@@ -124,7 +124,7 @@ Docker Image ls
 This command allows us to list all images stored on the local system. We can use this command to verify if an image has been downloaded correctly and to view a little bit more information about it (such as the tag, when the image was created and the size of the image).
    A terminal listing the Docker images that are stored on the host operating system
  
-```A terminal listing the Docker images that are stored on the host operating system 
+```bash
 cmnatic@thm:~$ docker image ls
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
 ubuntu       22.04     2dc39ba059dc   10 days ago   77.8MB
@@ -146,7 +146,7 @@ If we want to remove an image from the system, we can use `docker image rm` alon
 It is important to remember to include the *tag*  with the image name.
    A terminal displaying the untagging of an image
  
-```A terminal displaying the untagging of an image 
+```bash
 cmnatic@thm:~$ docker image rm ubuntu:22.04
 Untagged: ubuntu:22.04
 Untagged: ubuntu@sha256:20fa2d7bb4de7723f542be5923b06c4d704370f0390e4ae9e1c833c8785644c1
@@ -159,7 +159,7 @@ cmnatic@thm:~$
 If we were to run a `docker image ls`, we would see that the image is no longer listed:
 
   A terminal confirming that our Docker image has been deleted 
-```A terminal confirming that our Docker image has been deleted 
+```bash
 cmnatic@thm:~$ docker image ls
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
 nginx        latest    2b7d6430f78d   2 weeks ago   142MB
@@ -215,7 +215,7 @@ Let's recall the syntax required to run a Docker container: `docker run [OPTIONS
 So, to achieve the above, my command will look like the following: `docker run -it helloworld /bin/bash`
 
     A terminal showing a container being launched in 'interactive' mode  
-```A terminal showing a container being launched in 'interactive' mode 
+```bash
 cmnatic@thm-intro-to-docker:~$ docker run -it helloworld /bin/bash
 root@30eff5ed7492:/#
 ```
@@ -253,7 +253,7 @@ Listing Running Containers
 To list running containers, we can use the docker ps command. This command will list containers that are currently running - like so:
 
    A terminal showing a list of running containers and their information  
-```A terminal showing a list of running containers and their information 
+```bash
 cmnatic@thm:~/intro-to-docker$ docker ps
 CONTAINER ID   IMAGE                           COMMAND        CREATED        STATUS      PORTS     NAMES                                                                                      
                              
@@ -274,7 +274,7 @@ This command will also show information about the container, including:
 **Tip:**  To list all containers (even stopped), you can use `docker ps -a`:
 
    A terminal showing a list of ALL containers and their information  
-```A terminal showing a list of ALL containers and their information 
+```bash
 cmnatic@thm:~/intro-to-docker$ docker ps -a
 CONTAINER ID   IMAGE                             COMMAND                  CREATED             STATUS     PORTS    NAMES                                                                                  
 00ba1eed0826   gobuster:cmnatic                  "./gobuster dir -url…"   an hour ago   Exited an hour ago practical_khayyam
@@ -381,7 +381,7 @@ RUN touch helloworld.txt
 
 The command would look like so: `docker build -t helloworld .` (we are using the dot to tell Docker to look in our working directory). If we have filled out the command right, we will see Docker starting to build the image:  A terminal showing the building process of the "helloworld" image
  
-```A terminal showing the building process of the "helloworld" image 
+```bash
 cmnatic@thm:~$ docker build -t helloworld .
 Sending build context to Docker daemon  4.778MB
 Step 1/3 : FROM ubuntu:22.04
@@ -408,7 +408,7 @@ cmnatic@thm:~$
 Great! That looks like a success. Let’s use `docker image ls` to now see if this image has been built:
 
   Using the "docker image ls" command to confirm whether or not our image has successfully built 
-```Using the "docker image ls" command to confirm whether or not our image has successfully built 
+```bash
 cmnatic@thm:~$ docker image ls
 REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
 helloworld   latest    4b11fc80fdd5   2 minutes ago   77.8MB
@@ -477,7 +477,7 @@ RUN apt-get install net-tools -y
 
   A terminal showing five layers of a Dockerfile being built
  
-```A terminal showing five layers of a Dockerfile being built 
+```bash
 cmnatic@thm:~$ docker build -t before .
 --omitted for brevity--
 Step 2/5 : RUN apt-get update -y
@@ -499,7 +499,7 @@ RUN apt-get update -y && apt-get upgrade -y && apt-get install apache2 -y && apt
 ```
 
    A terminal showing two layers of a Dockerfile being built 
-```A terminal showing two layers of a Dockerfile being built 
+```bash
 cmnatic@thm:~$ docker build -t after .
 Sending build context to Docker daemon   4.78MB
 Step 1/2 : FROM ubuntu

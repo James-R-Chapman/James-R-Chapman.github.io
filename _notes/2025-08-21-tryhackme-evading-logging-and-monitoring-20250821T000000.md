@@ -238,7 +238,7 @@ We can compile these steps together and append them to a malicious PowerShell sc
 To prove the efficacy of the script, we can execute it and measure the number of returned events from a given command.
 
     Before  
-```Before 
+```bash
 PS C:\Users\Administrator> Get-WinEvent -FilterHashtable @{ProviderName="Microsoft-Windows-PowerShell"; Id=4104} | Measure | % Count
 7
 PS C:\Users\Administrator> whoami
@@ -252,7 +252,7 @@ PS C:\Users\Administrator> Get-WinEvent -FilterHashtable @{ProviderName="Microso
 ![Image 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e73cca6ec4fcf1309f2df86/room-content/67a61f5e3f05f5ce34c457509712adba.PNG)
 
    After  
-```After 
+```bash
 PS C:\Users\Administrator>.\reflection.ps1
 PS C:\Users\Administrator> Get-WinEvent -FilterHashtable @{ProviderName="Microsoft-Windows-PowerShell"; Id=4104} | Measure | % Count
 18
@@ -533,7 +533,7 @@ Note: The core functionality of the script is identical to the above code but sl
 To prove the efficacy of the script, we can execute it and measure the number of returned events from a given command.
 
      Before  
-```Before 
+```bash
 PS C:\Users\Administrator\Desktop> Get-WinEvent -FilterHashtable @{ProviderName="Microsoft-Windows-PowerShell"; Id=4104} | Measure | % Count
 0
 PS C:\Users\Administrator\Desktop> whoami
@@ -547,7 +547,7 @@ PS C:\Users\Administrator\Desktop> Get-WinEvent -FilterHashtable @{ProviderName=
 ![Image 7](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e73cca6ec4fcf1309f2df86/room-content/67a61f5e3f05f5ce34c457509712adba.PNG)
 
    After  
-```After 
+```bash
 PS C:\Users\THM-Analyst> Get-WinEvent -Path C:\Users\THM-Analyst\Desktop\Scenarios\Practice\Hunting_Metasploit.evtx -FilterXPath '*/System/EventID=3 and */EventData/Data[@Name="DestinationPort"] and */EventData/Data=4444'
 
    ProviderName: Microsoft-Windows-Sysmon
