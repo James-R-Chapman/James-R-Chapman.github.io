@@ -12,8 +12,9 @@ permalink: /blog/
 </section>
 
 <section>
-  {% if site.posts and site.posts.size > 0 %}
-    {% for post in site.posts %}
+  {% assign sorted_notes = site.notes | sort: "date" | reverse %}
+  {% if sorted_notes and sorted_notes.size > 0 %}
+    {% for post in sorted_notes %}
       <article class="card" style="margin-bottom: 1rem;">
         <h2 style="margin-bottom: 0.25rem;">
           <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
@@ -25,6 +26,6 @@ permalink: /blog/
       </article>
     {% endfor %}
   {% else %}
-    <p class="muted">No posts are currently published.</p>
+    <p class="muted">No notes are currently published.</p>
   {% endif %}
 </section>

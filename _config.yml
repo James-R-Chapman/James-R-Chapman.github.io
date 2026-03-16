@@ -3,15 +3,18 @@ description: Cybersecurity portfolio and TryHackMe learning notes
 markdown: kramdown
 kramdown:
   input: GFM
-permalink: /blog/:year/:month/:day/:title/
 timezone: America/New_York
 collections_dir: .
+collections:
+  notes:
+    output: true
+    permalink: /blog/:path/
 exclude:
   - documents/notes/**
 defaults:
   - scope:
       path: ""
-      type: posts
+      type: notes
     values:
       layout: post
       author: James Chapman
