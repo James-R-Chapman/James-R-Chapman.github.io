@@ -2,7 +2,7 @@
 layout: post
 title: "TryHackMe  - Linux Logging for SOC"
 date: 2026-01-30
-tags: ["learning", "notes", "tryhackme"]
+tags: ["tryhackme"]
 categories: [tryhackme]
 hubs: "TryHackMe/SOC Level 1/Linux Security Monitoring"
 identifier: "20260130T000000"

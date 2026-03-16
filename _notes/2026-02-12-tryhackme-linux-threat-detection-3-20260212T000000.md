@@ -2,7 +2,7 @@
 layout: post
 title: "TryHackMe  - Linux Threat Detection 3"
 date: 2026-02-12
-tags: ["learning", "notes", "tryhackme"]
+tags: ["tryhackme"]
 categories: [tryhackme]
 hubs: "TryHackMe/SOC Level 1/Linux Security Monitoring"
 identifier: "20260212T000000"

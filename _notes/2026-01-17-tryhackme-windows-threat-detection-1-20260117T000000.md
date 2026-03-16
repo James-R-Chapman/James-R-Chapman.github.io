@@ -2,7 +2,7 @@
 layout: post
 title: "TryHackMe  - Windows Threat Detection 1"
 date: 2026-01-17
-tags: ["learning", "notes", "tryhackme"]
+tags: ["tryhackme"]
 categories: [tryhackme]
 hubs: "TryHackMe/SOC Level 1/Windows Security Monitoring"
 identifier: "20260117T000000"

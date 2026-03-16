@@ -1,0 +1,27 @@
+---
+layout: default
+title: TryHackMe Notes
+permalink: /blog/tryhackme/
+---
+<section>
+  <h1>TryHackMe Notes</h1>
+</section>
+
+<section>
+  {% assign sorted_notes = site.notes | sort: "date" | reverse %}
+  {% if sorted_notes and sorted_notes.size > 0 %}
+    {% for post in sorted_notes %}
+      <article class="card" style="margin-bottom: 1rem;">
+        <h2 style="margin-bottom: 0.25rem;">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </h2>
+        <p class="muted" style="margin: 0;">
+          {{ post.date | date: "%B %-d, %Y" }}
+          {% if post.hubs %} | {{ post.hubs }}{% endif %}
+        </p>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No notes are currently published.</p>
+  {% endif %}
+</section>

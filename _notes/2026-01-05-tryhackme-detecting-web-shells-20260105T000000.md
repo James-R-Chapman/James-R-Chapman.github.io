@@ -2,7 +2,7 @@
 layout: post
 title: "TryHackMe  - Detecting Web Shells"
 date: 2026-01-05
-tags: ["learning", "notes", "tryhackme"]
+tags: ["tryhackme"]
 categories: [tryhackme]
 hubs: "TryHackMe/SOC Level 1/Web Security Monitoring"
 identifier: "20260105T000000"
