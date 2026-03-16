@@ -1,0 +1,181 @@
+---
+title:      "Secret Recipe"
+date:       2025-03-02T00:00:00-05:00
+tags:       ["tryhackme"]
+identifier: "20250302T000010"
+Hubs: "TryHackMe/SOC Level 1/Digital Forensics and Incident Response"
+urls: (https://tryhackme.com/room/registry4n6)
+id: de98f878-26df-4a02-b135-15c3ed07c733
+---
+
+# Secret Recipe
+
+# Task 1 | Introduction
+
+Start MachineStoryline
+
+Jasmine owns a famous New York coffee shop **Coffely** which is famous city-wide for its unique taste. Only Jasmine keeps the original copy of the recipe, and she only keeps it on her work laptop. Last week, James from the IT department was consulted to fix Jasmine's laptop. But it is suspected he may have copied the secret recipes from Jasmine's machine and is keeping them on his machine.
+
+![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e8dd9a4a45e18443162feab/room-content/e5df5e314ace15620057d1a6dd83f5a4.png)
+
+His machine has been confiscated and examined, but no traces could be found. The security department has pulled some important **registry artifacts**  from his device and has tasked you to examine these artifacts and determine the presence of secret files on his machine.
+
+Room Machine
+
+Before moving forward, let's deploy the machine. The machine will start in a split-screen view. In case the VM is not visible, use the blue Show Split View button at the top-right of the page. You may also access it via the AttackBox or RDP using the credentials below. It will take up to 3-5 minutes to start.
+
+On the Desktop, there is a folder named `Artifacts`, which contains the registry Hives to examine and another folder named `EZ tools`, which includes all the required tools to analyze the artifacts.
+
+**Credentials**
+
+**Username** : `Administrator`
+
+**Password:**  `thm_4n6`
+
+**Note:** If you are using Registry Explorer to parse the hives, expect some delay in loading as it takes time to parse the hives.
+
+### **Answer the questions below**
+
+**Question:** Connect with the Lab
+
+*Answer:* 
+
+     No answer needed
+
+**Question:** How many Files are available in the Artifacts folder on the Desktop?
+
+*Answer:* 
+
+     6
+
+---
+
+# Task 2 | Windows Registry Forensics
+
+Download Task FilesRegistry Recap
+
+Windows Registry is like a database that contains a lot of juicy information about the system, user, user activities, processes executed, the files accessed or deleted, etc. 
+
+![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e8dd9a4a45e18443162feab/room-content/102a9b75468cf27947949d403c91456a.png)
+
+Following Registry Hives have been pulled from the suspect Host and placed in the `C:\Users\Administrator\Desktop\Artifacts` folder. All required tools are also placed on the path. `C:\Users\Administrator\Desktop\EZ Tools`.
+
+Your challenge is to examine the registry hives using the tools provided, observe the user's activities and answer the questions.
+
+Registry Hives
+
+- SYSTEM
+- SECURITY
+- SOFTWARE
+- SAM
+- NTUSER.DAT
+- UsrClass.dat
+
+**Note:** The `Download Task Files` button has a cheat sheet, which can be used as a reference to answer the questions.
+
+### **Answer the questions below**
+
+**Question:** What is the Computer Name of the Machine found in the registry?
+
+*Answer:* 
+
+     JAMES
+
+**Question:** When was the Administrator account created on this machine? (Format: yyyy-mm-dd hh:mm:ss)
+
+*Answer:* 
+
+     2021-03-17 14:58:48
+
+**Question:** What is the RID associated with the Administrator account?
+
+*Answer:* 
+
+     500
+
+**Question:** How many User accounts were observed on this machine?
+
+*Answer:* 
+
+     7
+
+**Question:** There seems to be a suspicious account created as a backdoor with RID 1013. What is the Account Name?
+
+*Answer:* 
+
+     bdoor
+
+**Question:** What is the VPN connection this host connected to?
+
+*Answer:* 
+
+     ProtonVPN
+
+**Question:** When was the first VPN connection observed? (Format: YYYY-MM-DD HH:MM:SS)
+
+*Answer:* 
+
+     2022-10-12 19:52:36
+
+**Question:** There were three shared folders observed on his machine. What is the path of the third share?
+
+*Answer:* 
+
+     C:\RESTRICTED FILES
+
+**Question:** What is the Last DHCP IP assigned to this host?
+
+*Answer:* 
+
+     172.31.2.197
+
+**Question:** The suspect seems to have accessed a file containing the secret coffee recipe. What is the name of the file?
+
+*Answer:* 
+
+     secret-recipe.pdf
+
+**Question:** The suspect ran multiple commands in the run windows. What command was run to enumerate the network interfaces?
+
+*Answer:* 
+
+     pnputil /enum-interfaces
+
+**Question:** In the file explorer, the user searched for a network utility to transfer files. What is the name of that tool?
+
+*Answer:* 
+
+     netcat
+
+**Question:** What is the recent text file opened by the suspect?
+
+*Answer:* 
+
+     secret-code.txt
+
+**Question:** How many times was Powershell executed on this host?
+
+*Answer:* 
+
+     3
+
+**Question:** The suspect also executed a network monitoring tool. What is the name of the tool?
+
+*Answer:* 
+
+     wireshark
+
+**Question:** Registry Hives also notes the amount of time a process is in focus. Examine the Hives. For how many seconds was ProtonVPN executed?
+
+*Answer:* 
+
+     343
+
+**Question:** Everything.exe is a utility used to search for files in a Windows machine. What is the full path from which everything.exe was executed?
+
+*Answer:* 
+
+     C:\Users\Administrator\Downloads\tools\Everything\Everything.exe
+
+---
+

@@ -1,0 +1,406 @@
+---
+Title: Mobile Acquisition
+Date: 2025-09-08
+Tags: #TryHackMe
+Hubs: "TryHackMe/Advanced Endpoint Investigations/Mobile Analysis"
+URLs: (https://tryhackme.com/room/mobileacquisition)
+id: 4bef01b1-72b1-46d8-8407-1a6066114578
+---
+
+# TryHackMe | Mobile Acquisition
+
+## Task 1 | Introduction
+
+Mobile devices have become a gold mine for digital forensic investigators. They are used daily and can reveal a large amount of personal, behavioural, and communication data.
+
+ In this room, you will uncover how mobile devices can contain crucial evidence in an investigation. You’ll learn how these devices fit into the wider digital forensics process, common challenges that make these investigations difficult, and why threat groups (like APTs) are increasingly focusing on them.
+
+ We’ll also explore how mobile device manufacturers protect their devices, the legal discussions taking place in the broader sphere and a wide range of data acquisition techniques. Finally, you will be joining the ranks of TryAnalyseMe to perform a capture on a mobile device.
+
+ Learning Objectives 
+- Discover how mobile devices can play a pivotal role in forensic investigations
+- Learn about wider legal and political discussions surrounding mobile device security and privacy
+- How manufacturers are securing their devices against data acquisition
+- Uncover how APTs are shifting tactics to target mobile devices
+- Become familiar with mobile device-specific acquisition techniques.
+
+ Prerequisites 
+- [Digital Forensics Fundamentals](https://tryhackme.com/room/digitalforensicsfundamentals)
+- [Forensic Imaging](https://tryhackme.com/room/forensicimaging)
+- [Legal Considerations in DFIR](https://tryhackme.com/room/dfirprocesslegalconsiderations)
+
+### **Answer the questions below**
+
+**Question:** I'm ready to get started!
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+## Task 2 | Mobile Devices Within Digital Forensics
+
+![Image 1](https://resources.cmnatic.co.uk/TryHackMe/rooms/mobileacqs/Preparing%20for%20Mobile%20Acquisition%20-%20Room%20icon%20-%20600x600.svg)
+
+In today's world, mobile devices are an increasingly powerful form of technology widely adopted worldwide. These mobile devices, such as smartphones, hold some of our most personal data and conversations deeply integrated into our daily lives. They are an absolute treasure trove of potential evidence for an analyst.
+
+With mobile devices having the computing power to replace desktops and laptops, they hold a wide range of valuable artefacts, including:
+
+- Call and chat logs
+- GPS and navigation data
+- Documents and downloads
+- Pictures and video
+- Browsing history
+- WiFi history
+- App-specific data
+
+Mobile Device LandscapeWhen we discuss mobile devices, these include everything from smartphones to wearable technology such as smart watches. While this room will focus on smartphones, the acquisition methods and various protections covered extend to these.
+
+It's a debate as old as time: Android vs. iPhone. In fact, as of the time of writing, Android holds a 72% market share [[StatCounter](https://gs.statcounter.com/os-market-share/mobile/worldwide)], thanks to multiple manufacturers such as Samsung, Google, Motorola, and Xiaomi, which ship their products with Android installed due to how Android can be customised. We will learn the specifics of these two Operating Systems later, learning specific tooling and techniques for both.
+
+Mobile Device Forensics in the Real World![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746735591920.png)
+
+Across the world, mobile devices have played a pivotal role in criminal, civil and incident response investigations. This has sparked a fiery debate between privacy and investigatory powers—more on that later. You may recall prolific police investigations in the news or heated courtrooms, where mobile devices have been the key to cracking the case.
+
+For example, in a famous 2013 case in South Africa, health data such as step count was used to discredit a defence argument, showing that the person was indeed active at the time they claimed not to be.
+
+In the private sector, smartphones are an ever-increasing technology used within businesses. From operations and logistics to business on the go (often holding business-critical data). With that, threat groups are catching on and shifting efforts to target these devices, often using them as entry points within the corporate environment or for data leaks.
+
+EntrypointMobile devices are a great initial access method for an attacker. When you go somewhere, what do you bring? Your wallet? Your keys? Your phone, perhaps?
+
+![Image 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746736534391.svg)
+
+Phones are constantly connecting to different networks. If you have a work phone, you might connect it to the WiFi at your house. You might connect your phone to the cafe or your friend's house. This provides an excellent opportunity for an attacker to assess and collect information about devices on various networks. Perhaps you leave your work laptop at work, but take your work phone home; suddenly, there's an entry point to the corporate network.
+
+The same artefacts that are helpful to an analyst also extend to an attacker: building a timeline of behaviour, identifying associates, etc. Now, this section isn't to scare you, but to highlight how these devices are valuable assets to an attacker.
+
+ While mobile device security mechanisms are sophisticated, they are not fail-proof. We will discuss this shortly.
+
+### **Answer the questions below**
+
+**Question:** In what country was it where there is a famous example of mobile devices being used within investigations?
+
+*Answer:* 
+
+     South Africa
+
+**Question:** What is the technical term for a device that has become the initial access method of an attacker?
+
+*Answer:* 
+
+     Entrypoint
+
+---
+
+## Task 3 | Challenges With Mobile Device Forensics
+
+Manufacturer ProtectionsModern mobile devices boast significant security protection mechanisms. While you will learn more about these specifically throughout the rest of the module, let's introduce you to some now.
+
+![Image 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746736643975.png)
+
+Features such as full disk and file-based encryption have become a standard on modern devices, requiring some form of authentication (PIN/FaceID/Fingerprint, etc) to unlock, with data having various states in which it is or isn't readable. For example:
+
+- Before First Unlock (BFU)
+- Requiring authentication every time
+- Only need to authenticate once
+- No authentication needed
+
+While disk and file encryption is not a new hurdle in digital forensics, it poses significant difficulty in acquisition. Mobile manufacturers have gone to great lengths to protect user data and their devices. Let's list some of the common protections that Android and iOS share at a high level.
+
+ **Mechanism** **Explanation** Full disk & file-based encryptionUnless authenticated or bypassed, forensic tooling cannot analyse the data stored within the device. Individual files can be encrypted with different keys. Isolated encryption keysAndroid and iOS both use a dedicated hardware component to store encryption keys, which is incredibly tough to retrieve. This is similar to the TPM module on motherboards.Secure boot processIt ensures that only trusted and verified code from the manufacturer can load, preventing tampering. An old investigation technique used a custom bootloader that bypassed a wide range of security mechanisms.SandboxingApplications run within their own environments, isolated from one another. You will learn more about this throughout the module.Lockout wipingThese devices can be configured to wipe themselves after a certain number of unsuccessful authentication attempts (e.g., failed PIN entries). If enabled, this prevents brute-forcing.Remote wiping With the use of features like "Find My", devices can be remotely wiped from another in the event of theft, etc. Modern smartphones contain sophisticated protection mechanisms that make acquisition and analysis difficult. Manufacturers are only getting better at these as the game of cat and mouse continues. We will examine how analysis is possible with these (and more) protections in mind.
+
+Legal DebatesNumerous legal and political challenges have surrounded the mobile device investigation process, especially in recent years. For example, regarding encryption, we are seeing debates about the protection of individual privacy and the balance between public safety and law enforcement.
+
+![Image 5](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746735763733.png)
+
+In very recent history, at the time of writing, Apple withdrew its advanced data protection feature in the UK after the UK government legally challenged Apple to provide access to circumvent these protection mechanisms for law enforcement. Rather than comply, Apple removed it entirely, removing end-to-end encryption for iCloud data for everyone in the UK.
+
+We have seen, and will continue to see, events like this across the globe, with other countries making legal demands to tech providers and manufacturers to provide access to encrypted data upon request. Some of which have capitulated to controversial legislative bills, placing users at risk in the interest of public safety. It's a dynamic debate with strong arguments on both sides.
+
+Analysts need technical skills in mobile forensics and familiarity with data protection laws and dynamic legislative processes when analysing mobile devices, particularly across borders, and face ever-increasing scrutiny.
+
+Detecting Malware![Image 6](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746735892461.png)
+
+ Detecting malicious behaviour on mobile devices is notably difficult. As previously mentioned, malicious applications disguise themselves as legitimate utilities and perform nasty tricks behind the scenes. It's not like, for example, you can bring your favourite disassembler onto your iPhone to analyse an app.
+
+Coupled with the fact that monitoring agents (such as EDR agents) are still catching up to mobile devices, these devices are generally less monitored on a corporate network than on a company workstation.
+
+These devices are designed to be as user-friendly as possible. Due to the marketing terms about security they've heard from manufacturers, users will often have a lower "guard" when clicking links, etc.
+
+Older smartphones may not have as sophisticated security mechanisms, or by exploiting 0days, you may come across malware that could rootkit the device, completely disguising itself.
+
+### **Answer the questions below**
+
+**Question:** Which manufacturer protection prevents untrusted code from loading during boot?
+
+*Answer:* 
+
+     Secure boot process
+
+**Question:** Are encryption keys stored in software or hardware?
+
+*Answer:* 
+
+     hardware
+
+---
+
+## Task 4 | APTs Meet Mobile Devices
+
+Mobile devices are an enticing target for a motivated attacker. This task introduces you to how threat actors shift gears and focus on these juicy targets.
+
+App Store MalwareYou may recall cases of malicious apps disguising themselves as legitimate utilities (such as photo editors) being listed on app stores such as Google Play. While applications are vetted using automated scanners, as proven, much like anything in cyber security, these are not 100% proof.
+
+While in most cases these malicious apps are used to collect information such as contacts, call logs, and clipboard contents, they can also have much more nefarious features, such as overlaying on top of other apps (such as the browser) to steal login credentials and act as spyware. The primary motivation for malicious applications like this is to harvest data and credentials at scale, usually for selling on notorious underground markets.
+
+![Image 7](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746744371773.png)
+
+A famous example is a photo editing app that uploaded users' photos to the developer's systems without any notice or permission and injected adware to generate revenue. While these apps are usually not targeted, they reinforce that nothing is ever 100% safe. Below, we will discuss some examples of motivated attackers using targeted applications in their attacks.
+
+Spyware and Surveillance![Image 8](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746736534382.svg)
+
+The uncovering of Pegasus, a very sophisticated piece of malware designed for surveillance purposes, often gaining access via "zero-interaction", was capable of things such as:
+
+- Reading emails, accessing photos
+- Reading messages
+- Tracking via GPS
+- Recording phone calls, the microphone and camera without any user awareness
+- Capturing credentials
+- Having very little trace of presence
+
+Pegasus used a combination of "one click" or "zero click" attacks, known as the "[BLASTPASS](https://citizenlab.ca/2023/09/blastpass-nso-group-iphone-zero-click-zero-day-exploit-captured-in-the-wild/)" exploit chain, requiring the user only to click a URL (or even none at all! Exploiting vulnerabilities within system applications such as Messages, WhatsApp, etc) to place itself within the device.
+
+If you would like to learn more about this sophisticated malware, Citizen Lab published numerous research articles which can be found [here](https://citizenlab.ca/tag/pegasus/).
+
+To put you at ease, sophisticated tooling such as Pegasus is not deployed lightly. Cases like this only add fuel to the debate between ethical and legal law enforcement techniques and user privacy.
+
+Other notable malware used by attackers include banking trojan apps such as Anubis, Cerberus and Exodus.
+
+### **Answer the questions below**
+
+**Question:** What app store was found to have malicious applications available to users?
+
+*Answer:* 
+
+     Google Play
+
+**Question:** What is the name of the sophisticated malware that used a combination of "one click" and "zero click" attacks?
+
+*Answer:* 
+
+     Pegasus
+
+---
+
+## Task 5 | Acquisition Techniques
+
+Acquisition is performed at the very early stages of the mobile forensics process. Acquisition is the process of gathering data from a mobile device using a range of techniques in a forensically sound manner. This task will explore the four main acquisition techniques and tooling, and how evidence and access can be preserved.
+
+Levels of AcquisitionWhen we discuss acquisition levels, we refer to the depth and method required to extract data from a device. The techniques and acquisition methods used are determined by a mixture of various factors, including the ones listed below:
+
+- Age of device (i.e. installed OS version, updates, etc.)
+- Security mechanisms in place
+- Authenticated or unauthenticated access (i.e. locked or unlocked)
+- Availability of tooling to the examiner
+- Depth of data we wish to retrieve (i.e. deleted data)
+
+In mobile forensics, there are generally four levels of acquisition, which are provided in the table below.
+
+ **Acquisition Method** **Description** **Use Case** **Level of Access** ManualManual acquisition involves manually interacting with the device to gather information, such as scrolling through chat messages or taking pictures with an alternative device.This is incredibly valuable if the device is currently unlocked, as many security mechanisms have already been bypassed.
+
+However, this raises serious issues concerning data integrity and non-repudiation.Minimal access to system logs and databases.LogicalLogical acquisition involves using features of the mobile devices' Operating System (such as APIs, backup features, etc) to extract data.This method is helpful for cases where the device is locked, using another trusted (by the mobile) device to authenticate.Partial.File SystemFile System acquisition involves creating an entire copy of the device's file system.It usually requires exploiting a vulnerability, MDM, jailbreaking, or using specialist toolkits to obtain privileged access to the filesystem.Substantial.PhysicalAn entire bit-for-bit image of the device, allowing deleted data to be recovered.Difficult with modern devices due to extensive security mechanisms; however, incredibly valuable, especially with older devices.Full**** (on devices without encryption at rest).
+Maintaining AccessLike traditional digital devices, preserving access is a key objective for analysts. For example, if a device is unlocked, we must ensure it remains unlocked. An unlocked device is the best-case scenario for an analyst as it means that a set amount of security mechanisms are no longer applied.
+
+Disabling the lock screen timer, which can be configured in the respective settings on Android and iOS, can be an effective way to ensure a device remains unlocked.
+
+![Image 9](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746738027224.jpg)
+
+Additionally, it is essential to enable the "airplane" mode on mobile devices. This prevents any modification to data, and in the case of iOS, prevents remote wiping via the "Find My" feature.
+
+![Image 10](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746738026949.png)
+
+Manual AcquisitionThis method of acquisition is often considered a preliminary means of retrieving data within the investigation process. Manual acquisition involves collecting evidence by navigating around the phone, opening various applications or messages, and taking pictures of the information present using another device.
+
+While manual acquisition requires the device to be unlocked, it can be a great way to get key information quickly. However, it must be noted that this breaks non-repudiation and authenticity of data, potentially making it inadmissible and untrustworthy. Moreover, many artefacts may be missed due to the inability to look at system logs and files directly.
+
+Logical AcquisitionLogical acquisition involves using features within the mobile device's Operating System to extract data. This technique is considered much safer in preserving the integrity of evidence, as nothing is overwritten or modified. For mobile devices, this may involve using features to create a backup and examine that backup.
+
+However, while logical acquisition provides much more data than manual acquisition, it is only partial, as backups often admit specific data types, including Operating System files.
+
+This can be done using tools such as 3uTools, Easeus, and [libimobiledevice](https://libimobiledevice.org/) on the CLI.
+
+![Image 11](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718035895046)
+
+   Using libimobiledevice to create a backup for iOS  
+```Using libimobiledevice to create a backup for iOS 
+cmnatic@thm-dev$ idevicebackup2 backup --full ./backup
+
+Started "com.apple.mobilebackup2" service on port 49174.
+Negotiated Protocol Version 2.1
+Starting backup...
+Backup will be unencrypted.
+Requesting backup from device...
+Full backup mode.
+[==============================                       ] 55% Finished
+Receiving files
+[==================================================] 100% (12.6 MB/12.5 MB)
+[==================================================] 100% (12.6 MB/12.5 MB)
+[==================================================] 100% (12.7 MB/12.5 MB)
+[==================================================] 100% (12.7 MB/12.5 MB)
+[==================================================] 100% (12.7 MB/12.5 MB)
+```
+
+   For Android, this can be done using the Android Debug Bridge (ADB):
+
+    Using ADB to create a backup for Android  
+```Using ADB to create a backup for Android 
+cmnatic@thm-dev$ adb backup -apk -shared -all -f backup.ab
+
+Backing up data... Please wait.
+Writing android application package (APK) files... 
+Writing shared storage files...
+Backup Complete!
+```
+
+   File System AcquisitionThis acquisition method provides an entire extraction of the file system itself. It is a much more comprehensive technique than others, such as logical acquisition. To illustrate, Operating System data will be included within the extraction, potentially enabling the recovery of deleted data and additional data that backups do not include, allowing for a comprehensive analysis.
+
+With that said, this technique does not come without challenges. Performing a file system acquisition involves privileged access to the device. What that entails exactly is covered in the next task; however, it usually involves gaining root access, often exploiting vulnerabilities in the device to bypass security mechanisms. Specialist forensic toolkits such as Cellebrite UFED are capable of such acquisition.
+
+    Using ADB to create a file system extraction for Android  
+```Using ADB to create a file system extraction for Android 
+cmnatic@thm-dev$ adb pull /data /mnt/android_backup
+
+pull: building file list...
+pull: /data/anr/traces.txt -> /mnt/android_backup/anr/traces.txt
+pull: /data/system/packages.xml -> /mnt/android_backup/system/packages.xml
+pull: /data/system/users/0.xml -> /mnt/android_backup/system/users/0.xml
+pull: /data/data/com.android.providers.contacts/databases/contacts2.db -> /mnt/android_backup/data/com.android.providers.contacts/databases/contacts2.db
+...
+[100%] /data -> /mnt/android_backup
+```
+
+   *Example of using ADB to perform a file system extraction on a rooted Android.*
+
+### **Answer the questions below**
+
+**Question:** If I wanted to recover deleted data, what acquisition method would I try?
+
+*Answer:* 
+
+     Physical
+
+**Question:** Which acquisition method involves using features of the Operating System to extract data?
+
+*Answer:* 
+
+     Logical Acquisition
+
+**Question:** What is the name of the tool that can be used to perform a backup of an Iphone, via the CLI?
+
+*Answer:* 
+
+     idevicebackup2
+
+**Question:** What is the name of the tool that can be used to perform a backup of an Android, via the CLI?Please note that we are looking for the acronym.
+
+*Answer:* 
+
+     ADB
+
+---
+
+## Task 6 | Specialist Acquisition Techniques
+
+Specialist Utilities![Image 12](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1746099500287.png)
+
+Specialist hardware and software suites are available to specific organisations. For example, Cellebrite UFED is an advanced acquisition and analysis hardware and software suite only accessible to law enforcement, government agencies, and similar organisations. It uses sophisticated techniques to bypass security mechanisms and analyse mobile devices.
+
+Other specialist utilities include the Oxygen Suite, which can extract cloud data as well as data within the device and bypass certain security mechanisms.
+
+ Jailbreaking Jailbreaking involves exploiting a known vulnerability within the mobile device's Operating System to provide what's known as "root-level" access, allowing complete control over the device. This technique provides unfiltered access to the device but permanently modifies it, so it is not forensically sound.
+
+While jailbreaking is still possible, it is usually only possible on older Operating System versions once an exploit is discovered, if, for example, the device does not have the latest updates.
+
+ Custom Boot Loading ![Image 13](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1747066007022.svg)
+
+This technique involves getting the mobile device to boot into a temporary, custom Operating System that provides low-level access to the device and bypasses security mechanisms. It differs from others, such as Jailbreaking, as it does not permanently alter the device, making it forensically sound.
+
+However, security mechanisms such as encryption may still be in place, especially with modern devices storing encryption keys in a dedicated hardware component. Moreover, modern devices use what's known as a "Secure Boot" chain to ensure only trusted and verified code will execute, making custom boot loading much harder.
+
+ JTAG JTAG (Joint Test Action Group) was initially used to diagnose circuit board components. However, it has made its way into mobile forensics by physically extracting data directly from the mobile device's hardware components. JTAGing is now considered obsolete for modern mobile devices, primarily due to the risks, tools and knowledge required.
+
+ Brute-forcing ![Image 14](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1747066289615.svg)
+
+While we previously mentioned in this room that modern devices have security mechanisms against brute-forcing things like the PIN code, the user must set these up. If they are not, tooling can be used to guess the PIN code to unlock the device randomly. While incredibly time-consuming, if you're motivated enough, you will eventually get it—even if it's in 10 years.
+
+Mobile devices usually include protections such as rate-limiting and lockout for **x**  **time**  after **y attempts** , which increase each time they are triggered.
+
+ Cloud Extraction ![Image 15](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1747065795698.svg)
+
+A much more law-based approach, cloud extraction involves submitting legal requests to manufacturers, app developers, etc., to retrieve application-specific information or backups. In most cases, this can be a more *fruitful*  approach to retrieving data rather than bypassing security mechanisms.
+
+### **Answer the questions below**
+
+**Question:** What is the name of the technique that boots the device into a temporary Operating System, often bypassing security mechanisms?
+
+*Answer:* 
+
+     Custom Boot Loading
+
+**Question:** What is the name of the technique that exploits a known vulnerability within the device? Granting it full or "root" access?
+
+*Answer:* 
+
+     Jailbreaking
+
+---
+
+## Task 7 | Practical
+
+View Site![Image 16](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1747066739194.svg)
+
+For the practical, you will take the place of a forensic analyst on the mobile analysis team at TryAnalyseMe. This private organisation performs forensic services on a wide variety of devices.
+
+A new case has come across your desk. It is your job to:
+
+- Create the case (As Investigator “Analyst”)
+- Add the evidential item using the details in the following table
+- Perform data acquisition
+- Export the report to retrieve the flag
+
+**Deploy the static site attached to this task** . The details about the iPhone you are to perform an acquisition on have been provided in the table below. **Make sure to fill this out when adding the item as evidence.**
+
+ **Field** **Value** **IMEI** 358240051111112**Type** Mobile**Colour** Silver**Operating System** iOS**Investigator** Analyst
+
+### **Answer the questions below**
+
+**Question:** After creating the case and adding the iPhone as evidence, perform the data capture.What is the flag displayed once the capture is complete?
+
+*Answer:* 
+
+     THM{MOBILE_ACQUISITION}
+
+---
+
+## Task 8 | Conclusion
+
+Well done! You've made it to the end. Who knew mobile acquisition could be so varied! Let's recap what was covered:
+
+1. The protection mechanisms that manufacturers use to protect their Operating Systems, user data and privacy.
+2. Why APTs are focusing their sights on these devices
+3. The various depths of acquisition techniques
+4. How specialised tooling and techniques can play a part in the acquisition process
+
+And finally, you got some hands-on experience in our simulated mobile forensic tool suite, capturing a mobile device. This room has given you a solid introduction to mobile forensics and the acquisition process.
+
+### **Answer the questions below**
+
+**Question:** Proceed through the rest of the module to learn about iOS and Android analysis!
+
+*Answer:* 
+
+     No answer needed
+
+---
+

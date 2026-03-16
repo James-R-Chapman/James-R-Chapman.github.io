@@ -1,0 +1,31 @@
+---
+layout: default
+title: TryHackMe Blog
+permalink: /blog/
+---
+<section>
+  <h1>TryHackMe Notes as Blog Posts</h1>
+  <p class="muted">
+    Rendered posts from <code>documents/notes/TryHackMe</code>. Frontmatter is
+    used for metadata and is not displayed in the post body.
+  </p>
+</section>
+
+<section>
+  {% assign sorted_posts = site.posts | sort: "date" | reverse %}
+  {% if sorted_posts.size > 0 %}
+    {% for post in sorted_posts %}
+      <article class="card" style="margin-bottom: 1rem;">
+        <h2 style="margin-bottom: 0.25rem;">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </h2>
+        <p class="muted" style="margin: 0;">
+          {{ post.date | date: "%B %-d, %Y" }}
+          {% if post.hubs %} | {{ post.hubs }}{% endif %}
+        </p>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No posts generated yet. Run <code>scripts/build_thm_posts.sh</code>.</p>
+  {% endif %}
+</section>

@@ -1,0 +1,589 @@
+---
+Date: 2025-09-28
+Tags: #TryHackMe
+Hubs: "TryHackMe/Advanced Endpoint Investigations/File System Analysis"
+URLs: (https://tryhackme.com/room/filecarving)
+id: 66a79000-d2a2-4a23-b936-753103679c89
+---
+
+# TryHackMe | File Carving
+
+## Task 1 | Introduction
+
+Introduction File carving is a vital technique in digital forensics, bridging the gap between low-level storage analysis and the recovery of critical evidence. When file systems like NTFS, FAT32, or ext4 fail to provide precise metadata—whether due to deletion, corruption, or intentional tampering, file carving steps to extract files based on their structure and content.
+
+ Building on foundational concepts like Linux file system structures, volume and partition analysis, and filesystem behaviour, this module immerses learners in practical scenarios where file carving uncovers the hidden, deleted, or fragmented. This sets the stage for mastering both manual and automated recovery techniques.
+
+ Learning Objectives By the end of this room, you will have covered the following objectives and understand how carving integrates into broader forensic and incident response processes.
+
+ 
+- Recap the details of file systems and identify file signatures.
+- Understand the role of file carving in forensic investigations.
+- Perform manual and automated file carving and extract files based on identified signatures and file structures.
+- Recover files from diverse storage environments, such as slack space, memory dumps, and reformatted drives.
+
+ Prerequisites To embark on this room, having a solid grasp of the following concepts is recommended.
+
+ 
+- [Linux File System Analysis](https://tryhackme.com/room/linuxfilesystemanalysis)
+- [FAT32 Analysis](https://tryhackme.com/room/fat32analysis)
+- [NTFS Analysis](https://tryhackme.com/room/ntfsanalysis)
+- [EXT Analysis](https://tryhackme.com/room/extanalysis)
+
+ Connection to the Machine Start Machine In this room, we will use an Ubuntu virtual machine with the forensics analysis tools required installed. You can start the machine by clicking the `Start Machine` button above. The VM will take approximately 2 minutes to boot up and open in split-view. If the VM is not visible, use the blue `Show Split View` button at the top of the page.
+
+ `Note: This room contains a non-guided challenge in Task 6.` Story A mid-sized tech company, **DataSyncTHM Solutions** , has been acquired by a larger conglomerate, **IntegriTech Inc.**  The acquisition is set to merge technologies and operational data. During the transition, IntegriTech suspects that the R&D department at DataSync may have mishandled proprietary information during the acquisition. Key areas of concern include:
+
+ 
+1. Critical files that appear to have been intentionally deleted.
+2. Hidden data is suspected to be embedded or concealed on company storage drives.
+3. The use of unconventional storage practices to obscure proprietary information.
+
+ As the forensic investigator, your role is to recover, analyse, and interpret data to determine what might have been tampered with. You’ll use **manual and automated carving methods**  to locate and retrieve data from various sources, including formatted drives, slack space, and memory dumps.
+
+### **Answer the questions below**
+
+**Question:** I am ready to embark on a file carving quest.
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+## Task 2 | Basis of File Carving
+
+In digital forensics, recovering data from storage media is critical. One of the most effective techniques for doing so is **file carving** , which allows forensic experts to extract files based solely on their content, bypassing traditional file system metadata. Before we dive into the intricacies of file carving, it's essential to understand the foundational concepts of file systems, file headers and footers, associated signatures, and metadata.
+
+ A Brief Recap of File Systems A **file system**  is an operating system's method and data structure to manage files on a storage medium. It organises data into files and directories, making it possible to store, retrieve, and update information efficiently. Without a file system, data would be a chaotic collection of bits with no way to distinguish one piece of information from another.
+
+ **Windows File Systems**
+
+ Windows operating systems primarily use two types of file systems: **FAT (File Allocation Table)**  and **NTFS (New Technology File System)** .
+
+ 
+1. **FAT File System:**  One of the oldest and most enduring file systems, FAT was designed in 1977 for floppy disks. It comprises a boot sector, a file allocation table, and storage space. Variants like FAT12, FAT16, FAT32, and exFAT are still used today in USB drives and memory cards due to their simplicity and broad compatibility.
+2. **NTFS File System:**  Introduced with Windows NT, NTFS is a more advanced file system that offers improved performance, security, and reliability. Central to NTFS is the **Master File Table (MFT)** , a database that records detailed information about every file and directory on the volume. 
+1. **Master File Table (MFT):**  This table acts like a ledger, containing entries for each file and directory with attributes such as size, permissions, and timestamps.
+2. **Attributes and Data Runs:**  Files are broken down into attributes stored in the MFT. Large files may have non-resident attributes, with **data runs**  pointing to their location on the disk.
+3. **System Files:**  Special files prefixed with a dollar sign (e.g., $MFT, $DATA) are critical for NTFS operations and play a significant role in forensic analysis.
+
+ **Linux File Systems**
+
+ Linux systems commonly use file systems like **ext2** , **ext3** , and **ext4** .
+
+ 
+1. **Inode Structure:**  The inode data structure stores metadata about a file without its name. It contains file size, ownership, permissions, and timestamps.
+2. **Blocks and Inodes:**  Files are stored in fixed-size blocks. The inode keeps track of these blocks, and larger files may link multiple blocks together with indirect references.
+
+ **Key Differences**
+
+ While NTFS and Linux file systems aim to organise data efficiently, they differ in structure and complexity. NTFS uses the MFT and data runs, adding layers of abstraction, whereas Linux relies on inodes and blocks. These differences influence the methods used in file carving across different operating systems.
+
+ File Headers and Footers Just as books have covers and titles that identify them, digital files have distinctive starting sequences called **headers**  and sometimes ending ones called **footers**  that indicate their formats, boundaries, and structure. These sequences, often referred to as **magic bytes** , act as signatures to help forensic analysts recognise and reconstruct files even when the file system's metadata is missing or corrupted. Below is a table outlining six common file types, along with their magic bytes.
+
+    File Type Header (Magic Bytes) Footer / End Marker Notes     **JPEG**  FF D8 FF E0 (commonly FF D8 FF) FF D9 Commonly used image format   **PNG**  89 50 4E 47 0D 0A 1A 0A 49 45 4E 44 AE 42 60 82 Uses chunks to mark start/end   **PDF**  %PDF (25 50 44 46) %%EOF (25 25 45 4F 46) Portable Document Format   **DOCX**  50 4B 03 04 (ZIP signature) 50 4B 05 06 (ZIP end of central directory) DOCX is essentially a ZIP archive of XML files   **GIF**  47 49 46 38 39 61 (GIF89a) or 47 49 46 38 37 61 (GIF87a) 00 3B GIF ends with a semicolon   **ZIP**  50 4B 03 04 50 4B 05 06 General-purpose archive format    By scanning for these signatures, forensic tools can identify and extract files without relying on the file system. [GCK's File Signatures Table ](https://www.garykessler.net/library/file_sigs.html)is a good resource for referencing file signatures.
+
+ Metadata **Metadata**  is data that provides information about other data. In the context of files, metadata describes attributes such as creation date, modification date, permissions, and more.
+
+ **Types of Metadata**
+
+ 
+1. **Embedded Metadata:**  The information is stored within the file itself. For example, EXIF data in JPEG images includes camera settings, location, and timestamps.
+2. **Extended Metadata:**  The operating system stores this information as file attributes, such as file permissions and last accessed dates.
+3. **External Metadata:**  Information here can be managed separately from the file, like log entries or database records tracking file access.
+
+ **Importance in File Recovery**
+
+ Metadata is invaluable in digital forensics. It provides context and can help reconstruct events, verify file authenticity, and sometimes assist in recovering files when other methods fail.
+
+ What is File Carving? ![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1735541482303.png)
+
+**File carving**  is the process of extracting files from raw data without relying on file system metadata. It involves scanning storage media for file signatures (magic bytes) and reconstructing files based on these patterns.
+
+ **Applications of File Carving**
+
+ 
+1. **Recovering Deleted Files:**  When files are deleted, the file system may remove references to them, but the data remains until a new file overwrites it.
+2. **Extracting Data from Corrupted Drives:**  Traditional recovery methods may fail if the file system is damaged.
+3. **Uncovering Hidden or Tampered Files:**  Useful in investigations where data has been deliberately concealed or altered.
+
+ **The Process of File Carving**
+
+ 
+1. **Scanning for Signatures:**  Tools search for known file headers in the raw data.
+2. **Determining File Boundaries:**  Using headers and footers to define where a file starts and ends.
+3. **Reconstructing Files:**  Extracting the data between the identified boundaries.
+
+ Data Recovery vs. File Carving While both aim to restore lost data, there are critical differences between traditional data recovery and file carving.
+
+ **Data Recovery**
+
+ 
+1. **Relies on file system metadata:**  Uses information like directory structures and file allocation tables.
+2. **Effective when metadata is intact:**  Works well if the file system hasn't been severely damaged.
+3. **Tools and methods:**  Employ standard recovery software that interprets the file system.
+
+ **File Carving**
+
+ 
+1. **Bypasses file system metadata:**  Does not depend on directory entries or allocation tables.
+2. **Effective when metadata is missing or corrupted:**  Ideal for severely damaged or reformatted drives.
+3. **Tools and methods:**  Use specialised software to scan for file signatures and reconstruct files from raw data.
+
+ **Limitations of Data Recovery Tools**
+
+ 
+1. **Ineffective without metadata:**  Can't recover files if the file system's metadata is lost.
+2. **Cannot handle fragmentation well:**  Struggles with files that are not stored in contiguous blocks.
+
+ **The Role of File Carving**
+
+ 
+1. **Overcomes metadata loss:**  Can recover files even when the file system is obliterated.
+2. **Handles fragmented files:**  Advanced carving techniques can reassemble fragmented files, though this is complex.
+
+### **Answer the questions below**
+
+**Question:** What file signature is used to identify JPEG files?
+
+*Answer:* 
+
+     FFD8FFE0
+
+**Question:** What file signature is used to identify Windows Shortcut files? Answer with no spaces.
+
+*Answer:* 
+
+     4C00000001140200
+
+---
+
+## Task 3 | Carving Tools
+
+As we have seen, file carving is an indispensable skill in digital forensics, allowing us to recover files and data when traditional methods do not provide the results needed. Mastering the tools used in file carving is essential.
+
+ File Carving Tools The software tools are designed to extract files from raw data by identifying known data patterns, such as **file headers and footers** . Because they do not rely on the file system metadata, they work well in scenarios where the file system is damaged, corrupted, or missing entirely.
+
+ We briefly describe a few popular file carving tools, each with strengths and situational applicability. Then, we shall revisit our storyline to see how to use these tools to recover missing data.
+
+ **Hex Editors** : These are computer applications used to view, edit, and interact with raw file data in hexadecimal format, which is more human-friendly than binary. Hex editors show the address of the first byte of each line, the hex data of each byte, and the ASCII representation of the bytes.
+
+ ![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1733891368504.png)
+
+ **Binwalk** : Binwalk is primarily used to analyse and extract data from binary files. It’s instrumental when dealing with memory dumps or embedded systems. It identifies file signatures, embedded files, and executable code hidden within the binary data. One of its limitations is that it is ineffective with highly fragmented or encrypted data.
+
+ **Scalpel** : Scalpel is a lightweight, open-source file carving tool. It scans storage media for specific file signatures defined in a configuration file. Scalpel is fast, precise, and excellent for targeted recovery tasks, such as retrieving images or documents. One crucial limitation is its limited capabilities to handle fragmented files or complex data structures.
+
+ **Foremost** : Foremost is another open-source tool with a configuration file that offers flexibility. It works similarly to Scalpel but is particularly adept at forensic investigations where precise rules for file signatures are needed.
+
+ **PhotoRec** : PhotoRec is a robust tool capable of recovering over 480 file types. Unlike Scalpel, it works more broadly, often recovering various file types in one pass. However, this power comes with the drawback of noise—it can recover many irrelevant files alongside your target.
+
+ **EnCase** : A comprehensive digital forensic tool that integrates file carving capabilities into a broad suite for data acquisition, analysis, and reporting. This is one of the most acclaimed professional forensic tools.
+
+ ![Image 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1735541532621.png)
+
+### **Answer the questions below**
+
+**Question:** Time to put some of the tools to action.
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+## Task 4 | Manual Carving
+
+Manual Carving Now that we are familiar with the tools used in file carving exercises, we will put some of them to task and learn how to recover files and data manually. Here, the file carving process involves interacting with the file structures and processing data in its raw format at the byte level. The typical manual file carving techniques include header-footer carving and file structure carving. We will be working with disk image files found in the path: `/home/ubuntu/Desktop/Carving_Challenges`.
+
+ Scenario 1: USB Drive Wipe Recovery Recapping our storyline for this room, we see that the acquisition of DataSyncTHM has resulted in many suspicious activities among disgruntled and recently terminated employees, such as wiping USB drives that were in their possession. As a forensic analyst, your work is to recover the files and information hidden within the formatted USB image `Challenge1_Manual_Carve_usb.img` using **Okteta** , a hex editor, and **ExifTool** .
+
+ To begin with, we can open our image file in the hex editor to see what the USB image looks like after a reformat is attempted. It should be noted that 0kteta can take about 1-2 minutes to process the image files when opening them.
+
+ The disk image file is recognised as a non-bootable drive. If you recall the concept of MBR from the [MBR and GPT Analysis](https://tryhackme.com/room/mbrandgptanalysis) room, you can see that the disk's first sector, as shown below, is the MBR. Since the partition table in this MBR is empty, this indicates that the disk is most likely formatted. If we scroll further through the hexadecimal data, we can see the presence of fragments of data still left behind after being formatted. We need to identify what data fragments have been left by identifying any header-footer pairings in the image.
+
+ Let's search for the common pairings we discussed, such as JPEG, PNG, and PDF. The image below provides an example of searching and carving out an image. Change the search criteria based on the needs required.
+
+ ![Image 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1733891368436.png)
+
+ We will find out that the USB image file contains the `89504E47` header which starts at the offset value of **0001069056**  and the `49454E44AE426082` footer at the offset value of **0001526433** , signifying that a PNG image must have been stored here. To extract the hexadecimal, we would need to note down the starting offset of this file, as highlighted in the image below, and identify the ending offset of the file.
+
+ ![Image 5](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1733891368440.png)
+
+ These values will allow us to select the range that covers all this data, copy it to a new file and save it with the right `.png` extension and verify it from our directory. Remember to change the offset values to **Decimal** , when selecting the offset range.
+
+ ![Image 6](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1734703823619.png)
+
+ Alternatively, we can extract the file using the starting and ending offsets by using `dd` as a file analysis tool.
+
+ 
+- The first step is to determine the header and footer offsets; As an example, we can assume there is a file at the starting offset **0134483968**  and **0134484431**  as the ending offset.
+- Subtract the offset values, with the ending offset as the minuend. The result is the file size in bytes: `134484431(Ending) - 134483968 (Starting) = 463 bytes.`
+- Run `dd` command to extract the file.
+
+   File carving using dd and the file bytes 
+```File carving using dd and the file bytes 
+user@tryhackme:~/Desktop/Carving_Challenges$ dd if=Challenge1_Manual_Carve_usb.img of=Image.png bs=1 skip=134483968 count=463
+```
+
+   
+- The file will be extracted and saved based on the name provided.
+
+ Once you have saved the right file from the image, we may need to check its contents and analyse whether it has any malicious payloads. We can extract its metadata using ExifTool to verify our claim. Remember, for forensic investigations, it is crucial to perform any experiments on a sandbox or isolated host so as not to infect live hosts with unsuspecting malware that may be hidden by an adversary on recovered files.
+
+   Metadata details on Recovered file 
+```Metadata details on Recovered file 
+user@tryhackme:~/Desktop/Carving_Challenges$ exiftool Challenge1_Image.png 
+ExifTool Version Number         : 11.88
+File Name                       : Challenge1_Image.png
+Directory                       : .
+File Size                       : 447 kB
+File Modification Date/Time     : 2024:12:09 11:28:20+00:00
+File Access Date/Time           : 2024:12:09 11:28:23+00:00
+File Inode Change Date/Time     : 2024:12:09 11:28:20+00:00
+File Permissions                : rw-r--r--
+File Type                       : PNG
+File Type Extension             : png
+MIME Type                       : image/png
+Image Width                     : 1920
+Image Height                    : 1080
+Bit Depth                       : 8
+Color Type                      : RGB with Alpha
+Compression                     : Deflate/Inflate
+```
+
+   Scenario 2: Recovering Files from Slack Space What about recovering fragmented files in the slack space of a former R&D employee's workstation storage? Using binwalk, we can examine the file structure of the `Challenge2_slack_space.img` forensic image and identify any hidden file signatures.
+
+ **Slack space**  refers to the unused storage space within a cluster that remains after a file's written data, which may still contain residual data from previously stored files. This means that, unlike in our previous scenario, where the carving focused on seeking deleted or lost files by identifying their headers and reconstructing data manually or with tools, here, we shall target residual data left in partially used clusters.
+
+ Binwalk provides us with a list of detected files with their offsets in decimal and hexadecimal alongside the file type descriptions. Binwalk would take about 2-3 minutes to process the image files when opening them.
+
+ From our image file, we can notice that there is a media file described as MPEG transport stream data. If we read through the documentation on [file signatures](https://www.garykessler.net/library/file_sigs.html), we don't get much information aside from the extensions `TS, TSA and TSV- a` standard digital container format for transmitting and storing audio, video and data.
+
+   Binwalk File Fragments on Slack Space Disk 
+```Binwalk File Fragments on Slack Space Disk 
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ binwalk Challenge2_slack_space.img 
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             Linux EXT filesystem, blocks count: 262144, image size: 268435456, rev 1.0, ext4 filesystem data, UUID=7f8d7b5b-c2b3-48da-bbee-4d3288a488a4
+268782594     0x10054C02      MPEG transport stream data
+269403916     0x100EC70C      TROC filesystem, 1547685789 file entries
+317105084     0x12E6A3BC      MySQL ISAM index file Version 9
+402652160     0x17FFFC00      Linux EXT filesystem, blocks count: 262144, image size: 268435456, rev 1.0, ext4 filesystem data, UUID=7f8d7b5b-c2b3-48da-bbee-4d3288a488a4
+671087616     0x27FFFC00      Linux EXT filesystem, blocks count: 262144, image size: 268435456, rev 1.0, ext4 filesystem data, UUID=7f8d7b5b-c2b3-48da-bbee-4d3288a488a4
+963292143     0x396AABEF      MySQL ISAM index file Version 1
+1053237229    0x3EC71FED      device tree image (dtb)
+1069145434    0x3FB9DD5A      MySQL MISAM compressed data file Version 9
+```
+
+   We can further understand the file signatures by looking at them in our hex editor. Open the disk image file in the editor and navigate to the offset address `268782594`. Use the `Go to Offset...` menu option under the **Edit**  menu, and ensure the offset coding is decimal.
+
+ ![Image 7](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/5fc2847e1bbebc03aa89fbf2-1734341617317.png)
+
+ What we find is that we are directed to the byte value of `47`, which was indicated in the documentation as representative of the transport stream data. However, this byte is in the middle of other byte data, which means we can find the very beginning of the data stream and identify what file type this data represents.
+
+ As the data is fragmented, it will be time-consuming to scroll through it all. Searching for the common file signature bytes is easier until we find any significant ones.
+
+ Once we find the file signature and know which file to carve out of the image, we can go back to binwalk and use its extraction feature to recover the fragmented file. Ensure that the command is given time to execute, as it will create a new directory, populating it with all the files found in the disk image.
+
+   Binwalk File Extraction 
+```Binwalk File Extraction 
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ binwalk -e Challenge2_slack_space.img 
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+
+0             0x0             Linux EXT filesystem, blocks count: 262144, image size: 268435456, rev 1.0, ext4 filesystem data, UUID=7f8d7b5b-c2b3-48da-bbee-4d3288a488a4
+268782594     0x10054C02      MPEG transport stream data
+269403916     0x100EC70C      TROC filesystem, 1547685789 file entries
+317105084     0x12E6A3BC      MySQL ISAM index file Version 9
+402652160     0x17FFFC00      Linux EXT filesystem, blocks count: 262144, image size: 268435456, rev 1.0, ext4 filesystem data, UUID=7f8d7b5b-c2b3-48da-bbee-4d3288a488a4
+671087616     0x27FFFC00      Linux EXT filesystem, blocks count: 262144, image size: 268435456, rev 1.0, ext4 filesystem data, UUID=7f8d7b5b-c2b3-48da-bbee-4d3288a488a4
+963292143     0x396AABEF      MySQL ISAM index file Version 1
+1053237229    0x3EC71FED      device tree image (dtb)
+1069145434    0x3FB9DD5A      MySQL MISAM compressed data file Version 9
+
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ 
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ ls _Challenge2_slack_space.img.extracted/
+0.ext  17FFFC00.ext2  27FFFC00.ext2  ext-root
+```
+
+   Navigate through the extracted folder and uncover information about the recovered files to answer the questions on this task.
+
+ Challenges of Manual File Carving Manual file carving is a cornerstone skill for digital forensic analysts, crucial for extracting evidence from corrupted or incomplete data sources. While invaluable, this process is riddled with complexities that demand a blend of technical expertise, problem-solving skills, and patience. Let's explore the key challenges associated with this meticulous practice.
+
+ **Tackling Fragmented Files**
+
+ Dealing with fragmented files is one of the most significant hurdles in manual file carving. Unlike intact files, fragmented data does not reside in contiguous blocks, requiring analysts to:
+
+ 
+- **Locate Fragments:**  Pinpoint individual file pieces scattered across the storage medium.
+- **Reconstruct Files:**  Leverage in-depth knowledge of file formats and encoding to reassemble fragments in their correct order.
+- **Address Missing Data:**  Navigate gaps in file fragments using heuristics or acknowledge partial recovery when data is irretrievable.
+
+ This process is as much an art as it is a science, demanding creativity and precision in equal measure.
+
+ **Time-Intensive Nature**
+
+ The manual aspect of file carving is inherently time-consuming. Analysts face challenges such as:
+
+ 
+- **High Data Volumes:**  Modern storage devices can contain terabytes of data, making the sifting process daunting.
+- **Complex Encodings:**  Encrypted or obfuscated files further slow the process, requiring decryption keys or reverse engineering.
+- **Proprietary Formats:**  Lack of documentation for specific file types can turn an intricate task into an investigative puzzle.
+
+ **Navigating Technical Barriers**
+
+ Beyond fragmentation and time demands, manual carving often involves overcoming specific technical barriers:
+
+ 
+- **Corruption and Damage:**  Damaged file headers or data blocks require expertise to be identified and repaired.
+- **False Positives:**  Distinguishing valid fragments from unrelated data can be tricky, requiring careful validation.
+- **Tool Limitations:**  Standard forensic tools may fall short for niche file formats, necessitating custom solutions.
+
+ **A Balancing Act of Expertise and Persistence**  While challenging, manual file carving is an essential practice in digital forensics, offering a chance to recover critical evidence that automated tools might overlook. Success in this field relies on technical acumen, perseverance, adaptability, and a methodical approach to problem-solving. Forensic analysts must continuously update their skills to stay ahead of evolving file systems and data storage technologies.
+
+ The process may be painstaking, but the ability to extract hidden truths from seemingly lost data makes manual file carving an indispensable tool in digital investigations.
+
+### **Answer the questions below**
+
+**Question:** What is the ending offset address of the PNG file in Challenge1_Manual_Carve_usb.img?
+
+*Answer:* 
+
+     0001526426
+
+**Question:** From the disk file Challenge1_Manual_Carve_usb.img, what is the flag hidden within the recovered file?
+
+*Answer:* 
+
+     THM{F1le_Carving_1s_FuN}
+
+**Question:** What is the file size of the recovered image file in KB from Challenge2_slack_space.img?
+
+*Answer:* 
+
+     31
+
+**Question:** What is the name of the extracted file that has no extension from Challenge2_slack_space.img?
+
+*Answer:* 
+
+     randomstuff
+
+**Question:** What is the flag hidden within the recovered file from Challenge2_slack_space.img?
+
+*Answer:* 
+
+     THM{Fragm3nt_C@rv1ng}
+
+---
+
+## Task 5 | Automated Carving
+
+In the previous section, we explored manual file carving techniques by inspecting raw disk sectors, identifying headers and footers, and meticulously reconstructing data using a hex editor. While these methods are invaluable for detailed, highly targeted investigations, manual carving can be **time-consuming** , especially when dealing with large or fragmented evidence sources. That's where **automated file carving**  comes into play.
+
+ Automated carving leverages specialised tools and configuration files to scan storage media or forensic images at the byte level, detecting "magic bytes" and, when applicable, footers that mark file boundaries. This process speeds up file identification, extraction, and reconstruction, ensuring forensic investigators can handle bulk data more efficiently and reliably.
+
+ Some of the benefits of utilising automated file carving include:
+
+ **1. Efficiency and Scalability**
+
+ 
+- **Speed:**  Tools like **Scalpel** , **Foremost** , **PhotoRec** , and **Autopsy**  systematically scan storage volumes for multiple file types in parallel, reducing what could be hours of manual inspection to a fraction of the time.
+- **Large-Scale Investigations:**  Automated tools are essential to maintain timely progress when handling terabytes of data across multiple devices.
+
+ **2. Enhanced Accuracy**
+
+ 
+- **Algorithmic Detection:**  Advanced carving tools rely on robust algorithms and signature databases to detect file headers and footers, reducing the chance of missing critical fragments.
+- **Minimised Human Error:**  Relying on thorough, pre-defined file signatures helps ensure repeatable and consistent results.
+
+ **3. Support for Different File Types**
+
+ 
+- Many tools have pre-configured signature databases for standard file formats (JPEG, PNG, PDF, DOCX, ZIP archives, etc.).
+- This coverage extends to multimedia, office documents, and sometimes proprietary file formats.
+
+ **4. Ease of Use**
+
+ 
+- **User-Friendly Interfaces:**  Graphical or well-documented command-line interfaces simplify the process for newcomers.
+- **Advanced Configuration:**  Power users can tailor carving settings in custom configuration files, specifying exact headers, footers, and even maximum file sizes.
+
+ Scenario 3: Recovering Deleted Files with Foremost In this scenario, we have a forensic image- **Challenge3_deleted_files.img** - captured from a former R&D employee's workstation. The initial analysis shows no visible files when we mount the image, implying that the user either wiped or "deleted" them. However, we suspect remnants remain in unallocated space. Our goal: **carve out**  these remnants automatically using **Foremost**  and **Scalpel** .
+
+ **Understanding How Foremost Operates**
+
+ **Foremost**  works by reading the raw disk image from the first byte to the last and scanning for file signatures. Once it recognises a header, Foremost begins recording bytes until either:
+
+ 
+1. It encounters the associated footer, or
+2. The file reaches a maximum allowable size (configured in the Foremost config file) or
+3. The tool detects a subsequent header for the same file type, indicating one file has ended, and another has begun.
+
+ Foremost then writes out the carved file to a specified output folder, categorising files into subdirectories (e.g. jpg, pdf, png) based on their signatures.
+
+ Before recovering files from the disk image, we can confirm its current contents by mounting it to our machine. By doing so, we can see that the disk image is empty, and no files or folders can be seen from the file system. However, if they were not permanently deleted and overwritten, we can recover any files that were previously there.
+
+   Foremost Configuration 
+```Foremost Configuration 
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ sudo mount Challenge3_deleted_disk.img /mnt/tmp
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ ls /mnt/tmp
+lost+found
+```
+
+   The directory appears nearly empty—a clear sign that normal file system analysis won't recover anything. Traditional methods see “no files,” but our real evidence lies in the **unallocated**  or **slack space** . Foremost can reveal these hidden fragments.
+
+ Foremost uses a built-in configuration file, typically found under `/etc/foremost.conf` that defines:
+
+ 
+- **File Types:**  Which file extensions to look for (e.g., JPG, GIF, PDF).
+- **Headers and Footers:**  The unique hex signatures that denote where a file begins or ends.
+- **Case Sensitivity:**  Whether to treat these signatures as case-sensitive.
+- **Maximum File Size:**  This prevents the tool from treating extremely large chunks of data as a single file if no footer is found.
+
+ A **custom**  config file (e.g., `/etc/custom_foremost.conf`) can be curated to include advanced or additional signatures. For instance, you might define specialised headers for proprietary or less common formats. In the snippet below, you see part of `foremost.conf` specifying how to detect GIF and JPG by their header (`\x47\x49\x46` for GIF, `\xff\xd8\xff` for JPG) and footer (`\x00\x3b` for GIF, `\xff\xd9` for JPEG).
+
+   Foremost.conf File 
+```Foremost.conf File 
+#
+# Foremost configuration file
+#-------------------------------------------------------------------------
+# Note the foremost configuration file is provided to support formats which
+# don't have built-in extraction functions.  If the format is built-in to foremost
+# simply run foremost with -t <suffix> and provide the format you wish to extract. 
+#
+# The configuration file is used to control what types of files foremost
+# searches for. A sample configuration file, foremost.conf, is included with
+# this distribution. For each file type, the configuration file describes
+# the file's extension, whether the header and footer are case sensitive,
+# the maximum file size, and the header and footer for the file. The footer
+# field is optional, but header, size, case sensitivity, and extension are
+# not!
+
+# GRAPHICS FILES
+#---------------------------------------------------------------------  
+#
+#
+# GIF and JPG files (very common)
+#       (NOTE THESE FORMATS HAVE BUILTIN EXTRACTION FUNCTION)
+        gif     y       155000000       \x47\x49\x46\x38\x37\x61        \x00\x3b
+        gif     y       155000000       \x47\x49\x46\x38\x39\x61        \x00\x0>
+        jpg     y       20000000        \xff\xd8\xff\xe0\x00\x10        \xff\xd9
+        jpg     y       20000000        \xff\xd8\xff\xe1 \xff\xd9
+        jpg     y       20000000        \xff\xd8        \xff\xd9
+
+---TRUNCATED---
+```
+
+   When you are ready to carve out files, Foremost will need to be executed as shown below. The options within the command represent the following functions:
+
+ 
+- **`-i`** : Input disk image.
+- **`-o`** : Output directory where carved files will be written.
+- **`-c`** : Specify the path to your custom configuration file.
+
+   Foremost Deleted Files Recovery 
+```Foremost Deleted Files Recovery 
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ foremost -i Challenge3_deleted_disk.img -o Challenge3_files -c /etc/custom_foremost.conf
+```
+
+   Foremost will scan the entire disk image, referencing the custom config for known signatures. Extracted files are automatically placed in sub-folders such as `jpg`, `pdf`, etc., under `Challenge3_files`. You can then inspect each carved file to confirm if it’s valid- for instance, by opening it in an image viewer or PDF reader, or by checking metadata with `exiftool`.
+
+ If we need to only recover specific file formats, we can run Foremost using the `-t` option, which will restrict the search to only the stated file formats, as shown below. This approach can significantly reduce the amount of time spent carving and investigating artefacts if you know exactly what you are after. Due to the output directory already existing due to the previous command, you may wish to delete the directory before running the command, or changing the output directory name, or as you run into an error.
+
+   Foremost Deleted Files Recovery 
+```Foremost Deleted Files Recovery 
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ foremost -t pdf,jpg,png -i Challenge3_deleted_disk.img -o Challenge3_files -c /etc/custom_foremost.conf
+```
+
+   A Look at Scalpel **Scalpel**  is another powerful open-source carving utility, derived from Foremost. It uses a similar configuration model, scanning for file headers and footers. The key differences include performance optimisations and potentially faster processing on large datasets. Scalpel’s configuration file, commonly found at `/etc/scalpel/scalpel.conf`, shares a syntax resembling Foremost’s.
+
+ Scalpel first reads your config for a list of file “carving rules,” then performs two passes on the disk image:
+
+ 
+- **First Pass:**  Identifies potential file boundaries based on signature matches.
+- **Second Pass:**  Reads identified blocks in detail, extracting the complete file and managing fragmentation if possible.
+
+ We can use Scalpel to carve out files as shown in the code snippet below:
+
+   Scalpel Deleted Files Recovery 
+```Scalpel Deleted Files Recovery 
+ubuntu@tryhackme:~/Desktop/Carving_Challenges$ scalpel Challenge3_deleted_disk.img -o ScalpelOutput -c /etc/scalpel/scalpel.conf
+```
+
+   Take note that if you wish to execute the command multiple times, you may wish to delete the directory before running the command, or changing the output directory name, as you may run into a `"non-empty output directory"` error.
+
+ When confronted with large or highly fragmented disk images, Scalpel might offer performance benefits over Foremost. Both tools, however, serve the same primary purpose: automated file carving based on known signatures.
+
+### **Answer the questions below**
+
+**Question:** What is the original name of the recovered PDF file?
+
+*Answer:* 
+
+     DataSyncTHM_project_phoenix.txt
+
+**Question:** What is the flag in the file?
+
+*Answer:* 
+
+     THM{ProjectPhoenix_123}
+
+**Question:** What is the flag in the image file recovered?
+
+*Answer:* 
+
+     THM{Aut0mat3d_C@rv1ng}
+
+---
+
+## Task 6 | Carving Capstone
+
+Capstone You've spent time in this room honing your skills in digital file carving and data recovery techniques. Having learned about tools like `Foremost`, `binwalk` for identifying hidden file signatures within binaries, and hex editors for the meticulous inspection of raw data, it's now time to put everything you've learned into practice. Your challenge is to examine the provided disk image, `Carving_Capstone.dd`, which is suspected of containing critical proprietary information that a disgruntled former R&D employee deliberately concealed. Your task is to identify and recover hidden files, locate embedded flags, and piece together the evidence needed to understand what data was exfiltrated and how.
+
+### **Answer the questions below**
+
+**Question:** Using Binwalk and the hex editor, what is the beginning and ending offset of the XML file in the disk image? Answer: Starting,Ending
+
+*Answer:* 
+
+     134946816,135012619
+
+**Question:** What is the actual file type of the file found in Question 1?
+
+*Answer:* 
+
+     SVG
+
+**Question:** How long is the playback from the audio file? (Answer is in seconds)
+
+*Answer:* 
+
+     18.29
+
+**Question:** What flag is hidden in the image file found?
+
+*Answer:* 
+
+     THM{D4t3_0f_D3l3t10n_2024-12-10}
+
+---
+
+## Task 7 | Conclusion
+
+To conclude the room, we have learnt that file carving is an indispensable technique in the digital forensic toolkit, allowing analysts to recover files and vital evidence even when traditional file system pointers are missing or corrupted. As we explored the different scenarios, one clear lesson emerged: data seldom disappears completely. As forensic investigators, our forensic toolkit has been enriched with specialised tools, and through mastering the art of examining data manually via hex editors.
+
+### **Answer the questions below**
+
+**Question:** Now, I am equipped with knowledge in file carving.
+
+*Answer:* 
+
+     No answer needed
+
+---
+

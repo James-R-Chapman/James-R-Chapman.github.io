@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <style>
+      :root {
+        --bg: #0a0e27;
+        --card: #151932;
+        --text: #e0e0e0;
+        --muted: #a0a0a0;
+        --accent: #00d9ff;
+        --accent-2: #00ff88;
+        --border: #2a2f4a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        background: linear-gradient(135deg, var(--bg) 0%, #0d1127 100%);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
+      }
+
+      .topbar {
+        border-bottom: 1px solid var(--border);
+        background: rgba(10, 14, 39, 0.95);
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(10px);
+      }
+
+      .topbar-inner {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1rem 1.25rem;
+        display: flex;
+        gap: 1rem;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.25rem;
+      }
+
+      h1, h2, h3 {
+        margin-top: 0;
+        color: var(--accent);
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a href="{{ '/' | relative_url }}">Portfolio</a>
+        <a href="{{ '/blog/' | relative_url }}">Blog</a>
+      </div>
+    </header>
+    <main class="wrap">
+      {{ content }}
+    </main>
+  </body>
+</html>

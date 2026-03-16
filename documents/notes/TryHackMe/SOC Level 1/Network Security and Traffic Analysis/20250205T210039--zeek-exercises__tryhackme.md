@@ -1,0 +1,212 @@
+---
+title:      "Zeek Exercises"
+date:       2025-02-05T21:00:39-05:00
+tags:       ["tryhackme"]
+hubs: "TryHackMe/SOC Level 1/Network Security and Traffic Analysis"
+identifier: "20250205T210039"
+id: 23cb05ac-7dd5-4044-a356-259fb4256c85
+---
+
+### SOC Level 1 > Network Security and Traffic Analysis > Zeek Exercises
+
+### [TryHackMe | Zeek Exercises](https://tryhackme.com/r/room/zeekbroexercises)
+
+# Task 1 | Introduction
+
+Start Machine![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/6131132af49360005df01ae3/room-content/644e18e84c28156e31fb2a420611bb29.png)
+
+The room invites you a challenge to investigate a series of traffic data and stop malicious activity under different scenarios. Let's start working with Zeek to analyse the captured traffic.
+
+We recommend completing the [Zeek](https://tryhackme.com/room/zeekbro)**** room first, which will teach you how to use the tool in depth.
+A VM is attached to this room. You don't need SSH or RDP; the room provides a "Split View" feature. Exercise files are located in the folder on the desktop. Log cleaner script **"clear-logs.sh"**  is available in each exercise folder.
+
+![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/6131132af49360005df01ae3/room-content/ba9eb3654db57e9c4795f5d41a8eb404.png)
+
+Answer the questions belowRead the task above.Correct Answer
+
+### **Answer the questions below**
+
+**Question:** Read the task above.
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+# Task 2 | Anomalous DNS
+
+An alert triggered: "Anomalous DNS Activity".
+
+The case was assigned to you. Inspect the PCAP and retrieve the artefacts to confirm this alert is a true positive.
+
+Answer the questions belowInvestigate the **dns-tunneling.pcap**  file. Investigate the **dns.log**  file. What is the number of DNS records linked to the IPv6 address?
+
+Correct AnswerHintInvestigate the **conn.log**  file. What is the longest connection duration?
+
+Correct AnswerHintInvestigate the **dns.log**  file. Filter all unique DNS queries. What is the number of unique domain queries?
+
+Correct AnswerHintThere are a massive amount of DNS queries sent to the same domain. This is abnormal. Let's find out which hosts are involved in this activity. Investigate the **conn.log**  file. What is the IP address of the source host?
+
+Correct Answer
+
+### **Answer the questions below**
+
+**Question:** Investigate the dns-tunneling.pcap file. Investigate the dns.log file. What is the number of DNS records linked to the IPv6 address?
+
+*Answer:* 
+
+     320
+
+**Question:** Investigate the conn.log file. What is the longest connection duration?
+
+*Answer:* 
+
+     9.420791
+
+**Question:** Investigate the dns.log file. Filter all unique DNS queries. What is the number of unique domain queries?
+
+*Answer:* 
+
+     6
+
+**Question:** There are a massive amount of DNS queries sent to the same domain. This is abnormal. Let's find out which hosts are involved in this activity. Investigate the conn.log file. What is the IP address of the source host?
+
+*Answer:* 
+
+     10.20.57.3
+
+---
+
+# Zeek Exercises
+
+
+# Task 3 | Phishing
+
+An alert triggered: "Phishing Attempt".
+
+The case was assigned to you. Inspect the PCAP and retrieve the artefacts to confirm this alert is a true positive.
+
+Answer the questions belowInvestigate the logs. What is the suspicious source address? Enter your answer in **defanged format** .
+
+Correct AnswerHintInvestigate the **http.log**  file. Which domain address were the malicious files downloaded from? Enter your answer in defanged format.
+
+Correct AnswerHintInvestigate the malicious document in VirusTotal. What kind of file is associated with the malicious document?
+
+Correct AnswerHintInvestigate the extracted malicious **.exe**  file. What is the given file name in Virustotal?
+
+Correct AnswerInvestigate the malicious **.exe**  file in VirusTotal. What is the contacted domain name? Enter your answer in **defanged format** .
+
+Correct AnswerHintInvestigate the http.log file. What is the request name of the downloaded malicious **.exe**  file?
+
+Correct Answer
+
+### **Answer the questions below**
+
+**Question:** Investigate the logs. What is the suspicious source address? Enter your answer in defanged format.
+
+*Answer:* 
+
+     10[.]6[.]27[.]102
+
+**Question:** Investigate the http.log file. Which domain address were the malicious files downloaded from? Enter your answer in defanged format.
+
+*Answer:* 
+
+     smart-fax[.]com
+
+**Question:** Investigate the malicious document in VirusTotal. What kind of file is associated with the malicious document?
+
+*Answer:* 
+
+     VBA
+
+**Question:** Investigate the extracted malicious .exe file. What is the given file name in Virustotal?
+
+*Answer:* 
+
+     PleaseWaitWindow.exe
+
+**Question:** Investigate the malicious .exe file in VirusTotal. What is the contacted domain name? Enter your answer in defanged format.
+
+*Answer:* 
+
+     hopto[.]org
+
+**Question:** Investigate the http.log file. What is the request name of the downloaded malicious .exe file?
+
+*Answer:* 
+
+     knr.exe
+
+---
+
+# Task 4 | Log4J
+
+**An alert triggered:** "Log4J Exploitation Attempt".
+
+The case was assigned to you. Inspect the PCAP and retrieve the artefacts to confirm this alert is a true positive.
+
+Answer the questions belowInvestigate the log4shell.pcapng file with detection-log4j.zeek script. Investigate the signature.log file. What is the number of signature hits?Correct AnswerInvestigate the **http.log** file. Which tool is used for scanning?
+
+Correct AnswerHintInvestigate the **http.log**  file. What is the extension of the exploit file?
+
+Correct AnswerHintInvestigate the log4j.log file. Decode the base64 commands. What is the name of the created file?
+
+Correct AnswerHint
+
+### **Answer the questions below**
+
+**Question:** Investigate the log4shell.pcapng file with detection-log4j.zeek script. Investigate the signature.log file. What is the number of signature hits?
+
+*Answer:* 
+
+     3
+
+**Question:** Investigate the http.log file. Which tool is used for scanning?
+
+*Answer:* 
+
+     Nmap
+
+**Question:** Investigate the http.log file. What is the extension of the exploit file?
+
+*Answer:* 
+
+     .class
+
+**Question:** Investigate the log4j.log file. Decode the base64 commands. What is the name of the created file?
+
+*Answer:* 
+
+     pwned
+
+---
+
+
+# Task 5 | Conclusion
+
+Congratulations! You just finished the Zeek exercises.
+
+If you like this content, make sure you visit the following rooms later on THM;
+
+- [Snort](https://tryhackme.com/room/snort)
+- [Snort Challenges 1](https://tryhackme.com/room/snortchallenges1)
+- [Snort Challenges 2](https://tryhackme.com/room/snortchallenges2)
+- [Wireshark](https://tryhackme.com/room/wireshark)
+- [NetworkMiner](https://tryhackme.com/room/networkminer)
+
+Note that there are challenge rooms available for the discussed content. Use the search option to find them! Happy hacking!
+
+Answer the questions belowRead the task above.Complete
+
+### **Answer the questions below**
+
+**Question:** Read the task above.
+
+*Answer:* 
+
+     No answer needed
+
+---
+

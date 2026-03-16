@@ -1,0 +1,594 @@
+---
+title:      "TryHackMe  - iOS Analysis"
+date:       2025-09-09
+tags:       TryHackMe
+identifier: 20250909T000000
+hubs:       "TryHackMe/Advanced Endpoint Investigations/Mobile Analysis"
+urls:       "https://tryhackme.com/room/iosanalysis"
+---
+
+
+# TryHackMe  - iOS Analysis
+
+## Task 1 | Introduction
+
+Introduction
+
+In 2023, Apple acquired the title of having the largest market share of smartphones [[IDC, 2024](https://www.idc.com/getdoc.jsp?containerId=prUS51776424)]. As we know, the old adage goes, "Are you an Apple or Android user?".
+
+Smartphones are arguably some of the most widely adopted technology, with their computing power managing to replace desktops for some. Think about it for a second: What do you use your smartphone for? Gaming, social media, and perhaps even office work. If an analyst was able to analyse these, what would they find? These devices provide an incredible insight into our daily lives.
+
+Organisations often issue their employees with smartphones to aid in their work. These devices can provide an analyst with a treasure trove of information, as we will see in this room.
+
+Use Cases
+
+Because of their portability and computing power, smartphones are carried by a person at almost all times and store some of our most personal memories. These devices provide a great opportunity to investigators such as:
+
+- Law enforcement
+- Civil investigation
+- Legal proceedings
+
+In the context of this room, mobile devices are a valuable asset in investigations of insider threats. While a large portion of investigation effort is spent on systems such as desktops and servers, mobile devices can also provide valuable insight.
+
+Ethics & Caveats
+
+Please note that this room has intentionally left out topics, including:
+
+- Bypassing iOS Security mechanisms (PIN code, etc)
+- Circumventing iPhone lockouts
+- Extraction of data without a known passcode
+- Jailbreaking an iPhone to obtain data
+
+The scenario in this room has been created to simulate an organisation-owned and managed device that has been given to an employee (Janet) for work purposes. Any data, such as phone numbers, coordinates, and email addresses, are fictional.
+
+Learning Objectives
+
+ 
+- Learn about the iOS filesystem
+- Discover the artefacts present in these devices
+- Get hands-on with an image of an iPhone and analyse this to uncover an insider threat
+
+Prerequisites
+
+To most benefit from this room, I highly recommend ensuring you have completed the following rooms:
+
+- [Intro to Digital Forensics](https://tryhackme.com/r/room/introdigitalforensics)
+- [IR Philosophy and Ethics](https://tryhackme.com/r/room/irphilosophyethics)
+- [Legal Considerations in DFIR](https://tryhackme.com/r/room/dfirprocesslegalconsiderations)
+
+### **Answer the questions below**
+
+**Question:** Complete me before proceeding onto the next task!
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+## Task 2 | iOS Pairing
+
+Since 2018, Apple has enforced "Restricted Mode" on iPhones. This security feature disables data input/output via the iPhone unless the device has been unlocked. This security mechanism was implemented in the era of bad USB attacks and as a means to prevent "Juice jacking."
+
+![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718644918689)
+
+Trust Certificates
+
+When plugging an iPhone into a device, you have likely been prompted with a pop-up similar to the one above. If you plug your iPhone into an outlet and receive the same prompt, it means you are actually connecting to a device and not an actual charging outlet.
+
+Trust certificates are a security mechanism that allows the iPhone to trust the device it is syncing to. If the device is not trusted, the iPhone will only allow power through its lightning cable, and not data read/write. A trust certificate is a result of a cryptographic exchange in which a certificate is generated on both the remote device and the iPhone using a private key stored on the iPhone's hardware. In Windows, these certificates are stored in `C:\ProgramData\Apple\Lockdown`. Below is an illustration of a trust certificate on a device such as a desktop.
+
+![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718720183945)
+
+**Trust certificates:**
+
+- Have an expiry of 30 days
+- Contain a unique identifier of the device
+- Are stored on both the iPhone and the device that the iPhone is being synced to
+
+iOS Levels of Access
+
+iPhones, like other devices, have levels of access. At a high level, this is locked, unlocked and user permissions. However, iOS takes this a step further by including what's known as data protection classes, specifying background vs. foreground access, as well as application sandboxing. While application sandboxing will be explained in a future task, let's delve further into iOS levels of access.
+
+Locked & Unlocked States
+
+When an iPhone has an authentication mechanism such as FaceID, TouchID and/or passcode, the protection mechanisms of the "Locked" state become available. Of course, not only does adding an authentication mechanism prevent someone else using your iPhone, it actually adds a lot of protections behind the scenes.
+
+The table below summarises the protections offered when the iPhone is in the "Locked" state.
+
+**Protection** **Explanation** File encryptionAll files on the iPhone are encrypted at rest. Authentication is required to be able to read the data within files.File accessibilityFiles with the `NSFileProtectionComplete` data protection class and onwards are inaccessible. Only files marked with the `NSFileProtectionNone` are accessible in this state.
+
+Hardware AccessBy default, access to "sensitive" hardware components such as the microphone, camera, etc, new Bluetooth pairings are denied.Application AccessApplication features that run in the background (i.e. Music, "time sensitive", maps, etc) are only allowed to run while in this state.Keychain AccessThe iOS Keychain (i.e. stored passwords) is only accessible after the device has entered the "Unlocked" state.Trust & PairingPlugging the iPhone into devices where there is no existing trust certificate requires the user to authenticate.Data Protection Classes
+
+iOS takes security one step further by introducing Data Protection Classes. These classes are policies applied to files that determine:
+
+- When the file can be read or written
+- When the encryption key becomes available to unlock the file
+
+The table below summarises the four primary Data Protection Classes.
+
+ **Data Protection Class** **Example** **Required State** NSFileProtectionNoneCache.None - always accessible.NSFileProtectionCompleteUnlessOpenApps that play audio and video, allowing media to stream when the device is locked.Requires the file to be opened while unlocked, but remains accessible after the device is locked.NSFileProtectionCompleteUntilFirstUserAuthentication
+Reading & writing data in the background (e.g., step count, notifications).Device must be unlocked once after boot, but the file remains accessible even after it is next locked.NSFileProtectionComplete Credentials, messages, health data.Requires the device to be unlocked.
+
+### **Answer the questions below**
+
+**Question:** What is the name of a type of certificate that is used when an iPhone and a device pair together?
+
+*Answer:* 
+
+     Trust Certificate
+
+**Question:** What is the expiry timer on these certificates?
+
+*Answer:* 
+
+     30 Days
+
+---
+
+## Task 3 | Preserving Evidence
+
+Preserving evidence is of the utmost importance when investigating smartphones, as it is when investigating other digital devices. Apple's iPhones incorporate numerous security measures that can result in data deletion. These features exist to protect the user in the event of theft, etc. For example, the iPhone can be remotely wiped using Apple's "Find My" application in the event of theft, deleting all data present on the device.
+
+![Image 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718024001980)
+
+Additionally, an iPhone can be set to wipe itself after a certain number of unsuccessful login pin attempts, protecting against brute force. Methods to bypass this feature have been left out of this room for ethical considerations and complexity, as this involves interfering with the lockout mechanism.
+
+iOS Lockout
+
+The level of access one has to an iPhone's data is dependent on its "lock" status. We will come onto this a bit later in the "iOS Security" task. However, at this stage, it's worth noting that iOS encrypts data using a configured PIN code (or, in modern iOS versions, Touch ID or Face ID using biometrics). The data is fully encrypted when an iPhone is at its lock screen.
+
+![Image 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718024538149)
+
+Whilst this room assumes that the passcode is known, in traditional means, when an iPhone is presented to you unlocked, it's imperative to disable the "auto lock" feature in Settings to prevent the device from locking itself.
+
+Backups
+
+Akin to the traditional process of digital evidence preservation, it is important to make a backup of the iPhone before any analysis is done for the preservation and protection of evidence. In fact, analysing an iPhone via its backup is an incredibly useful technique.
+
+Tooling such as iTunes, EaseUS, etc., can be used to acquire these backups. Now, iPhones also have security mechanisms to protect backups. More on this later in the room.
+
+To create a backup, we can connect the device to iTunes and, under the device management page, select "Back Up Now". Please note there are two main types of backup:
+
+- **Encrypted:**  This will back up the entire device, including account passwords, health data and such, as well as photos, apps, notes, music etc.
+- **Unencrypted:**  This will only back up photos, apps, music, etc.
+
+![Image 5](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718033941503)
+
+This can also be done with tools such as 3uTools.
+
+![Image 6](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718035895046)
+
+Additionally, CLI frameworks such as [libimobiledevice](https://libimobiledevice.org/) can be used to manage and create backups of iPhones. Task 6 will cover this more in-depth.
+
+Physical Devices
+
+Specialist hardware such as Cellebrite's UFED is used to extract data from mobile devices. This technology is often found in law enforcement and adjacent agencies and utilises techniques to extract data from these devices in a manner that can be presented in court.
+
+![Image 7](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718353958402)
+
+Faraday Bags
+
+Faraday bags/pouches follow the same concept as Faraday cages. They use special materials and linings to prevent electromagnetic signals (such as Wi-Fi, phone signals, etc.) from passing through. These pouches are imperative for the preservation of evidence, as they essentially take the device "offline," where data cannot be modified once in the analyst's possession. They also prevent data loss via remote wiping.
+
+![Image 8](https://www.edgemiddleeast.com/cloud/2021/08/19/11105-disklabs_base1.jpg)
+
+### **Answer the questions below**
+
+**Question:** What is the name of the Apple feature that allows a device to be remotely wiped?
+
+*Answer:* 
+
+     Find My
+
+**Question:** What "type" of backup would we perform if we wanted to backup the entire device?
+
+*Answer:* 
+
+     Encrypted
+
+**Question:** What is the name of an important piece of equipment that can block all signals, preventing the device from being remotely wiped?
+
+*Answer:* 
+
+     Faraday Bag
+
+---
+
+## Task 4 | The iOS Filesystem
+
+Apple has created various filesystems for its ecosystem throughout its history. This task will introduce you to some of these proprietary formats, and you will see them in action later. HFS+, or Mac OS Extended, is a legacy filesystem introduced by Apple in 1998 that is still supported today. This room will not cover the specifics, but it is important to know that:
+
+- HFS+ is not encrypted (by default)
+- Does not have integrity checksums
+- iPhones past iOS 10.3 will be converted to APFS
+
+While Apple has not defined the **P**  in A**P** FS, the acronym is used to distinguish it from Apple's File Service, which is an older network transfer service. APFS is a highly compatible filesystem that boasts modern-day mechanisms such as:
+
+- Full disk encryption
+- Smarter data management
+- Uses the GPT partition structure
+- Has integrity checking via checksums
+- And numerous crash protection mechanisms (such as metadata protection)
+
+It is important to note that all iOS devices since March 2017 use APFS. Additionally, applications on iPhones do not have direct access to the phone's filesystem. Instead, they run in a sandbox with a "virtual" filesystem that only the application can see. More on this below.
+
+![Image 9](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/art/ios_app_layout_2x.png)
+
+[[Apple Developer Docs, 2018](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html)]
+
+Additionally, the APFS separates itself into "domains". An example of these has been provided in the table below:
+
+ **Domain** **Description** DataStores application data, settings and user files.CacheStores temporary files such as cached files from the web browser.SystemThis domain stores essential files related to the operating system. Normally, it is read-only to protect the operating system's security.SharedThis domain allows data from applications made by the same developer (Application group) to be shared amongst each other.Directories
+
+iOS, much like any other computing platform, has a unique directory structure, which has been summarised in the table below.
+
+DirectoryContextDescription/System/Library/SystemData that is critical to the iOS operating system (such as fonts, system frameworks, UI components, etc) are stored here./tmp/SystemTemporary files pertaining to the normal operation of the iPhone are stored here. These include downloads in progress, logs, crash dumps, caches, etc./System/Applications/SystemThis directory is where the data for pre-installed system applications such as Weather, Clock, Wallet, etc, are stored. /Containers/Data/Application/UserNon-default applications such as those from the App Store are stored here. It is important to note, due to sandboxing, applications here cannot access another application's data. Sandboxing is explained further below./Media/UserMedia such as photos and videos from the camera roll (incl. metadata), as well as audio recordings and eBooks are stored here./Library/UserApplication data such as the Address Book, Calendar, SMS, Phone, Preferences, Safari, etc, are stored here./Documents/UserDownloaded files or files created by the user are stored here. For example, PDFs, MP4/MP3s, Safari downloads, etc.App Sandboxing
+
+The fact that Apple uses sandboxing within iOS plays a major role in why iOS is known for it's security. Sandboxing in iOS is the isolation of each application from one another. Recall from the diagram provided by Apple's Developer Documentation.
+
+![Image 10](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/art/ios_app_layout_2x.png)
+
+[[Apple Developer Docs, 2018](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html)]
+
+Here we can see that applications are given their own individual "box" to operate within, hence the term sandbox. The technical term for this "box" is a container. This means that other applications cannot read and write to data that isn't it's own.
+
+Additionally, this sandboxing forces a strict permission-granted-based approach as to how the application interacts with the system and it's files. For example, if you are an iPhone user, you may recall an application asking you to grant them permission to interact with components like the camera, microphone, or to access data such as photos.
+
+There are cases, of course, where it's necessary for applications to share data and communicate amongst each other. While sandboxed, applications can in fact share information via strict mechanisms. For example, URLs (A website opening the application version and vice versa), clipboards, etc. These cases are strictly controlled by the system and require user approval.
+
+File Types
+
+iOS, for a large part, uses standardised formats to store data within the iPhone; the majority being Plists, XML and SQLite databases. These are individually explored in the headings below.
+
+Plists
+
+Plists, short for property lists, are files used by iOS to store objects, with various types of objects including:
+
+- Strings
+- Numbers
+- Data
+- Arrays
+- Dictionaries
+
+And come in two formats:
+
+- XML - Human-readable
+- Binary/etc - Non-human-readable
+
+For example, the screenshot below provides an XML-formatted plist containing the cookies for a visited web application.
+
+![Image 11](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718096543342)
+
+SQLite
+
+iOS also makes use of storing various pieces of data as databases. For example, this includes data such as:
+
+- Photo metadata
+- Text messages
+- Contacts
+- Voicemail entries
+
+These are simple SQLite databases that can be opened using any SQLite browser, such as DB Browser. Below is a screenshot of the database containing stored text messages.
+
+![Image 12](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718096759319)
+
+### **Answer the questions below**
+
+**Question:** After March 2017, what filesystem do all iPhones use?
+
+*Answer:* 
+
+     APFS
+
+**Question:** What is the name of the "domain" that stores all files relating to the operating system?
+
+*Answer:* 
+
+     System
+
+---
+
+## Task 5 | Artefacts
+
+As you can imagine, an iPhone has a plethora of data available to us. Including but not limited to:
+
+- Contacts
+- Message & call history
+- Wi-Fi History
+- GPS coordinates
+- Photos
+- Mailbox
+- Web browser history
+
+From a previous task, we recall that the vast majority of data is stored either as an SQLite database or Apple's proprietary ".plist" extension, which can be XML or Hex files, as well as how Apple separates data into "domains". This task will highlight some notable directories on the iPhone and the data they contain.
+
+Information
+
+**Contacts**
+
+The address book is used to store information about the contacts on the iPhone as an SQlite database. This is located in `/HomeDomain/Library/AddressBook` of the backup.
+
+![Image 13](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718196324897)
+
+**Photos**
+
+The iPhone stores all videos and pictures (including screenshots) in the Camera Roll, which is located in `/CameraRollDomain/Media/DCIM` of the backup. These can be extracted from the backup and manually examined.
+
+![Image 14](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718196313363)
+
+**Calendar**
+
+The iPhone stores calendar entries as an SQLite database within `/HomeDomain/Library/Calendar` of the backup.
+
+![Image 15](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718197468081)
+
+**Wi-Fi**
+
+Located within the `/SystemPreferencesDomain`, you can find a plist containing a list of networks that the iPhone has connected to. While the password to this is encrypted, you can discover the SSIDs in plaintext, as well as the time it was added.
+
+![Image 16](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718197640096)
+
+    Listing the known/saved wifi connection profiles  
+```Listing the known/saved wifi connection profiles 
+cmnatic@thm cat com.apple.wifi.known-networks.plist
+	<key>wifi.network.ssid.TryHackMe Wifi</key>
+	<dict>
+		<key>AddReason</key>
+		<string>WiFi Settings</string>
+		<key>Hidden</key>
+		<false/>
+		<key>LowDataMode</key>
+		<false/>
+		<key>SSID</key>
+		<data>
+		VHJ5SGFja01lIFdpZmk=
+		</data>
+		<key>AddedAt</key>
+		<date>2024-06-12T12:38:05Z</date>
+		<key>__OSSpecific__</key>
+		<dict>
+			<key>WiFiNetworkAttributeIsMoving</key>
+			<false/>
+			<key>BEACON_PROBE_INFO_PER_BSSID_LIST</key>
+			<array>
+				<dict>
+					<key>BSSID</key>
+					<string>e2:89:XX:XX:XX:XX</string>
+					<key>OTA_SYSTEM_INFO_SENT</key>
+					<false/>
+					<key>OTA_SYSTEM_INFO_BEACON_ONLY_SENT</key>
+					<true/>
+				</dict>
+			</array>
+			<key>BSSID</key>
+			<string>e2:89:XX:XX:XX:XX</string>
+			<key>networkKnownBSSListKey</key>
+			<array>
+				<dict>
+					<key>CHANNEL_FLAGS</key>
+					<integer>10</integer>
+					<key>lastRoamed</key>
+					<date>2024-06-12T12:38:05Z</date>
+					<key>CHANNEL</key>
+					<integer>3</integer>
+					<key>BSSID</key>
+					<string>e2:89:XX:XX:XX:XX</string>
+				</dict>
+			</array>
+```
+
+   **Web Browser (Safari)**
+
+The iPhone's default web browser is Safari. Bookmarks and web browsing history are stored in databases within `/HomeDomain/Library/Safari`. It is worth noting that web browsers can be installed as applications, in which case the data is stored in the application domain.
+
+![Image 17](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718196938577)
+
+Directories
+
+**/var/mobile**
+
+This directory contains data pertaining to user data and application storage. For example:
+
+**Data** **Description** DocumentsFiles created by either the user or application (save files, saved PDFs, etc).LibraryConfiguration and cache files for the OS.Tmp
+
+Temporary files usually used by applications.User DataUser downloads as well as photos, videos & other media.
+
+**/var/keychains**
+
+DataDescriptionPasswordsThis directory stores saved credentials (for websites, etc) known as Apple "keychain".CertificatesThis directory stores SSL/TLS certificates for web apps, VPNs, etc.Encryption keys & tokensThis directory stores various public keys as well as OAuth tokens and such.
+
+**/var/logs**
+
+**Data** **Description** System LogsThese types of logs relate to system performance and events, as well as a record of events triggered by the kernel.Application LogsApplications store their logs in this directory. These can be stack traces and debugging info in the event an application crashes.DebuggingThese types of logs retain information about system events that can be used in debugging, such as network activity, what applications were running, and a timeline of events.Update LogsThese logs contain information specifically for updates, i.e., checking for updates and storing information when the iPhone is updating.
+
+**/var/db**
+
+This directory is one of the "juiciest" to an analyst, and it stores most of the SQLite database files.
+
+**Data** **Description** System DatabasesInformation such as contacts, messages, and calendar entries are stored in these databases.Application DatabasesApplications store their data in these databases, such as game progress, a list of contacts, mailboxes, etc.MetadataInformation pertaining to metadata for media (photos, videos) is stored here, such as time taken, location, etc.
+
+### **Answer the questions below**
+
+**Question:** In what directory of a backup is the Address Book (contacts) stored?
+
+*Answer:* 
+
+     /HomeDomain/Library/AddressBook
+
+**Question:** In what directory of the iPhone are passwords and certificates stored? This is known as the Keychain.
+
+*Answer:* 
+
+     /var/keychains
+
+---
+
+## Task 6 | Analysis
+
+There are a variety of tools (both GUI and CLI) that are capable of creating a backup of an iPhone. This task will cover using the 3uTools GUI application as well as the libimobiledevice library on the CLI. However, there are alternatives out there.
+
+Please note that you should do your own research into suitable tools **and take caution**  that some applications that advertise these services often come bundled with some form of licensing. Always download from verified and reputable sources.
+
+Before we proceed, it should also be noted that **support & troubleshooting for connecting an iPhone to the tooling listed below will not be provided.**  When it comes to the practical, everything has already been done for you.
+
+libimobiledevice
+
+This library is a cross-platform toolkit that can interact with iOS devices. Caution should be used when using this toolkit, especially once a device is trusted, as you can make modifications to the iPhone itself.
+
+To begin, let's connect our iPhone to our device and perform the trust process.
+
+ ![Image 18](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718644918689)
+
+ We can now verify that the iPhone has successfully connected to our device using `ideviceinfo`. In this task, I will be using MacOS as it has native libraries that make working with toolkits like this easier. Please note, that the output of some entries has been redacted for privacy.
+
+    Displaying iPhone information using libmobiledevice  
+```Displaying iPhone information using libmobiledevice 
+cmnatic@thm ideviceinfo
+
+ActivationState: Activated
+ActivationStateAcknowledged: true
+ChipSerialNo: 00EAaUAXXXXXXX
+DeviceClass: iPhone
+DeviceColor: 1
+DeviceName: iPhone
+PasswordProtected: false
+PhoneNumber: +44 REDACTED
+PkHash: Hz9b38WSRXREDACTED
+ProductName: iPhone OS
+ProductType: iPhone10,5
+ProductVersion: 14.6
+```
+
+   Now that we have confirmed that we can see the iPhone, we can create a backup of the iPhone. First, we will need to ensure that encryption mode is configured to ensure that we can take a full backup. This can be done with the command `idevicebackup2 -i encryption on`.
+
+Now, let's proceed with creating the backup by providing a few options to the idevicebackup2 module:
+
+- `backup` - instructs the module to backup
+- `--full` - create a full backup
+- `/path/to/store/backup` - the directory in which we wish to store the backup on our device
+
+With the above, our full command will look like so: `idevicebackup2 backup --full ./backup`
+
+![Image 19](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718100819668)
+
+ It is important to note that the backup will be in a non-readable format, much like it would with iTunes. Other tooling such as `ideviceunback` will need to be used.
+
+3uTools
+
+3uTools is a GUI application that can be used to manage an iOS device. We will be using it in the context of this room to create a backup and use the built-in file explorer to examine data on the iPhone. First, let's connect our iPhone to our device and proceed with the trusting process covered earlier in this task.
+
+![Image 20](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718101334555)
+
+Click on the "Backup/Restore" icon located at the bottom, where a pop-up will open where we can configure our backup.
+
+![Image 21](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718101576267)
+
+The time to backup will heavily depend on how much storage is in use. In most cases, expect anywhere from 15 minutes to 2 hours. Once our backup has been completed, we can now explore it within 3uTools:
+
+1. Click on "View all data backups"
+2. Click on the backup we just created. To the right, under the "View Backup" column, are two options "Pro Mode" and "Easy Mode". Easy mode will provide a quick insight, while Pro Mode will provide a detailed view of the backup
+
+![Image 22](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718101576285)
+
+ We can now explore the artefacts on the iPhone.
+
+![Image 23](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718101696898)
+
+For example, exploring the stored Contacts/Address Book.
+
+![Image 24](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718101739888)
+
+Manual Analysis
+
+Once an iPhone backup has been extracted, the directory structure can be manually navigated using tools such as text editors and SQLite database viewers, such as below:
+
+![Image 25](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/5de96d9ca744773ea7ef8c00-1718102262313)
+
+### **Answer the questions below**
+
+**Question:** What is the name of the cross-platform toolkit that can interact with iOS devices? This is a CLI tool.
+
+*Answer:* 
+
+     libimobiledevice
+
+**Question:** If we wanted to do a full iPhone backup using the aforementioned tool, with the directory being "backup", what would our command look like?
+
+*Answer:* 
+
+     idevicebackup2 backup --full ./backup
+
+---
+
+## Task 7 | Practical: Operation Timely Manner
+
+Start MachineThere have been whisperings of an insider within Timely Incorporated selling corporate secrets to a competitor (OneMinute). After acting on verified intelligence, Janice's work-issued iPhone and laptop have been seized for analysis. Whilst your colleagues are examining the laptop, you have been tasked with investigating an extracted backup taken off the iPhone. The passcode was provided at the time of capture because it is a work-managed device.
+
+You will need to find evidence that will prove that conversations and meetings between Janet and the competitor have taken place.
+
+Deploy the machine attached to this task by pressing the green "Start Machine" button at the top-right of this task. The machine will start in Split-Screen view. In case the VM is not visible, use the blue Show Split View button at the top of the page.
+
+ If you would prefer, you can use the following details to RDP in yourself, remembering to connect to the TryHackMe VPN beforehand.
+
+   
+
+![Image 26](https://tryhackme-images.s3.amazonaws.com/user-uploads/63588b5ef586912c7d03c4f0/room-content/be629720b11a294819516c1d4e738c92.png)
+
+      **Username**    Administrator    **Password**    TimelyManner!     **IP**    MACHINE_IP        **Remember** , all of the evidence and tooling have been provided to you on the machine.
+
+### **Answer the questions below**
+
+**Question:** Investigate the evidence presented to you on the desktop of the analyst machine.
+
+*Answer:* 
+
+     No answer needed
+
+**Question:** What is the name (SSID) of the Wi-Fi network the iPhone connected to?
+
+*Answer:* 
+
+     OneMinuteStaff
+
+**Question:** What are the saved contact details for the competitor? Answer format: Firstname,Lastname
+
+*Answer:* 
+
+     Wayne,Garcey
+
+**Question:** On what day was the exchange of information to take place?Answer format: DD/MM/YYYY
+
+*Answer:* 
+
+     30/03/2024
+
+---
+
+## Task 8 | Conclusion
+
+In the words of Porky Pig, "That's all folks!" This room was a brief but practical introduction to the acquisition of digital evidence iOS. Just to recap, we learnt:
+
+- How to preserve evidence on iPhones
+- How the trust and pairing process works
+- A quick introduction into the iOS filesystem
+- Tooling that can be used for data acquisition and analysis
+
+This room only scratches the surface that is mobile forensics.
+
+### **Answer the questions below**
+
+**Question:** Terminate the machine that you deployed in this room.
+
+*Answer:* 
+
+     No answer needed
+
+**Question:** Let us know what you thought this room on either our X (Twitter), Reddit or Discord.
+
+*Answer:* 
+
+     No answer needed
+
+---
+

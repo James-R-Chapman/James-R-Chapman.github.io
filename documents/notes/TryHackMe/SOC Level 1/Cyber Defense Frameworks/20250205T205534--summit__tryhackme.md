@@ -1,0 +1,87 @@
+---
+title:      "Summit"
+date:       2025-02-05T20:55:19-05:00
+tags:       ["tryhackme"]
+identifier: "20250205T205534"
+hubs: "TryHackMe/SOC Level 1/Cyber Defense Frameworks"
+id: f48664b1-7471-4bdf-9113-523dc0da08a5
+---
+
+### SOC Level 1 > Cyber Defence Frameworks > Summit
+
+### [TryHackMe | Summit](https://tryhackme.com/r/room/summit)
+
+# Task 1 | Challenge
+
+Start Machine Objective
+
+ After participating in one too many incident response activities, PicoSecure has decided to conduct a threat simulation and detection engineering engagement to bolster its malware detection capabilities. You have been assigned to work with an external penetration tester in an iterative purple-team scenario. The tester will be attempting to execute malware samples on a simulated internal user workstation. At the same time, you will need to configure PicoSecure's security tools to detect and prevent the malware from executing.
+
+ Following the **Pyramid of Pain's**  ascending priority of indicators, your objective is to increase the simulated adversaries' cost of operations and chase them away for good. Each level of the pyramid allows you to detect and prevent various indicators of attack.
+
+ Room Prerequisites
+
+ Completing the preceding rooms in the [Cyber Defence Frameworks module](https://tryhackme.com/module/cyber-defence-frameworks) will be beneficial before venturing into this challenge. Specifically, the following:
+
+ 
+- [The Pyramid of Pain](https://tryhackme.com/room/pyramidofpainax)
+- [MITRE](https://tryhackme.com/room/mitre)
+
+ Connection Details
+
+ Please click **Start Machine**  to deploy the application, and navigate to [https://10-10-52-167.p.thmlabs.com](https://10-10-52-167.p.thmlabs.com/) once the URL has been populated.
+
+ **Note:**  It may take a few minutes to deploy the machine entirely. If you receive a "Bad Gateway" response, wait a few minutes and refresh the page.
+
+Answer the questions belowWhat is the first flag you receive after successfully detecting **sample1.exe** ?Correct AnswerWhat is the second flag you receive after successfully detecting **sample2.exe** ?
+
+Correct AnswerWhat is the third flag you receive after successfully detecting sample3.exe?
+
+Correct AnswerWhat is the fourth flag you receive after successfully detecting sample4.exe?
+
+Correct AnswerWhat is the fifth flag you receive after successfully detecting sample5.exe?
+
+Correct AnswerWhat is the final flag you receive from Sphinx?
+
+Correct Answer
+
+### **Answer the questions below**
+
+**Question:** What is the first flag you receive after successfully detecting sample1.exe?
+
+*Answer:* 
+
+     THM{f3cbf08151a11a6a331db9c6cf5f4fe4}
+
+**Question:** What is the second flag you receive after successfully detecting sample2.exe?
+
+*Answer:* 
+
+     THM{2ff48a3421a938b388418be273f4806d}
+
+**Question:** What is the third flag you receive after successfully detecting sample3.exe?
+
+*Answer:* 
+
+     THM{4eca9e2f61a19ecd5df34c788e7dce16}
+
+**Question:** What is the fourth flag you receive after successfully detecting sample4.exe?
+
+*Answer:* 
+
+     THM{c956f455fc076aea829799c0876ee399}
+
+**Question:** What is the fifth flag you receive after successfully detecting sample5.exe?
+
+*Answer:* 
+
+     THM{46b21c4410e47dc5729ceadef0fc722e}
+
+**Question:** What is the final flag you receive from Sphinx?
+
+*Answer:* 
+
+     THM{c8951b2ad24bbcbac60c16cf2c83d92c}
+
+---
+

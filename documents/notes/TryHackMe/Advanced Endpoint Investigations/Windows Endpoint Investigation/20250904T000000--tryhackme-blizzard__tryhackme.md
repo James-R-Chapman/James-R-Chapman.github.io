@@ -1,0 +1,219 @@
+---
+title:      "TryHackMe  - Blizzard"
+date:       2025-09-04T00:00:00-04:00
+tags:       ["tryhackme"]
+identifier: "20250904T000000"
+Hubs: "TryHackMe/Advanced Endpoint Investigations/Windows Endpoint Investigation"
+URLs: (https://tryhackme.com/room/blizzard)
+id: a0fd32f3-8a25-4e76-b79b-7e3ca8c42c5d
+---
+
+# TryHackMe | Blizzard
+
+## Task 1 | Introduction: Analysing the Impact
+
+Start MachineHealth Sphere Solutions, a healthcare systems provider on the path to expansion, is taking its first steps towards fortifying its infrastructure security. With the rise of cyber threats, particularly the emergence of **Midnight Blizzard** , a sophisticated threat group targeting the healthcare sector, the company recognizes the urgent need to protect sensitive customer data.
+
+ 
+
+ Midnight Blizzard, a notorious threat group, has been implicated in cyber-attacks against healthcare providers. Employing ransomware and phishing tactics, this group has successfully breached healthcare systems, causing significant data loss and operational interruptions.
+
+Prerequisites
+
+It is suggested to clear the following rooms first before proceeding with this room:
+
+- [Windows Forensics 1](https://tryhackme.com/r/room/windowsforensics1)
+- [Expediting Registry Analysis](https://tryhackme.com/r/room/expregistryforensics)
+- [Windows Network Analysis](https://tryhackme.com/r/room/windowsnetworkanalysis)
+- [Windows User Activity Analysis](https://tryhackme.com/r/room/windowsuseractivity)
+- [Windows User Account Forensics](https://tryhackme.com/r/room/windowsuseraccountforensics)
+- [Windows Applications Forensics](https://tryhackme.com/r/room/windowsapplications)
+
+ Scenario
+
+A critical alert was detected on one of Health Sphere Solutions' database servers, highlighting the company's early challenges in securing its network.
+
+**Alert Timestamp** **Alert Name** **Alert Description** **Host Name** 03/24/2024 19:55:29POTENTIAL_DATA_EXFIL_DETECTEDA high bandwidth outbound connection from HS-SQL-01 has been detected.HS-SQL-01Since the security controls are still being established, alerts have only come from servers, and only network-level events are being audited, it's essential to manually investigate both servers and workstations to connect the dots and fully understand the incident.
+
+ Connection Details
+
+Before we proceed with the investigation, start the attached virtual machine by clicking the Start Machine button at the top-right of this task. The machine will start in **Split-Screen**  view. If the VM is not visible, use the blue **Show Split View**  button at the top of the page. You can also use these credentials to access the machine via RDP.
+
+ 
+
+![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/5dbea226085ab6182a2ee0f7/room-content/0cbfa0d0f3a7f16cefa9fddd04b6de8d.png)
+
+ **Username** administrator **Password** Resp0nder! **IP Address** MACHINE_IP In addition, your team has prepared the following items to assist your investigation:
+
+- Standalone tools in the `C:\Tools` directory.
+- Tools prepared as desktop shortcuts.
+
+ Investigation Guide
+
+As part of your playbook, you are tasked to determine the following information during the investigation:
+
+- Determine any unusual login attempts to the database server.
+- Note any suspicious binaries executed within the server.
+- Look for typical persistence mechanisms deployed in the server.
+
+The IT team has also shared that the infected database server is set up for internal access only and is not yet linked to other systems, as it is still in the setup phase. This information could help narrow down potential sources of the threat.
+
+### **Answer the questions below**
+
+**Question:** When did the attacker access this machine from another internal machine? (format: MM/DD/YYYY HH:MM:SS)
+
+*Answer:* 
+
+     03/24/2024 19:38:48
+
+**Question:** What is the full file path of the binary used by the attacker to exfiltrate data?
+
+*Answer:* 
+
+     C:\Users\dbadmin\.rclone\rclone-v1.66.0-windows-amd64\rclone.exe
+
+**Question:** What email is used by the attacker to exfiltrate sensitive data?
+
+*Answer:* 
+
+     annajones291@hotmail.com
+
+**Question:** Where did the attacker store a persistent implant in the registry? Provide the registry value name.
+
+*Answer:* 
+
+     SecureUpdate
+
+**Question:** Aside from the registry implant, another persistent implant is stored within the machine. When did the attacker implant the alternative backdoor? (format: MM/DD/YYYY HH:MM:SS)
+
+*Answer:* 
+
+     03/24/2024 20:04:05
+
+---
+
+## Task 2 | Lateral Movement: Backtracking the Pivot Point
+
+Start MachineScenario
+
+Following the detection of unusual login attempts on the database server, the investigation has pivoted towards examining a specific workstation used by an IT employee, which has been identified as the potential origin of the suspicious login to the database server.
+
+ Connection Details
+
+To continue the investigation in the next machine, start the attached VM by clicking the Start Machine button at the top-right of this task. The machine will start in **Split-Screen**  view. If the VM is not visible, use the blue **Show Split View**  button at the top of the page. You can also use these credentials to access the machine via RDP.
+
+ 
+
+![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/5dbea226085ab6182a2ee0f7/room-content/0cbfa0d0f3a7f16cefa9fddd04b6de8d.png)
+
+ **Username** administrator **Password** Resp0nder! **IP Address** MACHINE_IP In addition, your team has prepared the following items to assist your investigation:
+
+- Standalone tools in the `C:\Tools` directory.
+- Tools prepared as desktop shortcuts.
+
+ Investigation Guide
+
+Your task is to meticulously analyse the workstation's artefacts by following your incident response playbook.
+
+- Determine any unusual emails or chats to cover the social engineering attack vectors.
+- Inspect the user's browser activity and determine if any malicious files have been downloaded or links have been accessed.
+- Note any suspicious binaries executed within the workstation.
+- Look for typical persistence mechanisms deployed in the workstation.
+- Review the network connections made by the workstation and see if there are potential C2 connections invoked.
+
+### **Answer the questions below**
+
+**Question:** When did the attacker send the malicious email? (format: MM/DD/YYYY HH:MM:SS)
+
+*Answer:* 
+
+     03/24/2024 19:06:27
+
+**Question:** When did the victim open the malicious payload? (format: MM/DD/YYYY HH:MM:SS)
+
+*Answer:* 
+
+     03/24/2024 19:07:46
+
+**Question:** When was the malicious persistent implant created? (format: MM/DD/YYYY HH:MM:SS)
+
+*Answer:* 
+
+     03/24/2024 19:16:23
+
+**Question:** What is the domain accessed by the malicious implant? (format: defanged)
+
+*Answer:* 
+
+     advancedsolutions[.]net
+
+**Question:** What file did the attacker leverage to gain access to the database server? Provide the password found in the file.
+
+*Answer:* 
+
+     db@dm1nS3cur3Pass!
+
+---
+
+## Task 3 | Initial Access: Discovering the Root Cause
+
+Start MachineScenario
+
+The investigation pivoted to a workstation belonging to a user suspected of sending an internal phishing attack after discovering that this malicious activity compromised an IT employee's workstation. The primary aim is to uncover how the sender's Office 365 (O365) account was compromised, initiating the phishing attack.
+
+ Connection Details
+
+To continue the investigation in the next machine, start the attached VM by clicking the Start Machine button at the top-right of this task. The machine will start in **Split-Screen**  view. If the VM is not visible, use the blue **Show Split View**  button at the top of the page. You can also use these credentials to access the machine via RDP.
+
+ 
+
+![Image 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/5dbea226085ab6182a2ee0f7/room-content/0cbfa0d0f3a7f16cefa9fddd04b6de8d.png)
+
+ **Username** administrator **Password** Resp0nder! **IP Address** MACHINE_IP In addition, your team has prepared the following items to assist your investigation:
+
+- Standalone tools in the `C:\Tools` directory.
+- Tools prepared as desktop shortcuts.
+
+ Investigation Guide
+
+Your task is to meticulously analyse the workstation's artefacts by following your incident response playbook.
+
+- Determine any unusual emails or chats to cover the social engineering attack vectors.
+- Inspect the user's browser activity and determine if any malicious files have been downloaded or links have been accessed.
+
+This focused approach aims to trace back the steps leading to the phishing attack, thereby understanding how the attacker accessed the victim's O365 account and used it for internal phishing attempts.
+
+### **Answer the questions below**
+
+**Question:** When did the victim receive the malicious phishing message? (format: MM/DD/YYYY HH:MM:SS)
+
+*Answer:* 
+
+     03/24/2024 18:36:34
+
+**Question:** What is the display name of the attacker?
+
+*Answer:* 
+
+     Microsoft Identity Provider
+
+**Question:** What is the URL of the malicious phishing link? (format: defanged)
+
+*Answer:* 
+
+     hxxps[://]login[.]sourcesecured[.]com/support/id/XkSkj321
+
+**Question:** What is the title of the phishing website?
+
+*Answer:* 
+
+     Sign in to your account
+
+**Question:** When did the victim first access the phishing website? (format: MM/DD/YYYY HH:MM:SS in UTC)
+
+*Answer:* 
+
+     03/24/2024 18:38:29
+
+---
+

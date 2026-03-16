@@ -1,0 +1,985 @@
+:PROPERTIES:
+:ID:       e7b8ca21-fce1-4835-8214-63ed10706b18
+:END:
+#+title: Cloud based IaC
+#+date: 2025-04-27
+#+filetags: #TryHackMe
+#+hubs: TryHackMe/DevSecOps/Infrastructure as Code
+#+last_reviewed: 2025-05-12
+#+urls: https://tryhackme.com/room/cloudbasediac
+:PROPERTIES:
+:END:
+
+* Cloud-based IaC
+:PROPERTIES:
+:CUSTOM_ID: cloud-based-iac
+:END:
+** Task 1 | Introduction
+:PROPERTIES:
+:CUSTOM_ID: task-1-introduction
+:END:
+Introduction
+
+Explore the fundamentals of infrastructure as code (IaC) and its crucial
+role in modern cloud computing. We will focus on cloud-based IaC use
+cases using AWS CloudFormation and Terraform, that enable the creation
+and management of cloud resources in a scalable, efficient, and secure
+manner.
+
+Learning Prerequisites
+
+From task 2 onwards, concepts and tool characteristics defined in the
+[[https://tryhackme.com/room/introtoiac][Intro to IaC]] room are
+referenced, so it would be a good idea to have this done!
+
+Learning Objectives
+
+- Understanding Cloud-based IaC Concepts
+- Secure IaC Practices
+- Security Considerations in Cloud-based IaC
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below
+:END:
+*Question:* Click the 'Completed' Button and Proceed to the Next Task.
+
+/Answer:/
+
+#+begin_example
+ No answer needed
+#+end_example
+
+** Task 2 | Terraform 101
+:PROPERTIES:
+:CUSTOM_ID: task-2-terraform-101
+:END:
+Terraform Overview Terraform is an infrastructure as code tool used for
+provisioning that allows the user to define both cloud and on-prem
+resources in a human-readable configuration file that can be versioned,
+reused and distributed across teams. Terraform uses a consistent
+workflow to make the management of your infrastructure an easy and
+reliable process. Both this configuration and the workflow Terraform
+follows will be covered by subsequent tasks in this room. For now, let's
+define some terms which are key to understanding how Terraform
+provisions and manages infrastructure:
+[[https://tryhackme-images.s3.amazonaws.com/user-uploads/6228f0d4ca8e57005149c3e3/room-content/7cdb769ecb4e5b5a0bb23f30d999454a.svg]]
+
+Terraform's Architecture Now we know what Terraform does. Let's examine
+how it is done. We will examine Terraform's architecture:
+
+*Terraform Core* : As the name suggests, Terraform Core is responsible
+for the core functionalities that allow users to provision and manage
+their infrastructure using Terraform. As mentioned in the
+[[https://tryhackme.com/room/introtoiac][Intro to IaC]] room, Terraform
+is a declarative tool (reminder: this means that a desired state is
+defined, and the tool is responsible for ensuring the infrastructure
+meets that desired state, rather than the user declaring each step
+required to achieve the desired state), to ensure the user
+infrastructure is in the desired state, Terraform Core takes its input
+from two sources:
+
+- *Terraform Config files* : The user defines the desired state of their
+  infrastructure in these config files, in other words, what resources
+  make up their desired infrastructure.
+- *State* : Terraform has a state file that keeps track of the current
+  state of provisioned infrastructure. The core component checks this
+  state file against the desired state defined in the config files, and,
+  if there are resources that are defined but not provisioned (or the
+  other way around), makes a plan of how to take the infrastructure from
+  its current state to the desired state. By default, this state file is
+  called terraform.tfstate and is stored in the same directory where
+  Terraform runs.
+
+#+caption: Image 2
+[[https://tryhackme-images.s3.amazonaws.com/user-uploads/6228f0d4ca8e57005149c3e3/room-content/b25923ed88b91dc85d24605c3b97f03d.svg]]
+
+--------------
+
+​**** *We can see in the graphic above that the Terraform Core takes its
+input from two places: the user-defined configuration files and tfstate.
+Should there be any difference between the desired state (configuration
+files) and the current state (tfstate), the required actions will be
+executed using a provider.* **** *Providers* : The plan mentioned above
+is executed using different providers depending on the resources
+defined. Providers are used to interact with cloud providers, SaaS
+providers and other APIs. For example, if an AWS resource like an EC2
+instance is defined, the AWS provider would be used; if a Kubernetes
+cluster is defined, the Kubernetes provider would be required.
+
+#+caption: Image 3
+[[https://tryhackme-images.s3.amazonaws.com/user-uploads/6228f0d4ca8e57005149c3e3/room-content/b6fdcfc9fbc25735baba5ad9376f073e.svg]]
+
+This tool and its architecture boasts many benefits of this IaC tool for
+DevSecOps engineers. What probably sets Terraform apart the most from
+other IaC tools is the ability to use these providers to provision and
+manage resources across multiple cloud providers. This means if you're
+working with an infrastructure that has infrastructure resources with
+AWS and Azure, Terraform can be used as a single solution for
+multi-cloud environments. This also prevents vendor lock-in and means
+infrastructure can be much more flexible. Another benefit of Terraform
+is the declarative configuration language, which is used to define
+resources in config files; it's easy to understand, and the
+human-readable format makes the definition process simple and
+streamlined. On top of all this, the declarative nature of the tool
+supports versioning and change-tracking practices, allowing team members
+to collaborate during the declaration and development of infrastructure
+and roll back to previous infrastructure iterations. The next task will
+go into further detail on how these resources are defined.
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-1
+:END:
+*Question:* Terraform Core takes its input from two sources; this source
+keeps track of what the infrastructure currently looks like. What is the
+name of this source?
+
+/Answer:/
+
+#+begin_example
+ State
+#+end_example
+
+*Question:* The other source defines what you want infrastructure to
+look like. What is the name of this source?
+
+/Answer:/
+
+#+begin_example
+ Terraform Config files
+#+end_example
+
+*Question:* If there is a difference between what the infrastructure
+currently looks like and what you want it to look like, this will
+require a change. This change will be actioned by a....?
+
+/Answer:/
+
+#+begin_example
+ Provider
+#+end_example
+
+** Task 3 | Terraform Configuration
+:PROPERTIES:
+:CUSTOM_ID: task-3-terraform-configuration
+:END:
+Configuration & Terraform
+
+Now that we know what Terraform is and how it works, let's take a look
+at how we would define the desired state using Terraform config files.
+Terraform config files are written in a declarative language called HCL
+(HashiCorp Configuration Language), which, as discussed, is easy to
+understand and human-readable. The primary purpose of this language is
+to declare resources; these resources represent infrastructure objects.
+The combined definition of these resources makes up the desired
+infrastructure state. To give you an example of how, as a DevSecOps
+engineer, Terraform configuration files might be used, let us consider
+an example where we want to define a simple VPC (virtual private cloud)
+using the AWS provider. That would look like this:
+
+#+begin_example
+provider "aws" { 
+ region = "eu-west-2" 
+}
+
+# Create a VPC
+resource "aws_vpc" "flynet_vpc" { 
+ cidr_block = "10.0.0.0/16" 
+ tags = { 
+  Name = "flynet-vpc"
+ }
+}
+#+end_example
+
+*What does the code do?* After defining our provider (which in this case
+is AWS), this resource block is used to define a VPC. We first define
+the resource by stating the resource type, which in this case is an
+"aws_vpc", and then what we will call this resource. This example is
+"flynet_vpc". Then begins our /resource block,/ where we define our
+resource arguments. The arguments given will depend on what type of
+resource is being defined. For example, an aws_vpc will need a CIDR
+block (method for allocating IP addresses). We also define tags which
+can be used in AWS to help with the automation of resources, billing,
+access control, etc. Resource Relationships
+
+Sometimes, resources can depend on other resources. When defining a
+resource with dependencies, the resources it depends on will be
+referenced. For example, if you were assigned a task to define an AWS
+security group ingress rule, allowing SSH access from any source within
+the VPC, you would add the following code block to your configuration
+file.
+
+#+begin_example
+resource "aws_security_group" "example_security_group" {
+ name = "example-security-group"
+ description = "Example Security Group"
+ vpc_id = aws_vpc.flynet_vpc.id #Reference to the VPC created above (format: resource_type.resource_name.id)
+
+ # Ingress rule allowing SSH access from any source within the VPC
+ ingress {
+  #Since we are allowing SSH traffic , from port and to port should be set to port 22
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  cidr_blocks = [aws_vpc.flynet_vpc.cidr_block]
+ }
+}
+#+end_example
+
+*What does the code do?* Here, you can see we have a resource block that
+defines an AWS security group (helps secure AWS environments by
+controlling how traffic is allowed into EC2 machines), which allows SSH
+access from any source within the VPC. You can see in the commented
+lines how this is configured and how resources can be referenced from
+within another resource block.
+
+Infrastructure Modularisation As a DevSecOps engineer, you will likely
+work with a large, complex infrastructure. Another benefit of Terraform
+is that it allows for the modularisation of an infrastructure, that is,
+for the infrastructure to be broken down and defined as modular
+components rather than in a single place. This is common practice in
+larger organisations as it simplifies the management of complex
+infrastructure configurations. Let's take a look at what the above
+example configuration would look like. Below is a representation of a
+directory =/tfconfig= and the files within it, with a brief comment
+explaining the purpose of each file:
+
+#+begin_example
+tfconfig/
+ -flynet_vpc_security.tf #Like mentioned, instead of having all resources defined in one file, resources can be paired up and defined in separate modular files
+ -other_module.tf
+ -variables.tf #some values will be used across two or many infrastructure modules, so instead of declaring these repeatedly in each .tf file it makes sense to paramaterise them in a file called variables.tf. These variables can then be directly referenced in the .tf file.
+ -main.tf #main.tf acts as the central configuration file where the defined modules are all referenced in one place
+#+end_example
+
+If we consider the example given above, if we were to define a vpc using
+this structure, it could be configured like so: variables.tf
+
+#+begin_src variables.tf
+variable "vpc_cidr_block" {
+ description = "CIDR block for the VPC"
+ type = string #Set the type of variable (string,number,bool etc)
+ default = "10.0.0.0/16" # Can be changed as needed
+}
+#+end_src
+
+We are defining a VPC the same way as we did at the beginning of this
+task, except now we are storing it in a =variables.tf= file. We are
+doing this so we can reuse/reference it. This could be referenced in any
+module.tf file, for example, below, we have a code block for a module
+named =flynet_vpc_security=: flynet_vpc_security.tf
+
+#+begin_src flynet_vpc_security.tf
+cidr_block = var.vpc_cidr_block 
+#Variable can be referenced using var. followed by variable name
+#+end_src
+
+#+begin_example
+Finally, this module (and all other module tf files) would be collected and referenced in the main.tf file like so:
+#+end_example
+
+#+begin_example
+main.tf  
+#+end_example
+
+#+begin_src main.tf
+module "flynet_vpc_security" {
+ source = "./flynet_vpc_security.tf" 
+ #where module is defined (relative to current file)
+}
+
+module "other_module" {
+ source = "./Other_module.tf"
+}
+#+end_src
+
+This level of organisation would be extreme, given how primitive the
+infrastructure setup is in our example. However, this was to show you
+how an infrastructure at scale might be configured in a larger
+organisation/company.
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-2
+:END:
+*Question:* When defining the VPC (in the first example) before the
+resource block, what was defined?
+
+/Answer:/
+
+#+begin_example
+ provider
+#+end_example
+
+*Question:* When modulating your infrastructure, what file acts as the
+central configuration file?
+
+/Answer:/
+
+#+begin_example
+ main.tf
+#+end_example
+
+*Question:* Instead of repeatedly defining values across multiple
+infrastructure modules these values can be collected in one file and
+referenced. What is the name of this file?
+
+/Answer:/
+
+#+begin_example
+ variables.tf
+#+end_example
+
+** Task 4 | Terraform Workflow
+:PROPERTIES:
+:CUSTOM_ID: task-4-terraform-workflow
+:END:
+Understanding the Terraform Workflow
+
+The Terraform workflow generally follows four steps: Write, Initialise,
+Plan and Apply. To better understand this workflow and how it can
+benefit DevSecOps engineers while provisioning of infrastructure, let's
+consider an infrastructure at different points in development. When
+dealing with infrastructure provisioning, you tend to have different
+problems at different stages. To illustrate this, let's consider the
+Terraform workflow at three points in time:
+
+- Day 1 (the infrastructure does not exist yet and needs to be
+  provisioned from scratch)
+- Day 2+ (The infrastructure exists, but some changes need to be made)
+- Day N (an undefined point in time when you no longer need this
+  infrastructure)
+
+Day 1 Let's take a look at what the Terraform workflow would look like
+on Day 1 of infrastructure provisioning. You have an empty environment
+with no infrastructure set up and need to define and provision this
+infrastructure. Using Terraform, you would follow this workflow:
+
+- *Write* *:* In this part of the workflow you would define the desired
+  state of your infrastructure in a Terraform configuration file. As
+  discussed in the previous task, these configuration files are used to
+  define the desired components, and these components can reference each
+  other if they have a relation.
+
+- *Initialise:* The next part of the workflow is to initialise. The init
+  command prepares your workspace (the working directory where your
+  Terraform configuration files are) so Terraform can apply your
+  changes. This preparation includes things like downloading
+  dependencies, for example, if your configuration file defines 'aws' as
+  the provider, during the initialisation, Terraform will download the
+  aws provider plug-in. This is done using the following command:
+  =terraform init=
+
+- *Plan:* After initialising your workspace, you should now plan your
+  changes. The planning stage considers what infrastructure is present
+  currently (with it being Day 1, there will be no infrastructure
+  present) vs the desired state and prepares a plan of actions which, if
+  applied, will make it so the infrastructure matches the desired state.
+  It produces this execution plan and will tell the user what components
+  will be added/destroyed in the process. This is done using the
+  following command: =terraform plan=
+
+- *Apply:* Apply actions the steps (detailed in the plan) required to
+  take the infrastructure from the current state to the desired state.
+  Terraform works out which order these infrastructure resources should
+  be created. In our example from the previous task, we defined two
+  resources: a VPC and a security group. Since the security group
+  references the VPC and is therefore dependent on it, Terraform would
+  create the VPC first. This is done using the following command:
+  <=terraform apply=
+
+#+caption: Image 4
+[[https://tryhackme-images.s3.amazonaws.com/user-uploads/6228f0d4ca8e57005149c3e3/room-content/8f2325af86bb7978f2106f733caac33b.svg]]
+
+Day 2+ Day 2+ means any day after the infrastructure has been
+provisioned; what will the workflow look like when making changes to an
+existing infrastructure? Say, for instance, you wanted to add a
+component to your infrastructure.
+
+- *Initialise* : =terraform init= should be the first command run after
+  making any changes to an infrastructure configuration. It will
+  initialise the workspace just like when creating the infra from
+  scratch.
+
+- *Plan* : Terraform plan is not required but is best practice,
+  especially in an already existing infrastructure. The execution plan
+  generated by the plan command will show you exactly what is being
+  removed or added to the infrastructure. This can catch any
+  misconfigurations before they are applied and break anything. The plan
+  will assess the existing infrastructure in this case and note that the
+  existing components match the desired state, so no changes need to be
+  made, but the additional component has not been created yet and will
+  need to be created to match the desired state, so will be listed as a
+  resource that needs to be added.
+
+- *Apply* : Again, Terraform will provision the infrastructure changes
+  defined using the execution plan made during the Plan phase (note that
+  if you skip the planning phase, Terraform will automatically create an
+  execution plan as if you had and will ask you to approve the plan
+  before execution). The state file will then be updated to reflect that
+  the current state now matches the desired state as the additional
+  component has been added/provisioned.
+
+Day N Day N denotes a day in the future when the infrastructure is no
+longer needed. Maybe it was just a test environment, or the application
+it supports has been shelved. Now that this infrastructure is no longer
+needed, all that is required is to destroy it.
+
+- *Destroy* : Running the =terraform destroy= command will take care of
+  this. Functionally, the destroy command is quite similar to the apply
+  command in that it takes a plan (a destroy plan which Terraform makes
+  on running this command) and compares it to what infrastructure
+  currently exists and actions that plan instead of
+  provisioning/de-provisioning resources changes, it tears down all
+  resources.
+
+#+caption: Image 5
+[[https://tryhackme-images.s3.amazonaws.com/user-uploads/6228f0d4ca8e57005149c3e3/room-content/667e6e2b9cbac61df9d17ac8e0aabae9.svg]]
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-3
+:END:
+*Question:* What command would you run to action the steps outlined to
+take your infrastructure from the desired state to the actual state?
+
+/Answer:/
+
+#+begin_example
+ terraform apply
+#+end_example
+
+*Question:* What command would you run to prepare your workspace?
+
+/Answer:/
+
+#+begin_example
+ terraform init
+#+end_example
+
+*Question:* What command, when run, would provide you with a series of
+actions that would be required to take your infrastructure from the
+desired state to the actual state?
+
+/Answer:/
+
+#+begin_example
+ terraform plan
+#+end_example
+
+** Task 5 | Cloudformation 101
+:PROPERTIES:
+:CUSTOM_ID: task-5-cloudformation-101
+:END:
+CloudFormation OverviewCloudFormation is an Amazon Web Services (AWS)
+IaC tool for automated provision and resource management. Instead of
+manually configuring resources through the AWS Management Console or
+using the AWS Command Line Interface (CLI), you can use CloudFormation
+templates to describe your infrastructure in a "declarative" manner.
+Declarative Infrastructure as CodeWith CloudFormation, you express the
+desired state of your infrastructure using a JSON or YAML template. This
+template defines the resources, their configurations, and the
+relationships between them. CloudFormation provides and manages these
+resources, making managing and replicating your infrastructure easier.
+Templates and StacksA CloudFormation template is a text file that serves
+as a blueprint for your infrastructure. It contains sections that
+describe various AWS resources like EC2 instances, S3 buckets, and more.
+When you use a template to create resources, it forms a CloudFormation
+stack. Stacks are the fundamental units of CloudFormation, and they
+represent a collection of AWS resources that are created, updated, and
+deleted together. Example
+
+#+begin_example
+# CloudFormation Template
+AWSTemplateFormatVersion: '2010-09-09'  # Version of the CloudFormation template syntax
+
+Description: 'A simple CloudFormation template'  # Description of the template
+
+Resources:  # Section where AWS resources are defined
+  MyEC2Instance:  # Logical name of the resource
+    Type: 'AWS::EC2::Instance'  # Type of AWS resource being created
+
+    Properties:  # Properties specific to the resource type
+      ImageId: 'ami-12345678'  # ID of the Amazon Machine Image (AMI) for the EC2 instance
+      InstanceType: 't2.micro'  # Type of EC2 instance
+      KeyName: 'my-key-pair'  # SSH key pair for accessing the instance
+
+  MyS3Bucket:  # Another resource example
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'my-s3-bucket'  # Name of the S3 bucket
+
+Outputs:  # Section to define outputs for the template
+  EC2InstanceId:  # Logical name for the output
+    Description: 'ID of the EC2 instance'  # Description of the output
+    Value: !Ref MyEC2Instance  # Reference to the EC2 instance resource
+#+end_example
+
+- *AWSTemplateFormatVersion:* This specifies the CloudFormation template
+  version.
+- *Description:* Provides a brief description of the template.
+- *Resources:* This section defines the AWS resources to be created,
+  such as EC2 instances or S3 buckets. Each resource has a logical name
+  (MyEC2Instance, MyS3Bucket). Type indicates the AWS resource type.
+  Properties hold configuration settings for the resource.
+- *Outputs:* This section defines the output values displayed after
+  creating the stack. Logical name, description, and a reference to a
+  resource using =!Ref=.
+
+*Notes:* CloudFormation Designer is a service for visually
+creating/validating these templates. Read more
+[[https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/working-with-templates-cfn-designer-overview.html][here]].
+
+CloudFormation Architecture
+
+Similar to Terraform, CloudFormation follows a workflow for provision
+and management. To better understand the workflow, we need to understand
+the inner workings of CloudFormation and its Architecture. Main and
+Worker ArchitectureCloudFormation employs a main-worker architecture.
+The main, typically a CloudFormation service running in AWS, interprets
+and processes the CloudFormation template. It manages the overall stack
+creation, update, or deletion orchestration. The worker nodes,
+distributed across AWS regions, are responsible for carrying out the
+actual provisioning of resources. Template Processing Flow
+
+#+caption: Image 6
+[[https://tryhackme-images.s3.amazonaws.com/user-uploads/61a7523c029d1c004fac97b3/room-content/10cd2efae7292cd42ba523ba3625c3c8.svg]]
+
+- *Template Submission:* users submit a CloudFormation template, written
+  in JSON or YAML, to the CloudFormation service. The template specifies
+  the desired AWS resources and their configurations. This can be stored
+  in an [[https://aws.amazon.com/s3/][S3]] bucket, for example.
+- *Template Validation:* the CloudFormation service validates the
+  submitted template to ensure its syntax is correct and it follows AWS
+  resource specifications.
+- *Processing by the Main Node:* the main node processes the template,
+  creating a set of instructions for resource provisioning. It
+  determines the order in which resources should be created based on
+  dependencies.
+- *Resource Provisioning:* the main node communicates with worker nodes
+  distributed across different AWS regions. Worker nodes carry out the
+  actual provisioning of resources stated by the instructions provided
+  by the main.
+- *Stack Creation/Update:* the resources are created or updated in the
+  specified order, forming a stack. The stack represents the complete
+  set of provisioned resources.
+
+Event-Driven ModelCloudFormation operates on an event-driven model.
+Events are generated during stack creation, update, or deletion
+processes, and CloudFormation logs these events. Users can monitor these
+events to track the progress of stack operations or identify any issues.
+Rollback and Rollback TriggersIf an error occurs during the stack
+creation or update process, CloudFormation can automatically trigger
+a[[https://docs.aws.amazon.com/autoscaling/ec2/userguide/instance-refresh-rollback.html][rollback]],
+reverting the stack to its previous state. Rollback triggers can be
+defined in the template to specify conditions under which a rollback
+should occur. Cross-Stack ReferencesCloudFormation supports cross-stack
+references, allowing resources from one stack to refer to resources in
+another. This is useful for managing complex applications and
+dependencies that span multiple stacks.Understanding the architecture of
+CloudFormation provides insights into how the service efficiently
+manages the orchestration and provisioning of AWS resources, ensuring a
+reliable and consistent infrastructure deployment process.
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-4
+:END:
+*Question:* What is generated during stack creation?
+
+/Answer:/
+
+#+begin_example
+ events
+#+end_example
+
+*Question:* Can you define rollback triggers in a template? (yay or nay)
+
+/Answer:/
+
+#+begin_example
+ yay
+#+end_example
+
+*Question:* What allows you to refer to resources in another stack?
+
+/Answer:/
+
+#+begin_example
+ Cross-Stack References
+#+end_example
+
+** Task 6 | CloudFormation Configuration & Use Cases
+:PROPERTIES:
+:CUSTOM_ID: task-6-cloudformation-configuration-use-cases
+:END:
+Configuration and Concepts
+
+Template Structure
+
+CloudFormation templates consist of key sections:
+
+- *AWSTemplateFormatVersion:* Specifies the AWS CloudFormation template
+  version.
+- *Description:* Describes the template.
+- *Parameters:* You can input custom values when creating or updating a
+  stack.
+- *Resources:* Defines the AWS resources to be created or managed.
+- *Outputs:* Describes the values that can be queried once the stack is
+  created or updated.
+
+Intrinsic Functions
+
+CloudFormation templates support "intrinsic functions", which help you
+perform operations. Examples of intrinsic functions are referencing
+resources, performing calculations, and conditionally including
+resources:
+
+#+begin_example
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-12345678
+      InstanceType: t2.micro
+
+Outputs:
+  InstanceId:
+    Value: !Ref MyInstance
+
+  PublicDnsName:
+    Value: !GetAtt MyInstance.PublicDnsName
+
+  SubstitutedString:
+    Value: !Sub "Hello, ${MyInstance}"
+#+end_example
+
+- *Fn::Ref :* References the value of the specified resource.
+- *Fn::GetAtt :* Gets the value of an attribute from a resource in the
+  template.
+- *Fn::Sub :* Performs string substitution.
+
+Resource Dependencies
+
+Resources in CloudFormation can have dependencies on each other. For
+example, an EC2 instance might depend on a VPC being created first.
+CloudFormation automatically handles the order of resource creation and
+updates based on these dependencies.
+
+Change Sets
+
+Before making changes to a stack, CloudFormation lets you preview the
+changes using a Change Sets feature. This helps in understanding the
+impact of modifications before they are applied.
+
+Use Cases
+
+There are many use cases for resource provisioning and management in
+AWS. Here are some examples:
+
+Infrastructure Provisioning and Management
+
+CloudFormation simplifies the process of creating and managing AWS
+resources. It ensures consistency and repeatability in infrastructure
+deployments, reducing the risk of configuration errors.
+
+Application Lifecycle Management
+
+CloudFormation is commonly used to manage the entire lifecycle of
+applications. This includes provisioning resources, deploying
+application code, and handling updates or rollbacks.
+
+Multi-Environment Deployments
+
+Deploying the same infrastructure across multiple environments (dev,
+test, production) is often necessary. CloudFormation allows you to use
+the same template with different parameter values for each environment.
+
+Resource Scaling
+
+As your application or workload grows, CloudFormation enables you to
+quickly scale your infrastructure by modifying the template or using
+[[https://aws.amazon.com/autoscaling/][auto-scaling]] capabilities.
+
+CloudFormation provides a robust and scalable way to manage AWS
+resources through code, offering benefits in terms of automation,
+consistency, and collaboration in the cloud infrastructure setup and
+maintenance.
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-5
+:END:
+*Question:* Does CloudFormation support intrinsic functions? (yay or
+nay)
+
+/Answer:/
+
+#+begin_example
+ yay
+#+end_example
+
+*Question:* What feature helps you understand the impact of
+modifications before they are applied?
+
+/Answer:/
+
+#+begin_example
+ change sets
+#+end_example
+
+** Task 7 | Terraform vs CloudFormation
+:PROPERTIES:
+:CUSTOM_ID: task-7-terraform-vs-cloudformation
+:END:
+Terraform vs. CloudFormation
+
+#+caption: Image 7
+[[https://tryhackme-images.s3.amazonaws.com/user-uploads/6228f0d4ca8e57005149c3e3/room-content/46b69b1f213ad744229dd1a273835633.svg]]
+
+CloudFormation
+
+- *Vendor Lock-In:* AWS CloudFormation is tightly integrated with AWS
+  services, making it the natural choice for AWS-centric environments.
+- *Native Integration:* Seamlessly integrates with other AWS services,
+  providing direct resource references and a unified management
+  experience.
+- *Service Coverage:* Provides comprehensive coverage of AWS services,
+  often including support for new services shortly after release.
+- *Learning Curve:* Learning CloudFormation may be easier for those
+  familiar with AWS services.
+
+Terraform
+
+- *Cloud-Agnostic:* Terraform is cloud-agnostic, supporting multiple
+  cloud providers, including AWS, Azure, Google Cloud, and more. This
+  makes it a versatile choice for hybrid or multi-cloud deployments.
+- *Community and Modules:* This has a large and active community, and
+  using modules allows for reusable and shareable code.
+- *State Management:* Terraform uses a state file to track the current
+  state of infrastructure, providing a clear view of the deployed
+  resources.
+- *Language Flexibility:* The HashiCorp Configuration Language (HCL)
+  used by Terraform is designed for readability and is more flexible
+  than JSON or YAML.
+
+Use Cases
+
+Terraform Use Cases
+
+*1. Multi-Cloud Environments*
+
+*/Scenario/ :* A company utilises its infrastructure with multiple cloud
+providers such as AWS, Azure, and GCP.
+
+Reason for Terraform:
+
+- Terraform has providers for various cloud platforms, making it easier
+  to manage multi-cloud environments.
+- A single Terraform configuration can span different cloud providers,
+  allowing consistent infrastructure as code (IaC) across the entire
+  infrastructure landscape.
+
+*2. Community Modules and Providers:*
+
+*/Scenario/ :* An organisation heavily relies on community-contributed
+modules and providers to enhance infrastructure provisioning.
+
+Reason for Terraform:
+
+- Terraform has a vibrant community that contributes reusable modules
+  and providers for a wide range of services and platforms.
+- Leveraging community-driven content can significantly speed up the
+  development process and provide best practices adopted by a broader
+  audience.
+
+AWS CloudFormation Use Cases
+
+*1. Deep AWS Integration*
+
+*/Scenario/ :* An enterprise's infrastructure is predominantly
+AWS-centric, and the team is deeply invested in AWS-specific services
+and features.
+
+Reason for CloudFormation:
+
+- AWS CloudFormation provides native integration with AWS services,
+  making it well-suited for managing AWS-specific resources.
+- Features like CloudFormation StackSets and Change Sets enhance the
+  management of AWS-specific resources and deployments.
+
+*2. Managed Service Integration:*
+
+*/Scenario/ :* An organisation heavily utilises AWS-managed services,
+such as AWS Elastic Beanstalk or AWS OpsWorks.
+
+Reason for CloudFormation:
+
+- AWS CloudFormation integrates seamlessly with AWS-managed services,
+  offering simplified provisioning and management of these services.
+- CloudFormation provides specific resource types for many AWS-managed
+  services, allowing for a higher level of abstraction in the templates.
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-6
+:END:
+*Question:* Is CloudFormation cloud agnostic? (yay or nay)
+
+/Answer:/
+
+#+begin_example
+ nay
+#+end_example
+
+*Question:* Which IaC tool has deep AWS integration?
+
+/Answer:/
+
+#+begin_example
+ CloudFormation
+#+end_example
+
+*Question:* Which IaC tool has accessible community-driven modules?
+
+/Answer:/
+
+#+begin_example
+ Terraform
+#+end_example
+
+** Task 8 | Secure IaC
+:PROPERTIES:
+:CUSTOM_ID: task-8-secure-iac
+:END:
+Secure Cloud IaC Best PracticesFor Both CloudFormation and Terraform -
+*Version Control:* store IaC code in version control systems like Git to
+track changes, facilitate collaboration, and maintain a version
+history. - *Least Privilege Principle:* always assign the least
+permissions and scope for credentials and IaC tools. Only grant the
+needed permissions for the actions to be performed. - *Parameterise
+Sensitive Data:* Use parameterisation to handle credentials or API keys
+and avoid hardcoding secrets directly into the IaC code. - *Secure
+Credential Management:* leverage the cloud platform's secure credential
+management solutions or services to securely handle and store sensitive
+information, e.g., vaults for secret management. - *Audit Trails:*
+enable logging and monitoring features to maintain an audit trail of
+changes made through IaC tools. Use these logs to conduct reviews
+periodically. - *Code Reviews:* implement code reviews to ensure IaC
+code adheres to best security practices. Collaborative review processes
+can catch potential security issues early.
+
+Check out the[[https://tryhackme.com/room/sourcecodesecurity][Source
+Code Security]] room to learn more about this area.
+
+For AWS CloudFormation - *Use IAM Roles:* Assign
+[[https://aws.amazon.com/iam/?gclid=Cj0KCQiAm4WsBhCiARIsAEJIEzXouhhd93RvbhqE9xDx8UN65Y44Gq19qsHQf_D5yk9QkScSLgQwvDgaAtOWEALw_wcB&trk=35b38fd8-ca20-4fe2-b46d-16f845a47e34&sc_channel=ps&ef_id=Cj0KCQiAm4WsBhCiARIsAEJIEzXouhhd93RvbhqE9xDx8UN65Y44Gq19qsHQf_D5yk9QkScSLgQwvDgaAtOWEALw_wcB:G:s&s_kwcid=AL!4422!3!651612449969!e!!g!!amazon%20iam!19836376240!155574317508][Identity
+and Access Management]] (IAM) roles with the minimum required
+permissions to CloudFormation stacks. Avoid using long-term access keys
+when possible. - *Secure Template Storage:* store CloudFormation
+templates in an encrypted [[https://aws.amazon.com/s3/][S3 bucket]] and
+restrict access to only authorised users or roles. - *Stack Policies:*
+implement stack policies to control updates to stack resources and
+enforce specific conditions during updates.
+
+For Terraform - *Backend State Encryption:* enable backend state
+encryption to protect sensitive information stored in the Terraform
+state file. - *Use Remote Backends:* store the Terraform state remotely
+using backends like Amazon S3 or Azure Storage. This enhances
+collaboration and provides better security. - *Variable Encryption:*
+consider encrypting sensitive values using tools like HashiCorp Vault or
+other secure key management solutions when using variables. - *Provider
+Configuration:* Securely configure provider credentials using
+environment variables, variable files, or other secure methods.
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-7
+:END:
+*Question:* What can you do instead of hardcoding secrets in IaC code?
+
+/Answer:/
+
+#+begin_example
+ Parameterise Sensitive Data
+#+end_example
+
+*Question:* What collaborative process can catch security issues early?
+
+/Answer:/
+
+#+begin_example
+ Code Reviews
+#+end_example
+
+*Question:* What policies can you implement in CloudFormation for update
+controls?
+
+/Answer:/
+
+#+begin_example
+ Stack Policies
+#+end_example
+
+** Task 9 | Practical
+:PROPERTIES:
+:CUSTOM_ID: task-9-practical
+:END:
+View SiteOkay, so we've gone through cloud-based IaC, covering Terraform
+and AWS CloudFormation. Now it's time to give you a practical
+demonstration of what your day-to-day might look like if you were a
+DevSecOps engineer using these tools. In this static site, you will be
+presented with a block of text; this text represents your
+infrastructure. Your infrastructure as code! Initially, you will be
+shown a rather insecure infrastructure, barebones with little security
+in place. You will then be given the chance to choose between resource
+blocks to add or variables to change, which will secure this
+infrastructure. Once the infrastructure has been secured and your role
+as a DevSecOps engineer is fulfilled, the flag is all yours! To begin
+your cloud-based adventure, click the green 'View Site' button in the
+top right of this task.
+
+1. Introduction Menu:Upon launching the static site, you'll encounter an
+   introduction menu. This menu provides options such as resetting
+   infrastructure, accessing instructions, and building infrastructure.
+   Choose your desired option to proceed.
+2. IaC Screen :After selecting an option from the introduction menu,
+   you'll transition to an IaC config screen. This screen simulates the
+   stages of Terraform: init, plan, and apply.
+3. Instruction Model:The static site acts as an instructional model,
+   guiding you through the fundamentals of YAML configuration. It adopts
+   a user-friendly approach inspired by Scratch and Code Warrior
+   methodologies. Learn without worrying about intricate code details.
+4. Interactive Parts:During the exercise, you'll interact with clickable
+   blanks in a YAML config file. These blanks represent components to be
+   added to enhance infrastructure security. Choose the correct options
+   to fill in the blanks.
+5. Criteria for Flag:The exercise comprises three phases: Review,
+   Implement, and Destroy. Successfully completing each phase will light
+   up a diamond at the bottom of the screen.
+6. Messages:
+
+- *Welcome Message:* At the start, you'll receive a welcoming message.
+- *Review Phase Message:* Analyse a YAML config file for security gaps
+  and click "Next" when ready.
+- *Implement Phase Message:* Fill in blanks to enhance infrastructure.
+  Initiate Terraform workflow and follow instructions.
+- *Destroy Phase Message:* After successful implementation, destroy the
+  infrastructure. Click the "Terraform Destroy" button.
+
+7. [@7] Config Files:Utilise the provided YAML config file for
+   infrastructure representation.During the Implement phase, interact
+   with clickable blanks using dummy options.
+
+*** *Answer the questions below*
+:PROPERTIES:
+:CUSTOM_ID: answer-the-questions-below-8
+:END:
+*Question:* Can you use your Cloud-based IaC knowledge to get the flag?
+
+/Answer:/
+
+#+begin_example
+ THM{c10uD-b@z3d-1@SeE}
+#+end_example

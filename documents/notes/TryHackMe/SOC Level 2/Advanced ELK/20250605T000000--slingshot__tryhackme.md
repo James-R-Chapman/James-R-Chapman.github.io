@@ -1,0 +1,147 @@
+---
+title:      "Slingshot"
+date:       2025-06-05T00:00:00-04:00
+tags:       ["tryhackme"]
+identifier: "20250605T000000"
+Hubs: "TryHackMe/SOC Level 2/Advanced ELK"
+urls: (https://tryhackme.com/room/slingshot)
+id: 3789c6de-96db-431a-99f6-bbb72c8837ac
+---
+
+# Slingshot
+
+## Task 1 | Scenario
+
+Start Machine
+
+ Slingway Inc., a leading toy company, has recently noticed suspicious activity on its e-commerce web server and potential modifications to its database. To investigate the suspicious activity, they've hired you as a SOC Analyst to look into the web server logs and uncover any instances of malicious activity.
+
+ To aid in your investigation, you've received an Elastic Stack instance containing logs from the suspected attack. Below, you'll find credentials to access the Kibana dashboard. Slingway's IT staff mentioned that the suspicious activity started on **July 26, 2023** .
+
+ By investigating and answering the questions below, we can create a timeline of events to lead the incident response activity. This will also allow us to present concise and confident findings that answer questions such as:
+
+ 
+- What vulnerabilities did the attacker exploit on the web server?
+- What user accounts were compromised?
+- What data was exfiltrated from the server?
+
+ Instructions
+
+ First, click **Start Machine**  to start the VM attached to this task. You may access the VM using the AttackBox or your VPN connection. You can start the AttackBox by pressing the **Start AttackBox**  button on the top-right of this room. **Note:**  The Elastic Stack may take up to 5 minutes to fully start up. If you receive any errors, give it a few minutes and refresh the page.
+
+ Once online, navigate to `http://MACHINE_IP` using a web browser.
+
+ You should see the Elastic login page. Please log in using the following credentials:
+
+   
+
+![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/63588b5ef586912c7d03c4f0/room-content/be629720b11a294819516c1d4e738c92.png)
+
+   **Username** elastic **Password** raCK0W**BLlW66oNlKAk
+
+### **Answer the questions below**
+
+**Question:** What was the attacker's IP?
+
+*Answer:* 
+
+     10.0.2.15
+
+**Question:** What was the first scanner that the attacker ran against the web server?
+
+*Answer:* 
+
+     Nmap Scripting Engine
+
+**Question:** What was the User Agent of the directory enumeration tool that the attacker used on the web server?
+
+*Answer:* 
+
+     Mozilla/5.0 (Gobuster)
+
+**Question:** In total, how many requested resources on the web server did the attacker fail to find?
+
+*Answer:* 
+
+     1867
+
+**Question:** What is the flag under the interesting directory the attacker found?
+
+*Answer:* 
+
+     a76637b62ea99acda12f5859313f539a
+
+**Question:** What login page did the attacker discover using the directory enumeration tool?
+
+*Answer:* 
+
+     /admin-login.php
+
+**Question:** What was the user agent of the brute-force tool that the attacker used on the admin panel?
+
+*Answer:* 
+
+     Mozilla/4.0 (Hydra)
+
+**Question:** What username:password combination did the attacker use to gain access to the admin page?
+
+*Answer:* 
+
+     admin:thx1138
+
+**Question:** What flag was included in the file that the attacker uploaded from the admin directory?
+
+*Answer:* 
+
+     THM{ecb012e53a58818cbd17a924769ec447}
+
+**Question:** What was the first command the attacker ran on the web shell?
+
+*Answer:* 
+
+     whoami
+
+**Question:** What file location on the web server did the attacker extract database credentials from using Local File Inclusion?
+
+*Answer:* 
+
+     /etc/phpmyadmin/config-db.php
+
+**Question:** What directory did the attacker use to access the database manager?
+
+*Answer:* 
+
+     /phpmyadmin
+
+**Question:** What was the name of the database that the attacker exported?
+
+*Answer:* 
+
+     customer_credit_cards
+
+**Question:** What flag does the attacker insert into the database?
+
+*Answer:* 
+
+     c6aa3215a7d519eeb40a660f3b76e64c
+
+---
+
+## Task 2 | Conclusion
+
+After completing the log investigation, you can present confident findings that an attacker compromised the web server and database. You managed to follow the timeline of events, allowing for a clearer understanding of the incident and actions performed.
+
+ In response to this incident, Slingway Inc. should address the identified vulnerabilities promptly to enhance the security of its web server. Furthermore, the company should take appropriate steps to notify affected customers about the data breach and implement proactive security measures to mitigate future attacks.
+
+ Your investigation's comprehensive findings and actionable insights will enable Slingway Inc. to mitigate the damage caused by the compromised server, bolster its cyber security posture, and safeguard its customers' trust. Well done!
+
+### **Answer the questions below**
+
+**Question:** Click and continue learning!
+
+*Answer:* 
+
+     No answer needed
+
+---
+

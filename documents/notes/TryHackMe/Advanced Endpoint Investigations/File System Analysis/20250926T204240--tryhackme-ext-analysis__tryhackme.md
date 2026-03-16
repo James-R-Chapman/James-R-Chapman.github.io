@@ -1,0 +1,473 @@
+---
+Date: 2025-09-27
+Tags: #TryHackMe
+Hubs: "TryHackMe/Advanced Endpoint Investigations/File System Analysis"
+URLs: (https://tryhackme.com/room/extanalysis)
+id: e45d2ecd-0b45-4e72-81bf-7ea8cd7ae56a
+---
+
+# TryHackMe  - EXT Analysis
+
+## Task 1 | Introduction
+
+File system analysis is a fundamental skill in digital forensics, allowing investigators to extract and interpret data stored on storage devices. EXT4, the default file system for many Linux distributions, organizes data into structures like inodes, directories, and blocks, each carrying critical information about files, directories, and their history.
+
+ This room focuses on analyzing the EXT4 file system to gather evidence such as file creation, deletion, and manipulation. We'll learn how to use native Linux tools and forensic software to detect anti-forensic techniques like timestomping, recover deleted files, and interpret file system metadata.
+
+ Learning Objectives 
+- Learn about the file system EXT4 structure
+- Recognize forensic artifacts of the EXT4 file system
+- Analyze Timestamps and events
+- Learn about tools to analyze the EXT4 file system
+
+ Prerequisites 
+- [Linux File System Analysis](https://tryhackme.com/r/room/linuxfilesystemanalysis)
+- [MBR and GPT Analysis](https://tryhackme.com/room/mbrandgptanalysis)
+- [Autopsy](https://tryhackme.com/r/room/btautopsye0)
+
+ Before moving forward, start the VM by clicking the **Start Machine**  button below. It will take around 2 minutes to load properly. The VM will be accessible on the right side of the split screen. If the VM is not visible, use the blue **Show Split View**  button at the top of the page.
+
+ Start Machine
+
+### **Answer the questions below**
+
+**Question:** Let's get started!
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+## Task 2 | EXT File System Structure
+
+The Extended File System (EXT), first file system specifically for Linux, was first introduced in April 1992. It supported file systems of 2 GB and is also the first to incorporate the Virtual File System (VFS).
+
+ The EXT file system has evolved into different versions, beginning from EXT through EXT2, EXT3, and finally, EXT4. The shared features of these file systems include **superblocks** , **inodes** , **block groups** , **data blocks** , and **bitmaps.**
+
+ 
+- **Superblocks** contain metadata information about a file system, such as size and status.
+- **Inodes** contain metadata for files, including ownership, permissions, and pointers to a **data block** .
+- Data is kept in blocks, which are gathered together as **block groups** .
+- File names are related to inodes through directory structures.
+- **Bitmaps** track the status of the assignment of blocks and inodes.
+
+ With the above into consideration, when we create a file using EXT, it will allocate an inode to store the file's metadata, such as permissions, ownership, and timestamps. Then, the file's content is written to one or more data blocks, and their respective inode records pointers refer to these blocks. The file name is then linked to the inode within the directory structure. This will update the superblock, bitmap, and other related metadata to reflect the changes, ensuring consistency.
+
+ While we'll focus on EXT4, let's explore some of the differences between EXT2, EXT3, and EXT4 in the chart below:
+
+    **Feature**  **EXT2**  **EXT3**  **EXT4**    Maximum File Size 2 TiB 2 TiB 16 TiB   Maximum Volume Size 32 TiB 32 TiB 1 EiB   Journaling No Yes (metadata, optional data) Yes (with checksums for integrity)   Backward Compatibility N/A Can mount EXT2 Can mount EXT2 & EXT3    A file system's goal is to organize data in a certain way. EXT4 first divides the file system space into blocks of equal size (1024, 2048, 4096). Consequential blocks are grouped together, and each group must have the same number of blocks except for the last one, which will have the remaining blocks left. Blocks are also numbered from 0 to N. This is shown in the diagram below:
+
+ ![Image 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1738892865145.png)
+
+ To learn about this, we have set up an EXT partition in a virtual disk formatted using EXT4 in the device `/dev/loop0` mounted in `/mnt/ext4_partition`. We can verify it by accessing the machine and using the command `sudo lsblk` to list the devices.
+
+   lsblk 
+```lsblk 
+ubuntu@tryhackme:~$ sudo lsblk
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+loop0         7:0    0   100M  0 loop /mnt/ext4_partition
+loop1         7:1    0  25.2M  1 loop /snap/amazon-ssm-agent/7993
+loop2         7:2    0  26.3M  1 loop /snap/amazon-ssm-agent/9881
+loop3         7:3    0     4K  1 loop /snap/bare/5
+(...)
+nvme0n1     259:0    0    40G  0 disk 
+└─nvme0n1p1 259:1    0    40G  0 part /
+```
+
+   We can observe a visual representation of the file system and its structure below:
+
+ ![Image 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1738892822494.png)
+
+ Let's start by inspecting one of the most important structures within the EXT4 that defines some key options, for example, the block size. The structure below is the **Superblock** . The code that defines it in the Linux kernel is listed next.
+
+ 
+```
+struct ext4_super_block {
+/*00*/  __le32  s_inodes_count;         /* Inodes count */
+        __le32  s_blocks_count_lo;      /* Blocks count */
+        __le32  s_r_blocks_count_lo;    /* Reserved blocks count */
+        __le32  s_free_blocks_count_lo; /* Free blocks count */
+/*10*/  __le32  s_free_inodes_count;    /* Free inodes count */
+        __le32  s_first_data_block;     /* First Data Block */
+        __le32  s_log_block_size;       /* Block size */
+        __le32  s_log_cluster_size;     /* Allocation cluster size */
+/*20*/  __le32  s_blocks_per_group;     /* # Blocks per group */
+        __le32  s_clusters_per_group;   /* # Clusters per group */
+        __le32  s_inodes_per_group;     /* # Inodes per group */
+        __le32  s_mtime;                /* Mount time */
+/*30*/  __le32  s_wtime;                /* Write time */
+        __le16  s_mnt_count;            /* Mount count */
+        __le16  s_max_mnt_count;        /* Maximal mount count */
+        __le16  s_magic;                /* Magic signature */
+        __le16  s_state;                /* File system state */
+        __le16  s_errors;               /* Behaviour when detecting errors */
+        __le16  s_minor_rev_level;      /* minor revision level */
+/*40*/  __le32  s_lastcheck;            /* time of last check */
+        __le32  s_checkinterval;        /* max. time between checks */
+        __le32  s_creator_os;           /* OS */
+        __le32  s_rev_level;            /* Revision level */
+/*50*/  __le16  s_def_resuid;           /* Default uid for reserved blocks */
+        __le16  s_def_resgid;           /* Default gid for reserved blocks */
+    (...)
+};
+```
+
+ As we can see, there are several members within the EXT4 superblock structure. If needed, we can examine this structure directly on the EXT partition itself. To do this, we can use `hexdump` to inspect the structure on disk. We will focus on verifying the block size, which is stored in the superblock. This value is located at the 7th position in the structure shown above, specifically in the **s_log_block_size**  field. Since each **32-bit**  integer takes up 4 bytes, the block size will be found at offset **0x18** . We can confirm this directly on disk by analyzing the raw bytes with a hex editor. In this case, we will use the following `dd` command: `sudo dd if=/dev/loop0 bs=1024 count=1 skip=1 | hexdump -C`. This will allow us to inspect the superblock.
+
+ ![Image 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1733949019832.png)
+
+ Highlighted above, we can observe the value of the member **s_log_block_size** , which holds the block size, in this case, is 2. This is because they are represented in **little-endian** , meaning that **02000000**  will be **00000002** , but if we refer to the official kernel documentation, this value is calculated using **2 ^ (10 + s_log_block_size)** . So, in this case, **2 ^ (10 + 2)** , the result is **4096** bytes. We can confirm this using the command `sudo dumpe2fs /dev/loop0`, which provides a more readable human output to the information that resides on each struct, in this case, the superblock. This will provide us with more information, such as not only the block size but also block count, inodes, free inodes, and the inode size as shown below:
+
+ ![Image 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1733949020228.png)
+
+ All of the above will help us to understand how the general layout of the file system works, providing us with a description, where the file system is mounted, the inodes and blocks available to write data, which ones are free, the size of each block, and when it was created. 
+Let's explore the inodes by using `debugfs`. We can initialize the `debugfs` console targeting our file system in loop device 0 using the command `sudo debugfs /dev/loop0` on our VM. Once the console starts, we can use the command `stat .` to inspect the permissions and stats on the current directory that holds the entire file system.
+
+   debugfs 
+```debugfs 
+Inode: 2   Type: directory    Mode:  0755   Flags: 0x80000
+Generation: 0    Version: 0x00000000:00000003
+User:     0   Group:     0   Project:     0   Size: 4096
+File ACL: 0
+Links: 3   Blockcount: 8
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x675789e1:914449a4 -- Tue Dec 10 00:22:57 2024
+ atime: 0x675789e2:9c794070 -- Tue Dec 10 00:22:58 2024
+ mtime: 0x675789e1:914449a4 -- Tue Dec 10 00:22:57 2024
+crtime: 0x67490506:00000000 -- Fri Nov 29 00:04:22 2024
+Size of extra inode fields: 32
+Inode checksum: 0xdad691c3
+EXTENTS:
+(0):15
+(END)
+```
+
+   We can observe that the inode assigned is **2** , and the inode checksum. In the next task, we will explore the forensic artifacts we can find in the EXT file system.
+
+### **Answer the questions below**
+
+**Question:** What is the member of the ext4_super_block struct that holds the offset value to the first data block?
+
+*Answer:* 
+
+     s_first_data_block
+
+**Question:** What is the offset where we can find the member s_blocks_count_lo in the ext4_super_block struct? (decimal format)
+
+*Answer:* 
+
+     4
+
+---
+
+## Task 3 | Forensic Artifacts in EXT
+
+The EXT file system, which is used in Linux-based systems, contains a lot of information that can be helpful during an investigation. This is because by knowing the basic structure of EXT, which includes inodes, metadata, journaling, and data block management, we are able to retrieve essential information regarding files and directories, including the history of access, modification, and deletion. 
+Some of the features that have been incorporated in the EXT3 and extended into EXT4 include journaling. This helps in the prevention of corruption by making a list of changes that are to be made on the disk recently. This is why they are both targets of a forensic investigation. As we will learn, journals of deleted files can have metadata, events, and data that can be processed or recovered. In this task, we'll walk through practical steps to locate, extract, and analyze these artifacts, and we'll understand how to find and interpret the critical forensic artifacts of EXT file systems. We'll also enumerate them, examine some examples, and explore how attackers can modify or tamper with the information contained within them.
+
+ Analyzing Inode Metadata Inodes are a crucial part of the EXT; they are responsible for storing information about each file and directory, such as the owner, permissions, time stamps, and the location of data blocks. The information for each inode is stored in the **ext4_inode** structure, which can be observed below:
+
+ 
+```
+struct ext4_inode {    __le16  i_mode;         /* File mode */    __le16  i_uid;          /* Low 16 bits of Owner Uid */    __le32  i_size_lo;      /* Size in bytes */    __le32  i_atime;        /* Access time */    __le32  i_ctime;        /* Inode Change time */    __le32  i_mtime;        /* Modification time */    __le32  i_dtime;        /* Deletion Time */    __le16  i_gid;          /* Low 16 bits of Group Id */    __le16  i_links_count;  /* Links count */    __le32  i_blocks_lo;    /* Blocks count */    __le32  i_flags;        /* File flags */    union {        struct {                __le32  l_i_version;        } linux1;        struct {                __u32  h_i_translator;        } hurd1;        struct {                __u32  m_i_reserved1;        } masix1;        } osd1;                         /* OS dependent 1 */    __le32  i_block[EXT4_N_BLOCKS];/* Pointers to blocks */    __le32  i_generation;   /* File version (for NFS) */    __le32  i_file_acl_lo;  /* File ACL */    __le32  i_size_high;    __le32  i_obso_faddr;   /* Obsoleted fragment address */    union {        struct {                __le16  l_i_blocks_high; /* were l_i_reserved1 */                __le16  l_i_file_acl_high;                __le16  l_i_uid_high;   /* these 2 fields */                __le16  l_i_gid_high;   /* were reserved2[0] */                __le16  l_i_checksum_lo;/* crc32c(uuid+inum+inode) LE */                __le16  l_i_reserved;        } linux2;        struct {                __le16  h_i_reserved1;  /* Obsoleted fragment number/size which are removed in ext4 */                __u16   h_i_mode_high;                __u16   h_i_uid_high;                __u16   h_i_gid_high;                __u32   h_i_author;        } hurd2;        struct {                __le16  h_i_reserved1;  /* Obsoleted fragment number/size which are removed in ext4 */                __le16  m_i_file_acl_high;                __u32   m_i_reserved2[2];        } masix2;    } osd2;                         /* OS dependent 2 */    __le16  i_extra_isize;    __le16  i_checksum_hi;  /* crc32c(uuid+inum+inode) BE */    __le32  i_ctime_extra;  /* extra Change time      (nsec< 2 | epoch) */    __le32  i_mtime_extra;  /* extra Modification time(nsec< 2 | epoch) */    __le32  i_atime_extra;  /* extra Access time      (nsec< 2 | epoch) */    __le32  i_crtime;       /* File Creation time */    __le32  i_crtime_extra; /* extra FileCreationtime (nsec< 2 | epoch) */    __le32  i_version_hi;   /* high 32 bits for 64-bit version */    __le32  i_projid;       /* Project ID */};
+```
+
+ Inode metadata can provide information about specific files. Each file and directory in the EXT4 file system is assigned an inode number, which will be then linked to an **ext4_inode**  struct that typically occupies **256 bytes**  and contains information such as **i_mode**  (file type/permissions), **i_uid**  (owner), **i_size_lo**  (file size), **i_blocks**  (allocated blocks), **i_links_count**  (hard links), and **i_block**  (data block pointers or extents).
+
+ To corroborate the above, we will work and execute the command `ls -al /mnt/ext4_partition` to list the files in the directory.
+
+   ls 
+```ls 
+ubuntu@tryhackme:~$ ls -al /mnt/ext4_partition
+total 16
+drwxr-xr-x 3 root root 4096 Dec 31 23:43 .
+drwxr-xr-x 7 root root 4096 Jan  6 03:37 ..
+drwxr-xr-x 2 root root 4096 Nov 29 01:06 test_dir
+-rw-r--r-- 1 root root   28 Dec 11 21:13 test_file.txt
+-rw-r--r-- 1 root root    0 Dec 11 21:13 test_file2.txt
+```
+
+   We can get information from files by navigating to the directory `/mnt/ext4_partition` and using the command `sudo stat test_file2.txt`. This will provide us with information about the file, including its inode number.
+
+   stat 
+```stat 
+ubuntu@tryhackme:/mnt/ext4_partition$ sudo stat test_file2.txt
+ File: test_file2.txt
+ Size: 9             Blocks: 8          IO Block: 4096   regular file
+Device: 7,0    Inode: 11          Links: 1        Access: (0755/-rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)        Access: 2024-12-11 21:13:24.282172378 +0000        Modify: 2025-01-06 12:03:12.027980666 +0000        Change: 2025-02-07 17:00:12.013999936 +0000        Birth: 2024-12-11 21:13:24.282172378 +0000
+```
+
+   From the above terminal output, we can extract great information from a file. For example, we can have timestamps for the last access, the last modified date, the last change, and the creation of the file (birth). Also, we can gather the inode number, 11 in this case, which can help us identify the file regardless of its name, for example. Let's use this inode number (that corresponds to test_file2.txt) using `debugfs`, a command that can help us to parse the information on this struct. Let's execute `debugfs` and indicate the device we'll analyze, in this case, `/dev/loop0` by running the command `sudo debugfs /dev/loop0`. After that, execute the command `stat <11>` to indicate inode 11 as shown below:
+
+   Example Terminal 
+```Example Terminal 
+ubuntu@tryhackme:~$ sudo debugfs /dev/loop0
+debugfs 1.47.0 (5-Feb-2023)
+debugfs: stat <11>
+```
+
+   We will be presented with an output with the information from the **ext4_inode** struct, as shown below:
+
+   Example Terminal 
+```Example Terminal 
+Inode: 11   Type: regular    Mode:  0777   Flags: 0x80000
+Generation: 555018483    Version: 0x00000000:00000003       User:     0   Group:     0   Project:     0   Size: 9File ACL: 0Links: 1   Blockcount: 8
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x677bc680:06abcde8 -- Mon Jan  6 12:03:12 2025
+ atime: 0x675a0074:43466f68 -- Wed Dec 11 21:13:24 2024
+ mtime: 0x677bc680:06abcde8 -- Mon Jan  6 12:03:12 2025crtime: 0x675a0074:43466f68 -- Wed Dec 11 21:13:24 2024
+Size of extra inode fields: 32
+Inode checksum: 0x6e0c2268
+EXTENTS:
+(0):24577
+(END)
+```
+
+   We can observe that the **mode**  value is **777** , which corresponds to the  **i_mode** (file type/permissions) member on the **ext4_inode** struct.
+
+ Let's make a change to the file by changing the permissions to **755** using the command: `sudo chmod 755 /mnt/ext4_partition/test_file2.txt`. And let's execute the command again `sudo debugfs /dev/loop0` followed by `stat <11>`.
+
+   Example Terminal 
+```Example Terminal 
+Inode: 11   Type: regular    Mode:  0755   Flags: 0x80000       Generation: 555018483    Version: 0x00000000:00000004        User:     0   Group:     0   Project:     0   Size: 9File ACL: 0Links: 1   Blockcount: 8        Fragment:  Address: 0    Number: 0    Size: 0ctime: 0x67a62e6c:deec2e78 -- Fri Feb  7 16:01:48 2025
+atime: 0x675a0074:43466f68 -- Wed Dec 11 21:13:24 2024
+mtime: 0x677bc680:06abcde8 -- Mon Jan  6 12:03:12 2025
+crtime: 0x675a0074:43466f68 -- Wed Dec 11 21:13:24 2024
+Size of extra inode fields: 32
+Inode checksum: 0x0d1497d0        EXTENTS:        (0):24577        (END)
+```
+
+   As we can observe above, the access has changed to **755** ,  and also, the changed (**ctime** ) timestamps have been updated. This demonstrates how we can use `debugfs` to investigate the ext4_inode struct from a file on disk.
+
+ Recovering Files The EXT4 file system works by writing on available blocks, so files that have not been overwritten can be recovered. This is very useful when doing forensic tasks, since we may want to recover files that were intended to be deleted. We can do that if we know the inode number or scanning them with tools, but let's try to do the process manually.
+
+ Usually, recovery tools scan the system for patterns of bytes and inodes in order to recover files. Let's assume, for example, that we know that a file we are looking at on the system has the string of characters "AAAAAAAA" on it, this could be either the content of the file itself or a sequence of bytes that represent a signature of a file type or format. We can search for it using the following command: sudo strings -t d /dev/loop0 | grep -i "AAAAAAAA"
+
+   strings 
+```strings 
+ubuntu@tryhackme:~$ sudo strings -t d /dev/loop0 | grep -i "AAAAAAAA"
+100671488 AAAAAAAA
+```
+
+   This will provide us with the offset (**100671488** ) on the file system to the object we are looking for, so to recover the file, we need to calculate the proper offset within the block size, which we know is **4096** , per our previous enumeration, so we can execute the following:`echo $((100671488 / 4096))`.
+
+   echo 
+```echo 
+ubuntu@tryhackme:~$ echo $((100671488 / 4096))
+24578
+```
+
+   Now that we know that the offset within the clock group is **24578** , we can use the command `sudo dd if=/dev/loop0 bs=4096 skip=24578 count=1 of=/tmp/recovered_file` to properly output the file to a location, in this case, `/tmp/recovered_file`, as shown below:
+
+   dd 
+```dd 
+ubuntu@tryhackme:~$ sudo dd if=/dev/loop0 bs=4096 skip=24578 count=1 of=/tmp/recovered_file
+1+0 records in
+1+0 records out
+4096 bytes (4.1 kB, 4.0 KiB) copied, 0.000169831 s, 24.1 MB/s
+```
+
+   Great, we were able to properly analyze the metadata in a file within the file system and recover a deleted file. We can corroborate this by performing the `cat` command to the file `/tmp/recovered_file`,as shown below:
+
+   cat 
+```cat 
+ubuntu@tryhackme:~$ cat /tmp/recovered_file 
+AAAAAAAA
+BBBBBBBB
+ZZZZZZZZ
+You find the content!
+```
+
+### **Answer the questions below**
+
+**Question:** What is the inode number for the file /etc/passwd in the VM?
+
+*Answer:* 
+
+     10083
+
+---
+
+## Task 4 | Analyzing File System Timestamps
+
+Timestamps are crucial in forensic analysis as they provide essential information about the file creation, modification, access, and deletion. The EXT file system has several timestamps for each file and directory that can be used to reconstruct users' actions or system events. However, threat actors may try to modify timestamps in order to hide their activities, which is why it is crucial for forensic analysts to identify the anomalies and determine if the timestamps have been altered or not.
+
+ The EXT file system supports various types of timestamps:
+
+    Access Time (atime)  Records the last time a file was read.    Modification Time (mtime)  Indicates the last time the content of the file was modified.    Change Time (ctime)  Tracks the last time the file's metadata (e.g., permissions) was modified.    Deletion Time (dtime)  For deleted files, EXT inodes can store the time the file was deleted.   Birth Time (crtime) Represents the time the file was originally created (only available in EXT4).    These timestamps can be correlated with system logs and other evidence to reconstruct a timeline of events. In this task, we will explore how to analyze timestamps from an EXT4 file system and detect potential tampering.
+
+ Let's start by navigating to the directory `/mnt/ext4_time` and execute the command `ls -l` so we can display the dates of the file in the current directory.
+
+   ls 
+```ls 
+ubuntu@tryhackme:~/mnt/ext4_time$ ls -l
+total 8
+-rw-rw-r-- 1 analyst analyst 22 Jan  5 06:33 normal_file.txt
+-rw-rw-r-- 1 analyst analyst 31 Jan  1  2016 timestomped_file.txt
+```
+
+   As we can observe from above, the file **normal_file.txt** was created on **Jan 5**  of the current year (that's why it is not displayed), and the file **timestomped_file.txt**  has a date from **Jan 1, 2016** . Let's analyze the file **normal_file.txt**  executing the command `stat normal_file.txt` as shown below to get more details.
+
+   stat 
+```stat 
+ubuntu@tryhackme:/mnt/ext4_time$ stat normal_file.txt 
+  File: normal_file.txt
+  Size: 22        	Blocks: 8          IO Block: 4096   regular file
+Device: 259,1	Inode: 1024624     Links: 1
+Access: (0664/-rw-rw-r--)  Uid: ( 1001/ analyst)   Gid: ( 1001/ analyst)
+Access: 2025-01-05 06:33:35.389419110 +0000
+Modify: 2025-01-05 06:33:35.389419110 +0000
+Change: 2025-01-05 06:33:35.389419110 +0000
+Birth: 2025-01-05 06:33:35.389419110 +0000
+```
+
+   As we can observe, all the timestamps correspond to **2025-01-05** , which matches the output of the ls command. In contrast, let's take a look at the file **timestomped_file.txt** .
+
+   stat 
+```stat 
+ubuntu@tryhackme:/mnt/ext4_time$ stat timestomped_file.txt 
+  File: timestomped_file.txt
+  Size: 31        	Blocks: 8          IO Block: 4096   regular file
+Device: 259,1	Inode: 1024627     Links: 1
+Access: (0664/-rw-rw-r--)  Uid: ( 1001/ analyst)   Gid: ( 1001/ analyst)
+Access: 2016-01-01 12:00:00.000000000 +0000
+Modify: 2016-01-01 12:00:00.000000000 +0000
+Change: 2025-01-05 06:33:55.001578638 +0000
+Birth: 2025-01-05 06:33:42.401109261 +0000
+```
+
+   The access and modify time corresponds to the year 2016 displayed with the `ls -l` command, but the change and birth time are from 2025. Why is this? The reason is that the file has been tampered with a "fake" date. This is usually used by attackers as an **anti-forensic** technique and it's commonly referred to as **Timestomping** .
+
+ Timestomping is a technique that modifies the timestamps of a file (the modify, access, create, and change times), often to mimic files that are in the same folder and blend malicious files with legitimate files.
+
+ When performing an investigation, we need to be aware of this technique, be cautious when examining files, and not rely on commands like `ls` to analyze the files. For example, we could use commands like `find` and their time filters, e.g. using the ctime filter, to look for files using a **ctime**  filter to look for files modified within a certain date, regardless of the **last modified** date displayed. As an example, let's use `find` followed by the folder we want to search in, followed by `-newerct` and the dates separated by the `!` sign and then `-ls` to list for.
+
+   Example Terminal 
+```Example Terminal 
+user@tryhackme:~$ sudo find /mnt/ext4_time -newerct "2025-01-01" ! -newerct "2025-01-06" -ls
+1024591      4 drwxrwxrwx   2 root     root         4096 Jan  5 06:33 /mnt/ext4_time
+1024624      4 -rw-rw-r--   1 analyst  analyst        22 Jan  5 06:33 /mnt/ext4_time/normal_file.txt
+1024627      4 -rw-rw-r--   1 analyst  analyst        31 Jan  1  2016 /mnt/ext4_time/timestomped_file.tx
+```
+
+   Above, we used `-newerct` to search for all files that have a change timestamp between **January 1st**  and **January 6th 2025** . The file is then listed even when the **creation**  and**last modified**  date are shown as 2016. Also, keep in mind that the time can only be changed to the time on the system, so an attacker could change the value by modifying the time on the system; we can read more about this in this [article](https://www.inversecos.com/2022/08/detecting-linux-anti-forensics.html).
+
+### **Answer the questions below**
+
+**Question:** What is the btime for the file /etc/passwd?
+
+*Answer:* 
+
+     2024-11-28 21:52:28.724316576
+
+---
+
+## Task 5 | Tools for EXT Forensics
+
+In this room, so far, we have been using basic tools that help us to understand the basics of forensic investigation in the EXT file system. However, in a real scenario, we will mostly rely on tools designed for forensic analysis. The analysis of file systems in digital forensics usually requires the use of these tools and techniques that can help in the extraction, analysis, and recovery of data. These tools will help us to view the file system metadata, recover lost files, and link the data found with other forms of evidence during an investigation.
+
+ In this task, we'll focus on [ Autopsy ](https://www.autopsy.com/), a popular forensic suite that makes use of a user-friendly interface for the analysis of file systems, including EXT. Some of the features include the ability to get metadata, file recovery, and even generate timelines. We can find the Autopsy documentation [here ](https://tryhackme.com/room/a%20popular%20forensic%20suite%20that%20makes%20use%20of%20a%20user-friendly%20interface%20for%20the%20analysis%20of%20file%20systems%20,%20including%20EXT.%20Some%20of%20the%20features%20include%20the%20ability%20to%20get%20metadata,%20file%20recovery,%20and%20even%20generate%20timelines.), if we want to explore more about it.
+
+ *It is worth noting that Linux command-line tools such as **debugfs** and **extundelete** can provide us with powerful options for managing and performing specific forensic examinations of EXT file systems just using the terminal.*
+
+ To use Autopsy, we need to use the graphical interface. Let's open a terminal and navigate to `/home/ubuntu/autopsy/autopsy-4.21.0/bin` and execute the command `./autopsy --nosplash` to execute it. Alternatively, you can use the shortcut on the user's desktop. Keep in mind that it can take some time to load.
+
+ Let's press **OK**  on any warning, and we will be presented with an initial screen. Then click on **New Case** to create one before analyzing any disk.
+
+ ![Image 5](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736172313848.png)
+
+ After that, we can fill in the information. Let's pick a name for the case and a directory to work. In this case, we'll select the directory `/home/ubuntu` as displayed below.
+
+ ![Image 6](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736172314598.png)
+
+ We'll then be asked to fill in some information regarding our investigation, and we can proceed to click **Finish** .
+
+ ![Image 7](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736172314957.png)
+
+ This will create our case or project to start analyzing. Next, we'll be asked to select a name, where we choose to **Generate new host name based on data source name** .
+
+ ![Image 8](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1739553267282.png)
+
+ Finally, we will be able to select a disk to analyze. In this case, we'll select the option **Disk Image or VM File**  since we will be analyzing an image of a disk.
+
+ ![Image 9](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736172315411.png)
+
+ Let's select the file **ext4_case.img** located in the home directory `/home/ubuntu`, as shown below.
+
+ ![Image 10](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736172315781.png)
+
+ Let's then click next on the following screen selection, keeping the ingest modules as they are. Then, we can click **OK**  on any warning regarding modules not being able to be loaded. By default, Autopsy will try several modules, such as iOS, Android, and others, that may not apply to your disk image. And finally click **Finish** .
+
+ ![Image 11](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736172316214.png)
+
+ With that complete, we will be ready to analyze our disk image. We are presented with a screen with a left pane that will allow us to select several options for analysis, and on the right side, we will be able to display this information.
+
+ ![Image 12](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736172316585.png)
+
+ Let's try to observe the same we manually did in our previous tasks, for example, and take a look at the files within the image disk. Let's start by examining the files present on the disk by clicking on `Data Sources > ext4_case.img_1 Host > ext4_case.img`.
+
+ ![Image 13](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736175121197.png)
+
+ We can observe the files named **normal_file.txt**  and **timestomped_file.txt** , and we can quickly notice the time modifications to these files, as we learned before.
+
+ ![Image 14](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736175121696.png)
+
+ Autopsy also has a nice interface for detecting deleted files. In this case, we can observe an empty deleted file.
+
+ ![Image 15](https://tryhackme-images.s3.amazonaws.com/user-uploads/66264cef7bba67a6bbbe7179/room-content/66264cef7bba67a6bbbe7179-1736175122263.png)
+
+ Great! We learned how to perform the same investigations we manually did using a proper forensic tool.
+
+### **Answer the questions below**
+
+**Question:** Select Data Sources > ext4_case.img_1 Host > ext4_case.img and select the file normal_file.txt. Analyze the data in the File Metadata tab on the bottom pane. What is the inode number of the file?
+
+*Answer:* 
+
+     12
+
+**Question:** What is the creation time of the file timestomped.txt? (Format: YYYY-MM-DD hh:mm:ss)
+
+*Answer:* 
+
+     2025-01-06 03:34:09
+
+---
+
+## Task 6 | Practical
+
+Analyze the file system mounted in `/mnt/ext_exercises`, and answer the questions below.
+
+### **Answer the questions below**
+
+**Question:** Identify the timestomped file in the mounted file system in /mnt/ext_exercises. What is the original creation date of the file? (Format: YYYY-MM-DD hh:mm:ss)
+
+*Answer:* 
+
+     2025-01-09 02:27:53
+
+**Question:** What is the flag in the deleted file that starts with the characters "FFFFFFFFFF" in the mounted file system in /mnt/ext_exercises?
+
+*Answer:* 
+
+     TMH{sup3r-d3l3Ted-fil3-you-g0tit-nice}
+
+---
+
+## Task 7 | Conclusion
+
+In this room, we explored the core principles of EXT file system analysis, breaking down its key structures and functions. Through practical tasks, we examined how data is stored, modified, and recovered, building a strong foundation in forensic investigation.
+
+ By working through hands-on scenarios, we applied these concepts to identify and analyze crucial file system artifacts. These exercises helped us to get the skills needed to approach EXT-based investigations.
+
+### **Answer the questions below**
+
+**Question:** Click to finish your journey through the EXT file system fundamentals and complete the room.
+
+*Answer:* 
+
+     No answer needed
+
+---
+

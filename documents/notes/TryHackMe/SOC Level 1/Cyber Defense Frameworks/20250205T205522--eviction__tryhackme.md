@@ -1,0 +1,107 @@
+---
+title:      "Eviction"
+date:       2025-02-05T20:55:22-05:00
+tags:       ["tryhackme"]
+identifier: "20250205T205522"
+hubs: "TryHackMe/SOC Level 1/Cyber Defense Frameworks"
+id: dbd2c74c-54b1-4de8-b9bf-903041c82f46
+---
+
+### SOC Level 1 > Cyber Defence Frameworks > Eviction
+
+### [TryHackMe | Eviction](https://tryhackme.com/r/room/eviction)
+
+# Task 1 | Understand the adversary
+
+Sunny is a SOC analyst at E-corp, which manufactures rare earth metals for government and non-government clients. She receives a classified intelligence report that informs her that an APT group (APT28) might be trying to attack organizations similar to E-corp. To act on this intelligence, she must use the MITRE ATT&CK Navigator to identify the TTPs used by the APT group, to ensure it has not already intruded into the network, and to stop it if it has.
+
+Please visit [this link](https://static-labs.tryhackme.cloud/sites/eviction/) to check out the MITRE ATT&CK Navigator layer for the APT group and answer the questions below.
+
+Answer the questions belowWhat is a technique used by the APT to both perform recon and gain initial access?Correct AnswerSunny identified that the APT might have moved forward from the recon phase. Which accounts might the APT compromise while developing resources?
+
+Correct AnswerE-corp has found that the APT might have gained initial access using social engineering to make the user execute code for the threat actor. Sunny wants to identify if the APT was also successful in execution. What two techniques of user execution should Sunny look out for? (Answer format: <technique 1> and <technique 2>)Correct AnswerIf the above technique was successful, which scripting interpreters should Sunny search for to identify successful execution? (Answer format: <technique 1> and <technique 2>)
+
+Correct AnswerWhile looking at the scripting interpreters identified in Q4, Sunny found some obfuscated scripts that changed the registry. Assuming these changes are for maintaining persistence, which registry keys should Sunny observe to track these changes?
+
+Correct AnswerHintSunny identified that the APT executes system binaries to evade defences. Which system binary's execution should Sunny scrutinize for proxy execution?
+
+Correct AnswerSunny identified tcpdump on one of the compromised hosts. Assuming this was placed there by the threat actor, which technique might the APT be using here for discovery?
+
+Correct AnswerIt looks like the APT achieved lateral movement by exploiting remote services. Which remote services should Sunny observe to identify APT activity traces?Correct AnswerIt looked like the primary goal of the APT was to steal intellectual property from E-corp's information repositories. Which information repository can be the likely target of the APT?
+
+Correct AnswerAlthough the APT had collected the data, it could not connect to the C2 for data exfiltration. To thwart any attempts to do that, what types of proxy might the APT use? (Answer format: <technique 1> and <technique 2>)
+
+Correct AnswerCongratulations! You have helped Sunny successfully thwart the APT's nefarious designs by stopping it from achieving its goal of stealing the IP of E-corp.
+
+Complete
+
+### **Answer the questions below**
+
+**Question:** What is a technique used by the APT to both perform recon and gain initial access?
+
+*Answer:* 
+
+     Spearphishing link
+
+**Question:** Sunny identified that the APT might have moved forward from the recon phase. Which accounts might the APT compromise while developing resources?
+
+*Answer:* 
+
+     Email accounts
+
+**Question:** E-corp has found that the APT might have gained initial access using social engineering to make the user execute code for the threat actor. Sunny wants to identify if the APT was also successful in execution. What two techniques of user execution should Sunny look out for? (Answer format: <technique 1> and <technique 2>)
+
+*Answer:* 
+
+     Malicious file and malicious link
+
+**Question:** If the above technique was successful, which scripting interpreters should Sunny search for to identify successful execution? (Answer format: <technique 1> and <technique 2>)
+
+*Answer:* 
+
+     Powershell and Windows Command shell
+
+**Question:** While looking at the scripting interpreters identified in Q4, Sunny found some obfuscated scripts that changed the registry. Assuming these changes are for maintaining persistence, which registry keys should Sunny observe to track these changes?
+
+*Answer:* 
+
+     Registry run keys
+
+**Question:** Sunny identified that the APT executes system binaries to evade defences. Which system binary's execution should Sunny scrutinize for proxy execution?
+
+*Answer:* 
+
+     Rundll32
+
+**Question:** Sunny identified tcpdump on one of the compromised hosts. Assuming this was placed there by the threat actor, which technique might the APT be using here for discovery?
+
+*Answer:* 
+
+     Network sniffing
+
+**Question:** It looks like the APT achieved lateral movement by exploiting remote services. Which remote services should Sunny observe to identify APT activity traces?
+
+*Answer:* 
+
+     SMB/Windows Admin shares
+
+**Question:** It looked like the primary goal of the APT was to steal intellectual property from E-corp's information repositories. Which information repository can be the likely target of the APT?
+
+*Answer:* 
+
+     Sharepoint
+
+**Question:** Although the APT had collected the data, it could not connect to the C2 for data exfiltration. To thwart any attempts to do that, what types of proxy might the APT use? (Answer format: <technique 1> and <technique 2>)
+
+*Answer:* 
+
+     external proxy and multi-hop proxy
+
+**Question:** Congratulations! You have helped Sunny successfully thwart the APT's nefarious designs by stopping it from achieving its goal of stealing the IP of E-corp.
+
+*Answer:* 
+
+     No answer needed
+
+---
+

@@ -1,0 +1,96 @@
+---
+title:      "Net Sec Challenge"
+date:       2025-03-19T00:00:00-04:00
+tags:       ["tryhackme"]
+identifier: "20250319T000001"
+Hubs: "TryHackMe/Jr Penetration Tester/Network Security"
+urls: (https://tryhackme.com/room/netsecchallenge)
+id: e847e686-10aa-4edc-b169-b3cef3d1db3e
+---
+
+# Net Sec Challenge
+
+# Task 1 | Introduction
+
+Start MachineUse this challenge to test your mastery of the skills you have acquired in the Network Security module. All the questions in this challenge can be solved using only `nmap`, `telnet`, and `hydra`.
+
+### **Answer the questions below**
+
+**Question:** Launch the AttackBox and the target VM.
+
+*Answer:* 
+
+     No answer needed
+
+---
+
+# Task 2 | Challenge Questions
+
+You can answer the following questions using Nmap, Telnet, and Hydra.
+
+### **Answer the questions below**
+
+**Question:** What is the highest port number being open less than 10,000?
+
+*Answer:* 
+
+     8080
+
+**Question:** There is an open port outside the common 1000 ports; it is above 10,000. What is it?
+
+*Answer:* 
+
+     10021
+
+**Question:** How many TCP ports are open?
+
+*Answer:* 
+
+     6
+
+**Question:** What is the flag hidden in the HTTP server header?
+
+*Answer:* 
+
+     THM{web_server_25352}
+
+**Question:** What is the flag hidden in the SSH server header?
+
+*Answer:* 
+
+     THM{946219583339}
+
+**Question:** We have an FTP server listening on a nonstandard port. What is the version of the FTP server?
+
+*Answer:* 
+
+     vsftpd 3.0.5
+
+**Question:** We learned two usernames using social engineering: eddie and quinn. What is the flag hidden in one of these two account files and accessible via FTP?
+
+*Answer:* 
+
+     THM{321452667098}
+
+**Question:** Browsing to http://10.10.237.82:8080 displays a small challenge that will give you a flag once you solve it. What is the flag?
+
+*Answer:* 
+
+     THM{f7443f99}
+
+---
+
+# Task 3 | Summary
+
+Congratulations. In this module, we have learned about passive reconnaissance, active reconnaissance, Nmap, protocols and services, and attacking logins with Hydra.
+
+### **Answer the questions below**
+
+**Question:** Time to continue your journey with a new module.
+
+*Answer:* 
+
+     No answer needed
+
+---
+
