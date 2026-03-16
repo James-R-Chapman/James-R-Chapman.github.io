@@ -10,6 +10,8 @@ source_id: "8c9a58d9-886f-4440-9ed7-21977ad9615b"
 source_path: "Introduction to Cyber Security/20250205T205525--intro-to-defensive-security__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### Introduction to Cyber Security > Intro to Defensive Security
 
@@ -181,3 +183,4 @@ What would be a typical task that you will be doing as a security analyst? Click
 
 
 ---
+{% endraw %}

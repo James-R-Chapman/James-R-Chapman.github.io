@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/monitoringevasion)"
 source_path: "Red Teaming/Host Evasions/20250821T000000--tryhackme-evading-logging-and-monitoring__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Evading Logging and Monitoring
 
@@ -654,3 +656,4 @@ As mentioned throughout this room, the main goal of evading event detections is 
      No answer needed
 
 ---
+{% endraw %}

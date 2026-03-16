@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/atomicbirdtwo)"
 source_path: "SOC Level 2/Threat Emulation/20250621T000000--tryhackme-atomic-bird-goes-purple-2__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Atomic Bird Goes Purple #2
 
@@ -193,3 +195,4 @@ In this room, we covered the implementation of custom atomic tests and detection
      No answer needed
 
 ---
+{% endraw %}

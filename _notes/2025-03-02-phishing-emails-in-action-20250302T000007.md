@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/phishingemails2rytmuv)"
 source_path: "SOC Level 1/Phishing/20250302T000007--phishing-emails-in-action__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Phishing Emails in Action
 
@@ -358,3 +360,4 @@ The next room in this module: [Phishing Emails 3](https://tryhackme.com/jr/phish
      No answer needed
 
 ---
+{% endraw %}

@@ -10,6 +10,8 @@ source_id: "931b42db-bc3b-4dcc-ae45-04f19517d4ac"
 source_path: "Cyber Security 101/Cryptography/20250205T205529--john-the-ripper-the-basics__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### Cyber Security 101 > Cryptography > John the Ripper: The Basics
 
@@ -709,3 +711,4 @@ Correct Answer
 hubs:
     - "[[Cryptography]]"
 ---
+{% endraw %}

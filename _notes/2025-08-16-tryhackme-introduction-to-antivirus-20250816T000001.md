@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/introtoav)"
 source_path: "Red Teaming/Host Evasions/20250816T000001--tryhackme-introduction-to-antivirus__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Introduction to Antivirus
 
@@ -736,3 +738,4 @@ Once we obtain access to a target, it is essential to enumerate the target machi
      No answer needed
 
 ---
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/avevasionshellcode)"
 source_path: "Red Teaming/Host Evasions/20250816T000000--tryhackme-av-evasion-shellcode__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | AV Evasion: Shellcode
 
@@ -1389,3 +1391,4 @@ Remember that the success of any encrypter, encoder or packer, will largely depe
      No answer needed
 
 ---
+{% endraw %}

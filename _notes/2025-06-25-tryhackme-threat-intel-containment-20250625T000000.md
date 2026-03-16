@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/intelcreationandcontainment)"
 source_path: "SOC Level 2/Incident Response/20250625T000000--tryhackme-threat-intel-containment__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Threat Intel & Containment
 
@@ -310,3 +312,4 @@ A Re-cap
      No answer needed
 
 ---
+{% endraw %}

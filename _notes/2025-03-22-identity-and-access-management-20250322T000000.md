@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/iaaaidm)"
 source_path: "Security Engineer/Introduction to Security Engineering/20250322T000000--identity-and-access-management__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Identity and Access Management
 
@@ -525,3 +527,4 @@ In this room, we covered the different processes, from identification to logging
      No answer needed
 
 ---
+{% endraw %}

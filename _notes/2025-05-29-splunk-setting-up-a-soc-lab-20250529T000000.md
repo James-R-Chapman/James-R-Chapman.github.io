@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/splunklab)"
 source_path: "SOC Level 2/Advanced Splunk/20250529T000000--splunk-setting-up-a-soc-lab__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Splunk: Setting up a SOC Lab
 
@@ -814,3 +816,4 @@ More advanced topics will be covered in future rooms.
      No answer needed
 
 ---
+{% endraw %}

@@ -10,6 +10,8 @@ source_urls: "https://tryhackme.com/room/linuxmemoryanalysis"
 source_path: "Advanced Endpoint Investigations/Memory Analysis/20250920T215433--tryhackme-linux-memory-analysis.md"
 ---
 
+{% raw %}
+
 
 
 # TryHackMe | Linux Memory Analysis
@@ -588,3 +590,4 @@ That's it.
      No answer needed
 
 ---
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/logstash)"
 source_path: "SOC Level 2/Advanced ELK/20250601T000000--logstash-data-processing-unit__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Logstash: Data Processing Unit
 
@@ -1350,3 +1352,4 @@ Let us know what you think about this room on our [Discord channel](https://disc
      No answer needed
 
 ---
+{% endraw %}

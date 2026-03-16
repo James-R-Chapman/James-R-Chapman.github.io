@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/dataexfildetection)"
 source_path: "20251231T104920--tryhackme-data-exfiltration-detection__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Data Exfiltration Detection
 
@@ -520,3 +522,4 @@ _Answer:_
      No answer needed
 
 ---
+{% endraw %}

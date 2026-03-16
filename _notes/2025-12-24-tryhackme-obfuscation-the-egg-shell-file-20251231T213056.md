@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/obfuscation-aoc2025-e5r8t2y6u9)"
 source_path: "20251231T213056--tryhackme-obfuscation-the-egg-shell-file__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Obfuscation - The Egg Shell File
 
@@ -156,3 +158,4 @@ There is a second challenge waiting for you. This time, you must obfuscate the m
      No answer needed
 
 ---
+{% endraw %}

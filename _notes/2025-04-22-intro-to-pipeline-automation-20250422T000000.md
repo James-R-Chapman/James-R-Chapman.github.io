@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/introtopipelineautomation)"
 source_path: "DevSecOps/Security of the Pipeline/20250422T000000--intro-to-pipeline-automation__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Intro to Pipeline Automation
 
@@ -455,3 +457,4 @@ Throughout the various rooms in this module, we will take a deeper dive into the
      No answer needed
 
 ---
+{% endraw %}

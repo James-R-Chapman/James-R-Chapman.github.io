@@ -10,6 +10,8 @@ source_id: "ae39e56c-db90-4eb0-9a5f-592346b11595"
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250205T205532--snort-challenge-live-attacks__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### SOC Level 1 > Network Security and Traffic Analysis > Snort Challenge - Live Attacks
 
@@ -208,3 +210,4 @@ Submit
      Metasploit
 
 ---
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/windowsinternals)"
 source_path: "SOC Level 2/Malware Analysis/20250707T000001--tryhackme-windows-internals__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Internals
 
@@ -633,3 +635,4 @@ Overall, Windows internals are here to stay; both the red and blue teams need to
      No answer needed
 
 ---
+{% endraw %}

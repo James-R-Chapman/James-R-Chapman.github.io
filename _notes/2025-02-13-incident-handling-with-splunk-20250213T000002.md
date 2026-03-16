@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/splunk201)"
 source_path: "SOC Level 1/Security Information and Event Management/20250213T000002--incident-handling-with-splunk__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Incident handling with Splunk
 
@@ -881,3 +883,4 @@ Complete
      No answer needed
 
 ---
+{% endraw %}

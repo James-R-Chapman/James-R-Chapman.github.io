@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/advanceddynamicanalysis)"
 source_path: "SOC Level 2/Malware Analysis/20250716T000001--tryhackme-dynamic-analysis-debugging__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Dynamic Analysis: Debugging
 
@@ -336,3 +338,4 @@ However, this is not it. Malware authors also use many techniques to evade dynam
      No answer needed
 
 ---
+{% endraw %}

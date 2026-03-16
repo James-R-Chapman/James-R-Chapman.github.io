@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/lateralmovementandpivoting)"
 source_path: "Red Teaming/Compromising Active Directory/20250808T000000--tryhackme-lateral-movement-and-pivoting__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Lateral Movement and Pivoting
 
@@ -1224,3 +1226,4 @@ In this room, we have discussed the many ways an attacker can move around a netw
      No answer needed
 
 ---
+{% endraw %}

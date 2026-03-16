@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/socl1alertreporting)"
 source_path: "SOC Level 1/SOC Team Internals/TryHackMe  - SOC L1 Alert Reporting.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | SOC L1 Alert Reporting
 
@@ -218,3 +220,4 @@ Great job learning three important SOC skills: alert reporting, escalation, and 
      No answer needed
 
 ---
+{% endraw %}

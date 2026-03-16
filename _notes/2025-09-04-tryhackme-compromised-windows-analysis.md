@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/compromisedwindowsanalysis)"
 source_path: "Advanced Endpoint Investigations/Windows Endpoint Investigation/TryHackMe  - Compromised Windows Analysis.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Compromised Windows Analysis
 
@@ -318,3 +320,4 @@ We successfully established a chain of attackers’ steps by utilizing some key 
      No answer needed
 
 ---
+{% endraw %}

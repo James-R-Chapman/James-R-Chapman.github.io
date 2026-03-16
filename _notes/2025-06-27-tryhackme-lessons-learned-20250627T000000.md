@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/lessonslearned)"
 source_path: "SOC Level 2/Incident Response/20250627T000000--tryhackme-lessons-learned__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Lessons Learned
 
@@ -279,3 +281,4 @@ Finally, a sample Sigma Rule has been created to emphasize one of the final proc
      No answer needed
 
 ---
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/securityengineerintro)"
 source_path: "Security Engineer/Introduction to Security Engineering/20250223T000000--introduction-to-security-engineering__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Security Engineer Intro
 
@@ -208,3 +210,4 @@ Head on to the [Security Principles](https://tryhackme.com/room/securityprincipl
      No answer needed
 
 ---
+{% endraw %}

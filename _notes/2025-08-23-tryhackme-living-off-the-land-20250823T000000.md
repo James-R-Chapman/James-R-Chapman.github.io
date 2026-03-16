@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/livingofftheland)"
 source_path: "Red Teaming/Host Evasions/20250823T000000--tryhackme-living-off-the-land__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Living Off the Land
 
@@ -678,3 +680,4 @@ In this room, we covered the general concept of **Living Off the Land** as well 
      No answer needed
 
 ---
+{% endraw %}

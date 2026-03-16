@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/detectingwebattacks)"
 source_path: "SOC Level 1/Web Security Monitoring/20260102T000000--tryhackme-detecting-web-attacks__learning_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Detecting Web Attacks
 
@@ -273,3 +275,4 @@ In this room, you learned about detecting web attacks, starting with a refresher
      No answer needed
 
 ---
+{% endraw %}

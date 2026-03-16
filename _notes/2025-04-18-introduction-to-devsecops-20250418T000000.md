@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/introductiontodevsecops)"
 source_path: "Security Engineer/Software Security/20250418T000000--introduction-to-devsecops__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Introduction to DevSecOps
 
@@ -422,3 +424,4 @@ Comic 3
      ___{_____________}
 
 ---
+{% endraw %}

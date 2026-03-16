@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/detectingwebddos)"
 source_path: "SOC Level 1/Web Security Monitoring/20260107T000000--tryhackme-detecting-web-ddos__learning_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Detecting Web DDoS
 
@@ -318,3 +320,4 @@ In this room, you explored different types of **Denial-of-Service**  attacks, ho
      No answer needed
 
 ---
+{% endraw %}

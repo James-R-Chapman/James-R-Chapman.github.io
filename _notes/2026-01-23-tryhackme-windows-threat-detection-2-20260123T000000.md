@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/windowsthreatdetection2)"
 source_path: "SOC Level 1/Windows Security Monitoring/20260123T000000--tryhackme-windows-threat-detection-2__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Threat Detection 2
 
@@ -330,3 +332,4 @@ Congratulations on completing the room! It is hard work keeping all the stages a
      No answer needed
 
 ---
+{% endraw %}

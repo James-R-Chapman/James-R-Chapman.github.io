@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/windowsloggingforsoc)"
 source_path: "SOC Level 1/Windows Security Monitoring/20260113T000000--level-1-windows-security-monitoring__learning_notes.md"
 ---
 
+{% raw %}
+
 
 # Dashboard Learn Practice CompeteDashboardLearnPracticeCompete4472Access Machines4472SOC Level 1Windows Security MonitoringWindows Logging for SOCWindows Logging for SOCStart your Windows monitoring journey by learning how to use system logs to detect threats.easy60 min15,945 Start AttackBoxSave Room339 RecommendOptionsRoom progress ( 94% ) Task 1IntroductionTask includes a deployable machine Task 2What Is Logged Task 3Security Log: Authentication Task 4Security Log: User Management Task 5Sysmon: Process Monitoring Task 6Sysmon: Files and Network Task 7PowerShell: Logging Commands Task 8ConclusionCongratulations on completing this room! By learning how to read and correlate logs from multiple sources, you are now better prepared to trace real attacks and detect the threat actors on every Cyber Kill Chain stage.
 Key Takeaways
@@ -393,3 +395,4 @@ Congratulations on completing this room! By learning how to read and correlate l
      No answer needed
 
 ---
+{% endraw %}

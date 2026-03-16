@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/soar)"
 source_path: "SOC Level 1/Core SOC Solutions/TryHackMe  - Introduction to SOAR.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Introduction to SOAR
 
@@ -218,3 +220,4 @@ That's all for this room. In this room, we looked at the traditional SOC process
      No answer needed
 
 ---
+{% endraw %}

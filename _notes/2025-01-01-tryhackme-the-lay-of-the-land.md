@@ -8,6 +8,8 @@ source_id: "38748fb0-fd13-477d-8014-cec0a080a115"
 source_path: "Red Teaming/Post Compromise/TryHackMe  - The Lay of the Land.md"
 ---
 
+{% raw %}
+
 ---
 Date: 2025-08-02
 Tags:
@@ -890,3 +892,4 @@ This room is an introduction to client systems in corporate environments. The st
      No answer needed
 
 ---
+{% endraw %}

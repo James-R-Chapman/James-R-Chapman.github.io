@@ -8,6 +8,8 @@ source_id: "32bc20ad-3306-494b-87b6-47e08e50f2dd"
 source_path: "Web Application Pentesting/HTTP Request Smuggling/HTTP -2 Request Smuggling.md"
 ---
 
+{% raw %}
+
 #+title: HTTP/2 Request Smuggling
 #+filetags: #TryHackMe
 #+created: 2025-05-21
@@ -541,3 +543,4 @@ We have shown some basic examples of what can be achieved from an attacker's sta
      No answer needed
 
 ---
+{% endraw %}

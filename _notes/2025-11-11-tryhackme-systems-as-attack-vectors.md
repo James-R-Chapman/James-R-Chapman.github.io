@@ -9,6 +9,8 @@ source_id: "a400ab69-65ff-4b24-bd0f-491db504831e"
 source_path: "SOC Level 1/Blue Team Introduction/TryHackMe  - Systems as Attack Vectors.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Systems as Attack Vectors
 
@@ -209,3 +211,4 @@ Even though SOC analysts don't typically manage systems directly, understanding 
      No answer needed
 
 ---
+{% endraw %}

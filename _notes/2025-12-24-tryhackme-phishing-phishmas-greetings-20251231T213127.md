@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/spottingphishing-aoc2025-r2g4f6s8l0)"
 source_path: "20251231T213127--tryhackme-phishing-phishmas-greetings__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Phishing - Phishmas Greetings
 
@@ -274,3 +276,4 @@ _Answer:_
      No answer needed
 
 ---
+{% endraw %}

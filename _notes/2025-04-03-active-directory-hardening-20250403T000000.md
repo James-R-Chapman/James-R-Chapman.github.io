@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/activedirectoryhardening)"
 source_path: "Security Engineer/Network and System Security/20250403T000000--active-directory-hardening__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Active Directory Hardening
 
@@ -33,3 +35,4 @@ This is simple - isn't it? This room was a basic introduction. We are planning t
      No answer needed
 
 ---
+{% endraw %}

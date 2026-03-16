@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/linuxfundamentalspart3)"
 source_path: "Learn/Linux Fundamentals Part 3/20250904T000002--tryhackme-linux-fundamentals-part-3__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Linux Fundamentals Part 3
 
@@ -535,3 +537,4 @@ Continue your learning in some other TryHackMe rooms that are dedicated to Linux
      No answer needed
 
 ---
+{% endraw %}

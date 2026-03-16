@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/weaponizingvulnerabilities)"
 source_path: "Security Engineer/Software Security/20250417T000005--weaponizing-vulnerabilities__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Weaponizing Vulnerabilities
 
@@ -350,3 +352,4 @@ Stay tuned for a few more exciting rooms on weaponizing and exploiting vulnerabi
      No answer needed
 
 ---
+{% endraw %}

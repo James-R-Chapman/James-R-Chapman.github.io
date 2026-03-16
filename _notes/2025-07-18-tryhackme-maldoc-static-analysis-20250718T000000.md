@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/maldoc)"
 source_path: "SOC Level 2/Malware Analysis/20250718T000000--tryhackme-maldoc-static-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | MalDoc: Static Analysis
 
@@ -761,3 +763,4 @@ This was it for this room. In this room, we learned the following:
      No answer needed
 
 ---
+{% endraw %}

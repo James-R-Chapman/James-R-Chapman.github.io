@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/cloudenum-aoc2025-y4u7i0o3p6)"
 source_path: "20251231T104809--tryhackme-aws-security-s3cret-santa__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | AWS Security - S3cret Santa
 
@@ -357,3 +359,4 @@ _Answer:_
      THM{more_like_sir_cloudbane}
 
 ---
+{% endraw %}

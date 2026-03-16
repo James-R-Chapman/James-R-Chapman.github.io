@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/tsharkchallengestwo)"
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250208T000000--tshark-challenge-ii-directory__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TShark Challenge II: Directory
 
@@ -146,3 +148,4 @@ Submit
      MALWARE TROJAN
 
 ---
+{% endraw %}

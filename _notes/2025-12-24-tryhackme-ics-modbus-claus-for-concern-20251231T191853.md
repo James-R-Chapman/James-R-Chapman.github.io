@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/ICS-modbus-aoc2025-g3m6n9b1v4)"
 source_path: "20251231T191853--tryhackme-ics-modbus-claus-for-concern__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | ICS/Modbus - Claus for Concern
 
@@ -916,3 +918,4 @@ _Answer:_
      No answer needed
 
 ---
+{% endraw %}

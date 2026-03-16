@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/redteamnetsec)"
 source_path: "Red Teaming/Network Security Evasion/20250824T000000--tryhackme-network-security-solutions__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Network Security Solutions
 
@@ -655,3 +657,4 @@ In this room, we covered IDS and IPS types based on installation location and de
      No answer needed
 
 ---
+{% endraw %}

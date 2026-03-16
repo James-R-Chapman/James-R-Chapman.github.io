@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/filepathtraversal)"
 source_path: "Web Application Pentesting/Advanced Server-Side Attacks/20250510T000000--file-inclusion-path-traversal__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # File Inclusion, Path Traversal
 
@@ -374,3 +376,4 @@ Conclusion File Inclusion and Path Traversal vulnerabilities arise from improper
      No answer needed
 
 ---
+{% endraw %}

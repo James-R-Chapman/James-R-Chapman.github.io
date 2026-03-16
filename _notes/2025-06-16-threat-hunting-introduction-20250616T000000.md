@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/introductiontothreathunting)"
 source_path: "SOC Level 2/Threat Hunting/20250616T000000--threat-hunting-introduction__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Threat Hunting: Introduction
 
@@ -431,3 +433,4 @@ Listed below are the rest of the rooms under the Threat Hunting Module. Make sur
      No answer needed
 
 ---
+{% endraw %}

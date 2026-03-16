@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/linuxthreatdetection3)"
 source_path: "SOC Level 1/Linux Security Monitoring/20260212T000000--tryhackme-linux-threat-detection-3__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Linux Threat Detection 3
 
@@ -379,3 +381,4 @@ Throughout a series of scenarios and real-world examples, you explored more comp
      No answer needed
 
 ---
+{% endraw %}

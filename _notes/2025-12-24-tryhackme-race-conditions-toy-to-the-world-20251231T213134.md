@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/race-conditions-aoc2025-d7f0g3h6j9)"
 source_path: "20251231T213134--tryhackme-race-conditions-toy-to-the-world__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Race Conditions - Toy to The World
 
@@ -173,3 +175,4 @@ _Answer:_
      No answer needed
 
 ---
+{% endraw %}

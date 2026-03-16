@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/runtimedetectionevasion)"
 source_path: "Red Teaming/Host Evasions/20250821T000001--tryhackme-runtime-detection-evasion__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Runtime Detection Evasion
 
@@ -469,3 +471,4 @@ It is important to keep these tools from this room in your back pocket. You cann
      No answer needed
 
 ---
+{% endraw %}

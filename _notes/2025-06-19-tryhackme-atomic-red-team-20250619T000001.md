@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/atomicredteam)"
 source_path: "SOC Level 2/Threat Emulation/20250619T000001--tryhackme-atomic-red-team__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Atomic Red Team
 
@@ -1214,3 +1216,4 @@ Threat Emulation Frameworks such as the Atomic Red Team are commonly viewed as a
      No answer needed
 
 ---
+{% endraw %}

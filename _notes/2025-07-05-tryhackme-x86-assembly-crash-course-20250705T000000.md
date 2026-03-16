@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/x86assemblycrashcourse)"
 source_path: "SOC Level 2/Malware Analysis/20250705T000000--tryhackme-x86-assembly-crash-course__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | x86 Assembly Crash Course
 
@@ -579,3 +581,4 @@ In this room, we covered some of the most commonly used instructions in x86 asse
      No answer needed
 
 ---
+{% endraw %}

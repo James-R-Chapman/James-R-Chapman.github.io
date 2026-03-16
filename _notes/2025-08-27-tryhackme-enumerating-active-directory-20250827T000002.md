@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/adenumeration)"
 source_path: "Red Teaming/Compromising Active Directory/20250827T000002--tryhackme-enumerating-active-directory__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Enumerating Active Directory
 
@@ -1001,3 +1003,4 @@ Now that we have enumerated AD, the next step is to perform privilege escalation
      No answer needed
 
 ---
+{% endraw %}

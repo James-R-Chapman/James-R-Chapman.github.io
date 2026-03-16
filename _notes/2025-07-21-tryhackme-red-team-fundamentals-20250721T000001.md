@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/redteamfundamentals)"
 source_path: "Red Teaming/Red Team Fundamentals/20250721T000001--tryhackme-red-team-fundamentals__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Red Team Fundamentals
 
@@ -257,3 +259,4 @@ A simplified overview of Red Team Engagements has been provided in this room. Th
      No answer needed
 
 ---
+{% endraw %}

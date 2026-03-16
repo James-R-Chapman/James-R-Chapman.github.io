@@ -10,6 +10,8 @@ source_id: "56fb6f5d-6000-45ac-9389-b4630db2d5b9"
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250205T205536--traffic-analysis-essentials__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### SOC Level 1 > Network Security and Traffic Analysis > Traffic Analysis Essentials
 
@@ -211,3 +213,4 @@ Complete
 hubs:
     - "[[TryHackMe]]"
 ---
+{% endraw %}

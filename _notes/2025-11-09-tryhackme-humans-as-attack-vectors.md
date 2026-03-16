@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/humansattackvectors)"
 source_path: "SOC Level 1/Blue Team Introduction/TryHackMe  - Humans as Attack Vectors.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Humans as Attack Vectors
 
@@ -181,3 +183,4 @@ In this room, you explored attacks on humans, the weakest element in cyber secur
      No answer needed
 
 ---
+{% endraw %}

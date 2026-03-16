@@ -10,6 +10,8 @@ source_id: "2506a797-f3c1-4cb8-a342-cbc63fafbae6"
 source_path: "Cyber Security 101/Exploitation Basics/20250205T205523--metasploit-introduction__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### Cyber Security 101 > Exploitation Basics > Metasploit: Introduction
 
@@ -1137,3 +1139,4 @@ Correct Answer
      No answer needed
 
 ---
+{% endraw %}

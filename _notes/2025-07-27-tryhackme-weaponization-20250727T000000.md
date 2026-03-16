@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/weaponization)"
 source_path: "Red Teaming/Initial Access/20250727T000000--tryhackme-weaponization__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Congratulations on completing Weaponization !!! 🎉
 
@@ -680,3 +682,4 @@ For reference, you can use the MSFVenom Cheat Sheet on this [website](https://we
      THM{b4dbc2f16afdfe9579030a929b799719}
 
 ---
+{% endraw %}

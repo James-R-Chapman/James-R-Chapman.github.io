@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/virtualizationandcontainers)"
 source_path: "Security Engineer/Network and System Security/20250408T000001--virtualization-and-containers__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Virtualization and Containers
 
@@ -35,3 +37,4 @@ These are only a handful of the applications of virtualization, and we encourage
      No answer needed
 
 ---
+{% endraw %}

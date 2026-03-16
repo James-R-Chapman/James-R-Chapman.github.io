@@ -10,6 +10,8 @@ source_id: "e9fff937-66cd-4321-8dbd-1c5cfac91b3e"
 source_path: "Cyber Security 101/Start Your Cyber Security Journey/20250205T211406--offensive-security-intro__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### Cyber Security 101 > Start Your Cyber Security Journey > Offensive Security Intro
 
@@ -134,3 +136,4 @@ If you want to skip ahead and learn more about the topics discussed in this room
 ### **Answer the questions below**
 
 ---
+{% endraw %}

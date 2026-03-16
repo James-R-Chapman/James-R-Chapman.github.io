@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/networksecurityprotocols)"
 source_path: "Security Engineer/Network and System Security/20250408T000000--network-security-protocols__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Network Security Protocols
 
@@ -29,3 +31,4 @@ In this room, we have covered various network security protocols essential for t
      No answer needed
 
 ---
+{% endraw %}

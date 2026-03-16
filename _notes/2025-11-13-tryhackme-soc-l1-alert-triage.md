@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/socl1alerttriage)"
 source_path: "SOC Level 1/SOC Team Internals/TryHackMe  - SOC L1 Alert Triage.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | SOC L1 Alert Triage
 
@@ -259,3 +261,4 @@ Congratulations on successfully triaging the alerts! Of course, closing the aler
      No answer needed
 
 ---
+{% endraw %}

@@ -10,6 +10,8 @@ source_id: "deaf1c1c-6ba3-4e71-a4a7-d476d175340e"
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250205T205533--snort-challenge-the-basics__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### SOC Level 1 > Network Security and Traffic Analysis > Snort Challenge - The Basics
 
@@ -558,3 +560,4 @@ Congratulations! Are you brave enough to stop a live attack in the [Snort2 Chall
      No answer needed
 
 ---
+{% endraw %}

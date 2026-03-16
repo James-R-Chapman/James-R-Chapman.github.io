@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/phishing-aoc2025-h2tkye9fzU)"
 source_path: "20251231T213123--tryhackme-phishing-merry-clickmas__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Phishing - Merry Clickmas
 
@@ -259,3 +261,4 @@ _Answer:_
      No answer needed
 
 ---
+{% endraw %}

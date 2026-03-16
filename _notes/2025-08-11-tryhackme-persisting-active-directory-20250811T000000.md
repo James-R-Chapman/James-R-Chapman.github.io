@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/persistingad)"
 source_path: "Red Teaming/Compromising Active Directory/20250811T000000--tryhackme-persisting-active-directory__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Persisting Active Directory
 
@@ -1290,3 +1292,4 @@ This concludes the AD module. We have learned about the basics of AD, how to bre
      No answer needed
 
 ---
+{% endraw %}

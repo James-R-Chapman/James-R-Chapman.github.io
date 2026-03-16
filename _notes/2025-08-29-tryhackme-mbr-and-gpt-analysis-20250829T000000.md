@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/mbrandgptanalysis)"
 source_path: "Advanced Endpoint Investigations/File System Analysis/20250829T000000--tryhackme-mbr-and-gpt-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | MBR and GPT Analysis
 
@@ -549,3 +551,4 @@ When we use BIOS firmware, the bootloader responsible for loading the operating 
      _____, ___ ________
 
 ---
+{% endraw %}

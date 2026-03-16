@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/xss)"
 source_path: "Web Fundamentals/Introduction to Web Hacking/20250309T000002--intro-to-cross-site-scripting__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Intro to Cross-site Scripting
 
@@ -461,3 +463,4 @@ Listening on [0.0.0.0] (family 0, port 9001)
      4AB305E55955197693F01D6F8FD2D321
 
 ---
+{% endraw %}

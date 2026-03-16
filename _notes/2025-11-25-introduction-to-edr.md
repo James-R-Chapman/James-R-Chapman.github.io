@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/introductiontoedrs)"
 source_path: "SOC Level 1/Core SOC Solutions/Introduction to EDR.md"
 ---
 
+{% raw %}
+
 
 # Congratulations! We have learned one of the essential tools used in the Security Operations Center (SOC), Endpoint Detection and Response (EDR). As a SOC analyst, we now understand the basic architecture of EDR and its capabilities beyond Antivirus. We explored the detailed telemetry that an EDR provides. We also saw the powerful detection and response capabilities of EDR solutions. Lastly, we practiced investigating some detections on a simulated EDR.
 This sets a strong baseline for working with essential security solutions. In the upcoming rooms of this module, we will explore some other security solutions that a SOC analyst works on in a Security Operations Center (SOC).
@@ -368,3 +370,4 @@ Congratulations! We have learned one of the essential tools used in the Security
      No answer needed
 
 ---
+{% endraw %}

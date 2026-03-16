@@ -10,6 +10,8 @@ source_id: "b416dd03-ca2d-47ee-a21c-04aa77de02d4"
 source_path: "Introduction to Cyber Security/20250205T205526--intro-to-offensive-security__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### Introduction to Cyber Security > Intro to Offensive Security
 
@@ -161,3 +163,4 @@ The cyber careers room goes into more depth about the different careers in cyber
 
 
 ---
+{% endraw %}

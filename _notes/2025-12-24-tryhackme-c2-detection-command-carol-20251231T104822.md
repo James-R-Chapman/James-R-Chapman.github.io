@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/detecting-c2-with-rita-aoc2025-m9n2b5v
 source_path: "20251231T104822--tryhackme-c2-detection-command-carol__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | C2 Detection - Command & Carol
 
@@ -237,3 +239,4 @@ _Answer:_
      80
 
 ---
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/phishingemails1tryoe)"
 source_path: "SOC Level 1/Phishing/20250302T000005--phishing-analysis-fundamentals__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Phishing Analysis Fundamentals
 
@@ -418,3 +420,4 @@ Next room in this module: [Phishing Emails 2](https://tryhackme.com/room/phishin
      Business Email Compromise
 
 ---
+{% endraw %}

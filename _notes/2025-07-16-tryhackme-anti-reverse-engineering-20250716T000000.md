@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/antireverseengineering)"
 source_path: "SOC Level 2/Malware Analysis/20250716T000000--tryhackme-anti-reverse-engineering__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Anti-Reverse Engineering
 
@@ -684,3 +686,4 @@ In this room, we learned the following:
      No answer needed
 
 ---
+{% endraw %}

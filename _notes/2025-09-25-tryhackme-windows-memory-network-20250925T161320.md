@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/windowsmemoryandnetwork)"
 source_path: "Advanced Endpoint Investigations/Memory Analysis/20250925T161320--tryhackme-windows-memory-network__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Memory & Network
 
@@ -485,3 +487,4 @@ In this room, we extended our forensic investigation by focusing on network acti
      No answer needed
 
 ---
+{% endraw %}

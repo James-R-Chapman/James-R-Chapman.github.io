@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/staticanalysis1)"
 source_path: "SOC Level 2/Malware Analysis/20250710T000000--tryhackme-basic-static-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Basic Static Analysis
 
@@ -517,3 +519,4 @@ You can stick around and find what other tools you find interesting in the room.
      No answer needed
 
 ---
+{% endraw %}

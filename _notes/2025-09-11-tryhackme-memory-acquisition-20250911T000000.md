@@ -10,6 +10,8 @@ source_urls: "https://tryhackme.com/room/memoryacquisition"
 source_path: "Advanced Endpoint Investigations/Memory Analysis/20250911T154253--tryhackme-memory-acquisition__tryhackme.md"
 ---
 
+{% raw %}
+
 
 
 # TryHackMe  - Memory Acquisition
@@ -635,3 +637,4 @@ As you have discovered, completing all the tasks in this room, there is more tha
      No answer needed
 
 ---
+{% endraw %}

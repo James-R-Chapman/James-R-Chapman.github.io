@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/introtoendpointsecurity)"
 source_path: "SOC Level 1/Endpoint Security Monitoring/20250207T190000--intro-to-endpoint-security__tryhackme.md"
 ---
 
+{% raw %}
+
 # Contents
 
 <!-- toc -->
@@ -352,3 +354,4 @@ _Answer:_
      No answer needed
 
 ---
+{% endraw %}

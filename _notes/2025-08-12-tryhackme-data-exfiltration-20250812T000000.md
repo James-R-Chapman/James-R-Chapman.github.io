@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/dataxexfilt)"
 source_path: "Red Teaming/Post Compromise/20250812T000000--tryhackme-data-exfiltration__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Data Exfiltration
 
@@ -1453,3 +1455,4 @@ Data Exfiltration is not limited to protocols and methods discussed in this room
      No answer needed
 
 ---
+{% endraw %}

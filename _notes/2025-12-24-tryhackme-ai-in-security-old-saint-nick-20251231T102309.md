@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/AIforcyber-aoc2025-y9wWQ1zRgB)"
 source_path: "20251231T102309--tryhackme-ai-in-security-old-saint-nick__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | AI in Security - old sAInt nick
 
@@ -143,3 +145,4 @@ _Answer:_
      No answer needed
 
 ---
+{% endraw %}

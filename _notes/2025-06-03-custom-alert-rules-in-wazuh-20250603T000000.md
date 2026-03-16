@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/customalertrulesinwazuh)"
 source_path: "SOC Level 2/Advanced ELK/20250603T000000--custom-alert-rules-in-wazuh__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Custom Alert Rules in Wazuh
 
@@ -592,3 +594,4 @@ While we've covered a lot in this room, note that this is just one aspect of the
      No answer needed
 
 ---
+{% endraw %}

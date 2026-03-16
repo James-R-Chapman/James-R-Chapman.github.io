@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/becomingafirstresponder)"
 source_path: "Security Engineer/Managing Incidents/20250421T000000--becoming-a-first-responder__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Becoming a First Responder
 
@@ -342,3 +344,4 @@ In this room, we have learned what it takes to become a first responder. To summ
      No answer needed
 
 ---
+{% endraw %}

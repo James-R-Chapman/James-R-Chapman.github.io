@@ -10,6 +10,8 @@ source_id: "72ffe3a6-3630-47a0-8908-0a47b5a5d4cc"
 source_path: "SOC Level 1/Cyber Threat Intelligence/20250205T205519--intro-to-cyber-threat-intel__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### SOC Level 1 > Cyber Threat Intelligence > Intro to Cyber Threat Intel
 
@@ -258,3 +260,4 @@ Correct Answer
      THM{NOW_I_CAN_CTI}
 
 ---
+{% endraw %}

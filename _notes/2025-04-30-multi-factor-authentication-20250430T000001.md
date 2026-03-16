@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/multifactorauthentications)"
 source_path: "Web Application Pentesting/Authentication/20250430T000001--multi-factor-authentication__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Multi-Factor Authentication
 
@@ -598,3 +600,4 @@ Conclusion In this room, we’ve covered the essentials of Multi-Factor Authenti
      No answer needed
 
 ---
+{% endraw %}

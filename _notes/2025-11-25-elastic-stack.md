@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/soar)"
 source_path: "SOC Level 1/Core SOC Solutions/Elastic Stack.md"
 ---
 
+{% raw %}
+
 
 # In the previous task, we studied how SOAR Playbooks are predefined workflows that tell the SOAR tool what actions to take during a specific investigation. SOC analysts make playbooks for a general category of recurring alerts. Let's have a look at two different playbooks, one for Phishing and one for CVE Patching. 
 Phishing Playbook
@@ -229,3 +231,4 @@ That's all for this room. In this room, we looked at the traditional SOC process
      No answer needed
 
 ---
+{% endraw %}

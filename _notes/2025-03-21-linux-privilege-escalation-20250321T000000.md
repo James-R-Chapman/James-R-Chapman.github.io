@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/linprivesc)"
 source_path: "Jr Penetration Tester/Privilege Escalation/20250321T000000--linux-privilege-escalation__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Linux Privilege Escalation
 
@@ -961,3 +963,4 @@ You can access the target machine over your browser or use the SSH credentials b
      THM-168824782390238
 
 ---
+{% endraw %}

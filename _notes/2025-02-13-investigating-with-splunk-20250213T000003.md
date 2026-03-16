@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/investigatingwithsplunk)"
 source_path: "SOC Level 1/Security Information and Event Management/20250213T000003--investigating-with-splunk__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Investigating with Splunk
 
@@ -100,3 +102,4 @@ SubmitHint
      hxxp[://]10[.]10[.]10[.]5/news[.]php
 
 ---
+{% endraw %}
