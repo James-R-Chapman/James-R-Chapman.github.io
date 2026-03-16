@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/socroleinblueteam)"
 source_path: "SOC Level 1/Blue Team Introduction/TryHackMe  - SOC Role in Blue Team.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | SOC Role in Blue Team
 
@@ -188,3 +190,5 @@ Great job completing the challenge! Now you know how SOC team works, where it is
      No answer needed
 
 ---
+
+{% endraw %}

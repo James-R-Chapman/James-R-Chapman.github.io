@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/wsrequestsmuggling)"
 source_path: "Web Application Pentesting/HTTP Request Smuggling/20250522T000000--request-smuggling-websockets__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Request Smuggling: WebSockets
 
@@ -289,3 +291,5 @@ If you are interested in taking a deeper look into the topic, be sure to check t
      No answer needed
 
 ---
+
+{% endraw %}

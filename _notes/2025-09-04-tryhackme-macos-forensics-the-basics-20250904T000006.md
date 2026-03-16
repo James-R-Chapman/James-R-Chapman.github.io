@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/macosforensicsbasics)"
 source_path: "Advanced Endpoint Investigations/macOS Forensics/20250904T000006--tryhackme-macos-forensics-the-basics__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | macOS Forensics: The Basics
 
@@ -610,3 +612,5 @@ Woah! Looks like we know a lot about macOS now. We are prepared now to perform f
      No answer needed
 
 ---
+
+{% endraw %}

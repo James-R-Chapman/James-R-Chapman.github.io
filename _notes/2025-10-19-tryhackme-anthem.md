@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/anthem)"
 source_path: "Learn/Anthem/TryHackMe  - Anthem.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Anthem
 
@@ -139,3 +141,5 @@ Let's get into the box using the intel we gathered.
      THM{Y0U_4R3_1337}
 
 ---
+
+{% endraw %}

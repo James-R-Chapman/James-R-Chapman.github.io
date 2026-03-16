@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/paymentcollectors)"
 source_path: "SOC Level 2/Threat Hunting/20250617T000000--hunt-me-i-payment-collectors__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Hunt Me I: Payment Collectors
 
@@ -123,3 +125,5 @@ Start MachineOn **Friday, September 15, 2023** , Michael Ascot, a Senior Finance
      THM{1497321f4f6f059a52dfb124fb16566e}
 
 ---
+
+{% endraw %}

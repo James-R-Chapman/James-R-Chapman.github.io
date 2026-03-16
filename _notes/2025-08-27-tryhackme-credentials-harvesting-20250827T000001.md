@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/credharvesting)"
 source_path: "Red Teaming/Compromising Active Directory/20250827T000001--tryhackme-credentials-harvesting__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Credentials Harvesting
 
@@ -1150,3 +1152,5 @@ The following tools may be worth trying to scan a target machine (files, memory,
      No answer needed
 
 ---
+
+{% endraw %}

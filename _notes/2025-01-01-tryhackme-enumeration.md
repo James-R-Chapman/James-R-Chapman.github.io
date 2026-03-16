@@ -8,6 +8,8 @@ source_id: "ade31f7e-f50c-49ea-9ccc-5a2d43218d04"
 source_path: "Red Teaming/Post Compromise/TryHackMe  - Enumeration.md"
 ---
 
+{% raw %}
+
 ---
 Date: 2025-08-03
 Tags:
@@ -830,3 +832,5 @@ The focus of this room was on built-in command-line tools in both Linux and MS W
      No answer needed
 
 ---
+
+{% endraw %}

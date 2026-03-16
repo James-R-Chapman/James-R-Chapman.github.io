@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/windowsuseractivity)"
 source_path: "Advanced Endpoint Investigations/Windows Endpoint Investigation/20250904T000005--tryhackme-windows-user-activity-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows User Activity Analysis
 
@@ -588,3 +590,5 @@ We examined various Windows artifacts in this room and confirmed that the Window
      No answer needed
 
 ---
+
+{% endraw %}

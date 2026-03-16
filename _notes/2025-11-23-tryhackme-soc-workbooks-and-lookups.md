@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/socworkbookslookups)"
 source_path: "SOC Level 1/SOC Team Internals/TryHackMe  - SOC Workbooks and Lookups.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | SOC Workbooks and Lookups
 
@@ -209,3 +211,5 @@ Nice work on building the workbooks! Remember to use the existing lookups like a
      No answer needed
 
 ---
+
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/introtodetectionengineering)"
 source_path: "SOC Level 2/Detection Engineering/20250606T000000--intro-to-detection-engineering__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Intro to Detection Engineering
 
@@ -334,3 +336,5 @@ Attackers leverage Powershell as it provides a high-level interface to interact 
      THM{Sup3r-D3t3ct1v3}
 
 ---
+
+{% endraw %}

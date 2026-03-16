@@ -10,6 +10,8 @@ source_id: "4b605247-59c1-41d9-bdca-cefd77326b3c"
 source_path: "Special/20250902T231359--introductory-researching__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### Learn > Introductory Researching
 
@@ -278,3 +280,5 @@ As a follow-up to this room, complete CMNatic's [Google Dorking](https://tryhack
 
 
 ---
+
+{% endraw %}

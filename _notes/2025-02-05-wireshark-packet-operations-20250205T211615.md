@@ -11,6 +11,8 @@ source_urls: "[TryHackMe | Wireshark: Packet Operations](https://tryhackme.com/r
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250205T211615--wireshark-packet-operations__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### SOC Level 1 > Network Security and Traffic Analysis > Wireshark: Packet Operations
 
@@ -562,3 +564,5 @@ Complete
      No answer needed
 
 ---
+
+{% endraw %}

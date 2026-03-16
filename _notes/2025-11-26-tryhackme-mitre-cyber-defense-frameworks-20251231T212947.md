@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/mitre)"
 source_path: "20251231T212947--tryhackme-mitre-cyber-defense-frameworks__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | MITRE
 
@@ -282,3 +284,5 @@ _Answer:_
      No answer needed
 
 ---
+
+{% endraw %}

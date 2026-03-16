@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/linuxthreatdetection1)"
 source_path: "SOC Level 1/Linux Security Monitoring/20260201T000000--tryhackme-linux-threat-detection-1__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Linux Threat Detection 1
 
@@ -325,3 +327,5 @@ Great job exploring the Initial Access techniques and an especially complex topi
      No answer needed
 
 ---
+
+{% endraw %}

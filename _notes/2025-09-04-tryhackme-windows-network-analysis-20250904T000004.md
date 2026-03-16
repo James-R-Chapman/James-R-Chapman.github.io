@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/windowsnetworkanalysis)"
 source_path: "Advanced Endpoint Investigations/Windows Endpoint Investigation/20250904T000004--tryhackme-windows-network-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Network Analysis
 
@@ -559,3 +561,5 @@ Finally, remember to terminate the machine in this room, as well as the machine 
      No answer needed
 
 ---
+
+{% endraw %}

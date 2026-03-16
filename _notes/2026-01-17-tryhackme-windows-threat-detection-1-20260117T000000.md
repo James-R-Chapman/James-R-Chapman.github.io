@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/windowsthreatdetection1)"
 source_path: "SOC Level 1/Windows Security Monitoring/20260117T000000--tryhackme-windows-threat-detection-1__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Threat Detection 1
 
@@ -337,3 +339,5 @@ Great job completing the room! Knowing the common Initial Access methods helps p
      No answer needed
 
 ---
+
+{% endraw %}

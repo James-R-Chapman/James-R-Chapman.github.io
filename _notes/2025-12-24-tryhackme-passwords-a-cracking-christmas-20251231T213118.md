@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/attacks-on-ecrypted-files-aoc2025-asdf
 source_path: "20251231T213118--tryhackme-passwords-a-cracking-christmas__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Passwords - A Cracking Christmas
 
@@ -297,3 +299,5 @@ _Answer:_
      No answer needed
 
 ---
+
+{% endraw %}

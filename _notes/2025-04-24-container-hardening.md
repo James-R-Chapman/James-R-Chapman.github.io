@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/containerhardening)"
 source_path: "DevSecOps/Container Security/Container Hardening.md"
 ---
 
+{% raw %}
+
 
 # Container Hardening
 
@@ -592,3 +594,5 @@ Start MachineDeploy the machine attached to this task by pressing the green **St
      Critical
 
 ---
+
+{% endraw %}

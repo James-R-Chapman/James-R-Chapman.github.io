@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/windowsthreatdetection3)"
 source_path: "SOC Level 1/Windows Security Monitoring/20260126T000000--tryhackme-windows-threat-detection-3__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Threat Detection 3
 
@@ -325,3 +327,5 @@ In this room, you explored Command and Control, Persistence, and Impact - three 
      No answer needed
 
 ---
+
+{% endraw %}

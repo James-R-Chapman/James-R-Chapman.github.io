@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/obfuscationprinciples)"
 source_path: "Red Teaming/Host Evasions/20250818T000000--tryhackme-obfuscation-principles__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Obfuscation Principles
 
@@ -778,3 +780,5 @@ At this point, you can take obfuscation a step further into [signature evasion](
      No answer needed
 
 ---
+
+{% endraw %}

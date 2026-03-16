@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/eradicationandremediation)"
 source_path: "SOC Level 2/Incident Response/20250626T000000--tryhackme-eradication-remediation__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Eradication & Remediation
 
@@ -349,3 +351,5 @@ Finally, a small challenge that allows the user to follow a sly threat actor has
      No answer needed
 
 ---
+
+{% endraw %}

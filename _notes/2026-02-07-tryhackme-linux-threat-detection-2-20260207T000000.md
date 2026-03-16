@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/linuxthreatdetection2)"
 source_path: "SOC Level 1/Linux Security Monitoring/20260207T000000--tryhackme-linux-threat-detection-2__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Linux Threat Detection 2
 
@@ -374,3 +376,5 @@ In this room, you learned a lot about "Hack and Forget" attacks on Linux, from t
      No answer needed
 
 ---
+
+{% endraw %}

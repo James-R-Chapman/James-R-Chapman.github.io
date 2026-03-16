@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/networksecurityessentials)"
 source_path: "20251231T213018--tryhackme-network-security-essentials__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Network Security Essentials
 
@@ -799,3 +801,5 @@ _Answer:_
      No answer needed
 
 ---
+
+{% endraw %}

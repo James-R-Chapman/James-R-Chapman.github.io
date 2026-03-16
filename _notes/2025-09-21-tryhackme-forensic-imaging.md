@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/forensicimaging)"
 source_path: "Advanced Endpoint Investigations/Disk Image Analysis/TryHackMe  - Forensic Imaging.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Forensic Imaging
 
@@ -447,3 +449,5 @@ You can learn more about forensic imaging or more about Linux forensics in the r
      No answer needed
 
 ---
+
+{% endraw %}

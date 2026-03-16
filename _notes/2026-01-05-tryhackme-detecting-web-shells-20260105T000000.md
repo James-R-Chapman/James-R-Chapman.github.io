@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/detectingwebshells)"
 source_path: "SOC Level 1/Web Security Monitoring/20260105T000000--tryhackme-detecting-web-shells__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Detecting Web Shells
 
@@ -392,3 +394,5 @@ In this room, we covered how to detect web shells through log, file system, netw
      No answer needed
 
 ---
+
+{% endraw %}

@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/ironshade)"
 source_path: "Advanced Endpoint Investigations/Linux Endpoint Investigation/TryHackMe  - IronShade.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | IronShade
 
@@ -117,3 +119,5 @@ Goodluck Hunting!!
      {_tRy_Hack_ME_}
 
 ---
+
+{% endraw %}

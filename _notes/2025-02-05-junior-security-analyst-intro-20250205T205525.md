@@ -10,6 +10,8 @@ source_id: "fa765896-0db7-48c7-9c95-ce40618c9a66"
 source_path: "SOC Level 1/Cyber Defense Frameworks/20250205T205525--junior-security-analyst-intro__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### SOC Level 1 > Cyber Defence Frameworks > Junior Security Analyst Intro
 
@@ -156,3 +158,5 @@ View Site
      THM{UNTIL-WE-MEET-AGAIN}
 
 ---
+
+{% endraw %}

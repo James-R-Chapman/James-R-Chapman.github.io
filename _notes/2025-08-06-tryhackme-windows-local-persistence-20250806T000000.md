@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/windowslocalpersistence)"
 source_path: "Red Teaming/Post Compromise/20250806T000000--tryhackme-windows-local-persistence__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Local Persistence
 
@@ -1142,3 +1144,5 @@ In this room, we have covered the primary methods used by attackers to establish
      No answer needed
 
 ---
+
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/threatintelligenceforsoc)"
 source_path: "SOC Level 2/Detection Engineering/20250607T000000--threat-intelligence-for-soc__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Threat Intelligence for SOC
 
@@ -510,3 +512,5 @@ If you enjoyed this room, continue learning detection engineering concepts by pr
      No answer needed
 
 ---
+
+{% endraw %}

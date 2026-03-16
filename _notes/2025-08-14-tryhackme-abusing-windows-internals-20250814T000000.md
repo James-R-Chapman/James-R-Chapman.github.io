@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/abusingwindowsinternals)"
 source_path: "Red Teaming/Host Evasions/20250814T000000--tryhackme-abusing-windows-internals__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Abusing Windows Internals
 
@@ -895,3 +897,5 @@ Process injection is an overarching technique that can be used in many varieties
      No answer needed
 
 ---
+
+{% endraw %}

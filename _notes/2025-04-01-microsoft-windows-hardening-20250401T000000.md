@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/microsoftwindowshardening)"
 source_path: "Security Engineer/Network and System Security/20250401T000000--microsoft-windows-hardening__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Microsoft Windows Hardening
 
@@ -396,3 +398,5 @@ Download Task FilesIs your system still at risk of a security breach?
      No answer needed
 
 ---
+
+{% endraw %}

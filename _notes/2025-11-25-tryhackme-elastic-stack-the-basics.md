@@ -9,6 +9,8 @@ source_urls: "(https://tryhackme.com/room/investigatingwithelk101)"
 source_path: "SOC Level 1/Core SOC Solutions/TryHackMe  - Elastic Stack - The Basics.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Elastic Stack: The Basics
 
@@ -406,3 +408,5 @@ Congratulations! We have learned about the Elastic Stack (ELK), a widely used to
      No answer needed
 
 ---
+
+{% endraw %}

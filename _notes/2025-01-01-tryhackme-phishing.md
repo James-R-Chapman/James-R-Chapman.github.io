@@ -8,6 +8,8 @@ source_id: "e721ae43-a49f-4286-9db8-9c79ad47233b"
 source_path: "Red Teaming/Initial Access/TryHackMe  - Phishing.md"
 ---
 
+{% raw %}
+
 ---
 Date: 2025-08-01
 Tags:
@@ -452,3 +454,5 @@ View SiteNow that you've learnt what goes into a phishing email campaign, let's 
      THM{I_CAUGHT_ALL_THE_PHISH}
 
 ---
+
+{% endraw %}

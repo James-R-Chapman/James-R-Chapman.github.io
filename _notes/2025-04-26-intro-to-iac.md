@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/introtoiac)"
 source_path: "DevSecOps/Infrastructure as Code/Intro to IaC.md"
 ---
 
+{% raw %}
+
 
 # Intro to IaC
 
@@ -497,3 +499,5 @@ The technology required to send Sergeant Miles Creese back to 1984 is being held
      thm{1Nfr4StrUctUr3_Pr0}
 
 ---
+
+{% endraw %}

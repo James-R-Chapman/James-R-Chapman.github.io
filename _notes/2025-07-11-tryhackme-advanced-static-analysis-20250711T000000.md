@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/advancedstaticanalysis)"
 source_path: "SOC Level 2/Malware Analysis/20250711T000000--tryhackme-advanced-static-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Advanced Static Analysis
 
@@ -1033,3 +1035,5 @@ Phew !!
      No answer needed
 
 ---
+
+{% endraw %}

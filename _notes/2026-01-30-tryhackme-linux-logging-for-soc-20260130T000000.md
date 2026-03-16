@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/linuxloggingforsoc)"
 source_path: "SOC Level 1/Linux Security Monitoring/20260130T000000--tryhackme-linux-logging-for-soc__learning_notes_tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Linux Logging for SOC
 
@@ -404,3 +406,5 @@ Great job exploring the Linux log sources! In the upcoming rooms, you will put t
      No answer needed
 
 ---
+
+{% endraw %}

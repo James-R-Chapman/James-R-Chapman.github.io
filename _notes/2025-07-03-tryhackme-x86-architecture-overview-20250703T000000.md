@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/x8664arch)"
 source_path: "SOC Level 2/Malware Analysis/20250703T000000--tryhackme-x86-architecture-overview__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | x86 Architecture Overview
 
@@ -291,3 +293,5 @@ Let us know what you think about this room on our [Discord channel](https://disc
      No answer needed
 
 ---
+
+{% endraw %}

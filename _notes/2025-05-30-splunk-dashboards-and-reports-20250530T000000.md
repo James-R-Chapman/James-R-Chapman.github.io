@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/splunkdashboardsandreports)"
 source_path: "SOC Level 2/Advanced Splunk/20250530T000000--splunk-dashboards-and-reports__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Splunk: Dashboards and Reports
 
@@ -274,3 +276,5 @@ But that's not all Splunk has to offer to a Security Analyst. For learning more 
      No answer needed
 
 ---
+
+{% endraw %}

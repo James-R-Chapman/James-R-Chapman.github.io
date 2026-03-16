@@ -10,6 +10,8 @@ source_id: "1dcbfa8a-7509-4eee-84e1-98ca946be541"
 source_path: "Red Teaming/Host Evasions/20250812T000001--tryhackme-introduction-to-windows-api__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Introduction to Windows API
 
@@ -596,3 +598,5 @@ The Windows API can serve you for various use cases as we will continue to discu
      No answer needed
 
 ---
+
+{% endraw %}

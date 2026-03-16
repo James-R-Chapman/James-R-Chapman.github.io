@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/basicdynamicanalysis)"
 source_path: "SOC Level 2/Malware Analysis/20250714T000000--tryhackme-basic-dynamic-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Basic Dynamic Analysis
 
@@ -394,3 +396,5 @@ Let us know what you found interesting in this room on our  [Discord channel](ht
      No answer needed
 
 ---
+
+{% endraw %}

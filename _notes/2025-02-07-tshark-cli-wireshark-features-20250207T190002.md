@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/tsharkcliwiresharkfeatures)"
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250207T190002--tshark-cli-wireshark-features__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TShark: CLI Wireshark Features
 
@@ -897,3 +899,5 @@ _Answer:_
      No answer needed
 
 ---
+
+{% endraw %}

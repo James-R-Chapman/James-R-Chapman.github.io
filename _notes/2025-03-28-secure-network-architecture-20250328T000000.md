@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/introtosecurityarchitecture)"
 source_path: "Security Engineer/Network and System Security/20250328T000000--secure-network-architecture__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Secure Network Architecture
 
@@ -750,3 +752,5 @@ In this room, we have expanded the common requirements of a well-designed networ
      No answer needed
 
 ---
+
+{% endraw %}

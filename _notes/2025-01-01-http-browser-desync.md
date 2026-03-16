@@ -8,6 +8,8 @@ source_id: "a70b296c-ff3b-4ffd-a646-6603070b1a37"
 source_path: "Web Application Pentesting/HTTP Request Smuggling/HTTP Browser Desync.md"
 ---
 
+{% raw %}
+
 #+title: HTTP Browser Desync
 #+filetags: #TryHackMe
 #+created: 2025-05-24
@@ -360,3 +362,5 @@ A special thanks to [@kevin_mizu](https://twitter.com/kevin_mizu?lang=it) for di
      No answer needed
 
 ---
+
+{% endraw %}

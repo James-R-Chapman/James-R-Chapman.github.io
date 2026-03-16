@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/threatemulationintro)"
 source_path: "SOC Level 2/Threat Emulation/20250619T000000--intro-to-threat-emulation__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Congratulations on completing Intro to Threat Emulation!!! 🎉
 
@@ -372,3 +374,5 @@ Threat Emulation is commonly viewed as a Red Team concept, yet it is all-rounded
      No answer needed
 
 ---
+
+{% endraw %}

@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/containervulnerabilitiesDG)"
 source_path: "DevSecOps/Container Security/Container Vulnerabilities.md"
 ---
 
+{% raw %}
+
 
 # Container Vulnerabilities
 
@@ -473,3 +475,5 @@ We will come onto how you can prevent these misconfigurations and vulnerabilitie
      No answer needed
 
 ---
+
+{% endraw %}

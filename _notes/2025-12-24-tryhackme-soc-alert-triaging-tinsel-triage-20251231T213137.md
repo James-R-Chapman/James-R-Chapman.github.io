@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/azuresentinel-aoc2025-a7d3h9k0p2)"
 source_path: "20251231T213137--tryhackme-soc-alert-triaging-tinsel-triage__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | SOC Alert Triaging - Tinsel Triage
 
@@ -283,3 +285,5 @@ _Answer:_
      deploy
 
 ---
+
+{% endraw %}

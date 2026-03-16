@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/cloudbasediac)"
 source_path: "DevSecOps/Infrastructure as Code/Cloud-based IaC.md"
 ---
 
+{% raw %}
+
 
 # Cloud-based IaC
 
@@ -585,3 +587,5 @@ View SiteOkay, so we've gone through cloud-based IaC, covering Terraform and AWS
      THM{c10uD-b@z3d-1@SeE}
 
 ---
+
+{% endraw %}

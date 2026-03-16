@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/yara-aoc2025-q9w1e3y5u7)"
 source_path: "20251231T213152--tryhackme-yara-rules-yara-mean-one__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | YARA Rules - YARA mean one
 
@@ -310,3 +312,5 @@ _Answer:_
      ____ __ __ ______ ______
 
 ---
+
+{% endraw %}

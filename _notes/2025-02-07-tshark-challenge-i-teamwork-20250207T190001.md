@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/tsharkchallengesone)"
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250207T190001--tshark-challenge-i-teamwork__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TShark Challenge I: Teamwork
 
@@ -108,3 +110,5 @@ _Answer:_
      No answer needed
 
 ---
+
+{% endraw %}

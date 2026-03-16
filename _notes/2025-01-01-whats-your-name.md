@@ -8,6 +8,8 @@ source_id: "7501289c-5650-49b8-a242-42a1410ffcd0"
 source_path: "Web Application Pentesting/Advanced Client-Side Attacks/Whats Your Name.md"
 ---
 
+{% raw %}
+
 #+title: Whats Your Name?
 #+filetags: #TryHackMe
 #+created: 2025-05-18
@@ -44,3 +46,5 @@ You will find all the necessary tools to complete the challenge, like Nmap, PHP 
      AdM!nP@wnEd
 
 ---
+
+{% endraw %}

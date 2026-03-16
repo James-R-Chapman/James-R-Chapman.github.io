@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/loggingforaccountability)"
 source_path: "Security Engineer/Managing Incidents/20250420T000001--logging-for-accountability__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Logging for Accountability
 
@@ -228,3 +230,5 @@ To access the terminal, deploy the virtual machine attached to this task by pres
      _
 
 ---
+
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/splunkdatamanipulation)"
 source_path: "SOC Level 2/Advanced Splunk/20250531T000001--splunk-data-manipulation__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Splunk: Data Manipulation
 
@@ -805,3 +807,5 @@ In the next room, we will take more advanced topics in data manipulation in Splu
      No answer needed
 
 ---
+
+{% endraw %}

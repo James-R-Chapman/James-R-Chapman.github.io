@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/serversidetemplateinjection)"
 source_path: "Web Application Pentesting/Injection Attacks/20250504T000001--server-side-template-injection__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Server-side Template Injection
 
@@ -526,3 +528,5 @@ Conclusion Congratulations on completing the Server-Side Template Injection (SST
      No answer needed
 
 ---
+
+{% endraw %}

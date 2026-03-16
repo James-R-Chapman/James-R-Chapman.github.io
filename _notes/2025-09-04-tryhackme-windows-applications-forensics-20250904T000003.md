@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/windowsapplications)"
 source_path: "Advanced Endpoint Investigations/Windows Endpoint Investigation/20250904T000003--tryhackme-windows-applications-forensics__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Windows Applications Forensics
 
@@ -1352,3 +1354,5 @@ This room covered the initial ways to investigate a live Windows machine focused
      No answer needed
 
 ---
+
+{% endraw %}

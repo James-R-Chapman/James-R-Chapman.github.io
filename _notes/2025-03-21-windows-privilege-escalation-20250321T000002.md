@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/windowsprivesc20)"
 source_path: "Jr Penetration Tester/Privilege Escalation/20250321T000002--windows-privilege-escalation__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Windows Privilege Escalation
 
@@ -1118,3 +1120,5 @@ In this room, we have introduced several privilege escalation techniques availab
      No answer needed
 
 ---
+
+{% endraw %}

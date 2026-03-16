@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/introtok8s)"
 source_path: "DevSecOps/Container Security/Intro to Kubernetes.md"
 ---
 
+{% raw %}
+
 
 # Intro to Kubernetes
 
@@ -675,3 +677,5 @@ kubectl auth can-i get secret/terminal-creds --as=system:serviceaccount:default:
      rbac.authorization.k8s.io/v1
 
 ---
+
+{% endraw %}

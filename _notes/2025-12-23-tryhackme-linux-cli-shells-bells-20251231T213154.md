@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/linuxcli-aoc2025-o1fpqkvxti)"
 source_path: "20251231T213154--tryhackme-linux-cli-shells-bells__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # THM{learning-linux-cli}Complete
 
@@ -276,3 +278,5 @@ _Answer:_
      No answer needed
 
 ---
+
+{% endraw %}

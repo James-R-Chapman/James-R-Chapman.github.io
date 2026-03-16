@@ -10,6 +10,8 @@ source_id: "f9efb53f-e125-4a7f-90b6-1607b7a80982"
 source_path: "Cyber Security 101/Start Your Cyber Security Journey/20250205T205523--defensive-security-intro__tryhackme.md"
 ---
 
+{% raw %}
+
 
 ### Cyber Security 101 > Start Your Cyber Security Journey > Defensive Security Intro
 
@@ -220,3 +222,5 @@ Correct Answer
      THM{THREAT-BLOCKED}
 
 ---
+
+{% endraw %}

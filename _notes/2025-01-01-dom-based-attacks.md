@@ -8,6 +8,8 @@ source_id: "36956695-b531-43d9-8bf4-810ae1e7dca8"
 source_path: "Web Application Pentesting/Advanced Client-Side Attacks/DOM-Based Attacks.md"
 ---
 
+{% raw %}
+
 #+title: DOM-Based Attacks
 #+filetags: #TryHackMe
 #+created: 2025-05-18
@@ -387,3 +389,5 @@ To defend against DOM-based attacks, it is important to once again treat all use
      No answer needed
 
 ---
+
+{% endraw %}

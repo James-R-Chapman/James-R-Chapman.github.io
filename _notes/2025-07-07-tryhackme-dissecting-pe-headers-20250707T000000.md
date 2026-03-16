@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/dissectingpeheaders)"
 source_path: "SOC Level 2/Malware Analysis/20250707T000000--tryhackme-dissecting-pe-headers__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Dissecting PE Headers
 
@@ -456,3 +458,5 @@ Let us know what you think about this room on our [Discord channel](https://disc
      No answer needed
 
 ---
+
+{% endraw %}

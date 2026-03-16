@@ -11,6 +11,8 @@ source_urls: "https://tryhackme.com/room/sentinelintroduction"
 source_path: "Defending Azure/Microsoft Sentinel/20251010T215715--tryhackme-ms-sentinel-introduction.md"
 ---
 
+{% raw %}
+
 
 
 # TryHackMe | MS Sentinel: Introduction
@@ -286,3 +288,5 @@ After completing this Microsoft Sentinel introductory room, you should have lear
      No answer needed
 
 ---
+
+{% endraw %}

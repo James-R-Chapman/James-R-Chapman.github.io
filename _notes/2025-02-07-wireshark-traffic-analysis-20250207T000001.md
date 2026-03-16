@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/wiresharktrafficanalysis)"
 source_path: "SOC Level 1/Network Security and Traffic Analysis/20250207T000001--wireshark-traffic-analysis__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Wireshark: Traffic Analysis
 
@@ -1158,3 +1160,5 @@ Correct Answer
      No answer needed
 
 ---
+
+{% endraw %}

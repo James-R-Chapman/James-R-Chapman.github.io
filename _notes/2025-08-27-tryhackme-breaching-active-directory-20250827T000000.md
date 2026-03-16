@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/breachingad)"
 source_path: "Red Teaming/Compromising Active Directory/20250827T000000--tryhackme-breaching-active-directory__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Breaching Active Directory
 
@@ -863,3 +865,5 @@ Now that we have breached AD, the next step is to perform enumeration of AD to g
      No answer needed
 
 ---
+
+{% endraw %}

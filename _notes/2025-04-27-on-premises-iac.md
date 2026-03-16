@@ -10,6 +10,8 @@ source_urls: "(https://tryhackme.com/room/onpremisesiac)"
 source_path: "DevSecOps/Infrastructure as Code/On-Premises IaC.md"
 ---
 
+{% raw %}
+
 
 # On-Premises IaC
 
@@ -655,3 +657,5 @@ In this room, we learned about on-prem IaC. Let’s have a recap:
      No answer needed
 
 ---
+
+{% endraw %}

@@ -10,6 +10,8 @@ source_urls: "https://tryhackme.com/room/macosforensicsapplications"
 source_path: "Advanced Endpoint Investigations/macOS Forensics/20251010T215625--tryhackme-macos-forensics-applications.md"
 ---
 
+{% raw %}
+
 
 
 # TryHackMe | macOS Forensics: Applications
@@ -559,3 +561,5 @@ And that's a wrap! In this room, we learned to trace user activity across multip
      No answer needed
 
 ---
+
+{% endraw %}

@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/networkdevicehardening)"
 source_path: "Security Engineer/Network and System Security/20250405T000000--network-device-hardening__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Network Device Hardening
 
@@ -29,3 +31,5 @@ In addition, we have also studied the importance of **network monitoring tools**
      No answer needed
 
 ---
+
+{% endraw %}

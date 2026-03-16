@@ -11,6 +11,8 @@ source_urls: "(https://tryhackme.com/room/insecuredeserialisation)"
 source_path: "Web Application Pentesting/Advanced Server-Side Attacks/20250508T000000--insecure-deserialisation__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # Insecure Deserialisation
 
@@ -737,3 +739,5 @@ Let us know your thoughts on this room on our [Discord ](https://discord.com/in
      No answer needed
 
 ---
+
+{% endraw %}

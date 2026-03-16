@@ -11,6 +11,8 @@ source_urls: "- (https://tryhackme.com/room/redteamengagements)"
 source_path: "Red Teaming/Red Team Fundamentals/20250721T000000--tryhackme-red-team-engagements__tryhackme.md"
 ---
 
+{% raw %}
+
 
 # TryHackMe | Red Team Engagements
 
@@ -500,3 +502,5 @@ We have covered how you can quantify campaign plans into documents and prepare f
      No answer needed
 
 ---
+
+{% endraw %}
