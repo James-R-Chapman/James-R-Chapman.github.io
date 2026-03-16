@@ -1,0 +1,31 @@
+---
+layout: post
+title: "Network Security Protocols"
+date: 2025-04-08
+tags: ["tryhackme"]
+categories: [tryhackme]
+hubs: "TryHackMe/Security Engineer/Network and System Security"
+identifier: "20250408T000000"
+source_id: "c3d45885-22b3-47db-b376-aa3d1b6aeb3b"
+source_urls: "(https://tryhackme.com/room/networksecurityprotocols)"
+source_path: "Security Engineer/Network and System Security/20250408T000000--network-security-protocols__tryhackme.md"
+---
+
+
+# Network Security Protocols
+
+# Task 6 | Conclusion
+
+In this room, we have covered various network security protocols essential for the security of transferred data. The most widely used mechanism for securing data over an insecure channel is to add an **SSL/TLS wrapper** , as we saw in HTTPS, FTPS, POP3S, and SMTPS. The security protocols protect against Man In the Middle (MITM), replay, and eavesdropping attacks.
+
+ If you want to study more and gain a deeper understanding of network protocols and their related (in)securities, we recommend you check the [Wireshark](https://tryhackme.com/room/wireshark) room.
+
+### **Answer the questions below**
+
+**Question:** Ensure that you have read and taken notes of the ideas presented in this room.
+
+*Answer:* 
+
+     No answer needed
+
+---
