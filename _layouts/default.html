@@ -28,9 +28,9 @@
       }
 
       .wrap {
-        max-width: 1400px;
+        max-width: {% if page.collection == "notes" or page.url == "/blog/tryhackme/" %}1700px{% else %}900px{% endif %};
         margin: 0 auto;
-        padding: 2rem 2rem 4rem;
+        padding: 2rem 1.25rem 4rem;
       }
 
       .topbar {
@@ -42,9 +42,9 @@
       }
 
       .topbar-inner {
-        max-width: 1400px;
+        max-width: 900px;
         margin: 0 auto;
-        padding: 1rem 2rem;
+        padding: 1rem 1.25rem;
         display: flex;
         gap: 1rem;
       }
