@@ -1,6 +1,7 @@
 title: James Chapman Portfolio
 description: Cybersecurity portfolio and TryHackMe learning notes
 markdown: kramdown
+excerpt_separator: "<!--excerpt-->"
 kramdown:
   input: GFM
 timezone: America/New_York
