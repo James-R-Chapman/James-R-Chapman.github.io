@@ -6,6 +6,8 @@ kramdown:
 permalink: /blog/:year/:month/:day/:title/
 timezone: America/New_York
 collections_dir: .
+exclude:
+  - documents/notes/**
 defaults:
   - scope:
       path: ""
