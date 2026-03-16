@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/macosforensicsartefacts)"
 source_path: "Advanced Endpoint Investigations/macOS Forensics/20250906T000000--tryhackme-macos-forensics-artefacts__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | macOS Forensics: Artefacts
 
@@ -1503,4 +1501,3 @@ Well, wasn't that fun? We seem to be getting confident performing forensics on m
      No answer needed
 
 ---
-{% endraw %}

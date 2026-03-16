@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/promptinjection-aoc2025-sxUMnCkvLO)"
 source_path: "20251231T213131--tryhackme-prompt-injection-sched-yule-conflict__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Prompt Injection - Sched-yule conflict
 
@@ -201,4 +199,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

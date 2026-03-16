@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/registry-forensics-aoc2025-h6k9j2l5p8)
 source_path: "20251231T105002--tryhackme-forensics-registry-furensics__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Forensics - Registry Furensics
 
@@ -257,4 +255,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

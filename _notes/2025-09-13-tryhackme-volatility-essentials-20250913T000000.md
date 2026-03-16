@@ -10,8 +10,6 @@ source_urls: "https://tryhackme.com/room/volatilityessentials"
 source_path: "Advanced Endpoint Investigations/Memory Analysis/20250912T213819--tryhackme-volatility-essentials__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe  - Volatility Essentials
 
@@ -411,4 +409,3 @@ We have only covered a very thin layer of memory forensics with Volatility, whic
      No answer needed
 
 ---
-{% endraw %}

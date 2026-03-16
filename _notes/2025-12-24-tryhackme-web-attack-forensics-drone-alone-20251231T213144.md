@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/webattackforensics-aoc2025-b4t7c1d5f8)
 source_path: "20251231T213144--tryhackme-web-attack-forensics-drone-alone__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Web Attack Forensics - Drone Alone
 
@@ -170,4 +168,3 @@ _Answer:_
      PowerShell.exe
 
 ---
-{% endraw %}

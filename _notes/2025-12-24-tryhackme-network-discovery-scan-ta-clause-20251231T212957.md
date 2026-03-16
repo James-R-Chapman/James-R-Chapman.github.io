@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/networkservices-aoc2025-jnsoqbxgky)"
 source_path: "20251231T212957--tryhackme-network-discovery-scan-ta-clause__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Network Discovery - Scan-ta Clause
 
@@ -253,4 +251,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

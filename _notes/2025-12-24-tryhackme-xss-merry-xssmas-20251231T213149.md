@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/xss-aoc2025-c5j8b1m4t6)"
 source_path: "20251231T213149--tryhackme-xss-merry-xssmas__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | XSS - Merry XSSMas
 
@@ -179,4 +177,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

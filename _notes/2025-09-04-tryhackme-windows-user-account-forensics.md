@@ -10,8 +10,6 @@ source_urls: "(https://tryhackme.com/room/windowsuseraccountforensics)"
 source_path: "Advanced Endpoint Investigations/Windows Endpoint Investigation/TryHackMe  - Windows User Account Forensics.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Windows User Account Forensics
 
@@ -467,4 +465,3 @@ Throughout this room, we examined the various artefacts generated from attacks t
      No answer needed
 
 ---
-{% endraw %}

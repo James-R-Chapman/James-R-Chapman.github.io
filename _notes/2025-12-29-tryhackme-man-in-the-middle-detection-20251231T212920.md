@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/mitmdetection)"
 source_path: "20251231T212920--tryhackme-man-in-the-middle-detection__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Man-in-the-Middle Detection
 
@@ -485,4 +483,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

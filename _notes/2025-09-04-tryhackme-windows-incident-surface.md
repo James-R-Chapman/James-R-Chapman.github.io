@@ -10,8 +10,6 @@ source_urls: "(https://tryhackme.com/room/winincidentsurface)"
 source_path: "Advanced Endpoint Investigations/Windows Endpoint Investigation/TryHackMe  - Windows Incident Surface.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Windows Incident Surface
 
@@ -842,4 +840,3 @@ In this room, we learned some major forensic artifacts of Windows and analyzed t
      No answer needed
 
 ---
-{% endraw %}

@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/linuxincidentsurface)"
 source_path: "Advanced Endpoint Investigations/Linux Endpoint Investigation/20250901T000000--tryhackme-linux-incident-surface__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Linux Incident Surface
 
@@ -825,4 +823,3 @@ Happy Learning!!
      No answer needed
 
 ---
-{% endraw %}

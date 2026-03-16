@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/linuxprocessanalysis)"
 source_path: "Advanced Endpoint Investigations/Linux Endpoint Investigation/20250901T000001--tryhackme-linux-process-analysis__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Linux Process Analysis
 
@@ -993,4 +991,3 @@ Congratulations! Throughout our investigation, we forensically examined running 
      No answer needed
 
 ---
-{% endraw %}

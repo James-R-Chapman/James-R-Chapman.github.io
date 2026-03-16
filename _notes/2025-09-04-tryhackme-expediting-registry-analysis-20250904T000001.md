@@ -10,8 +10,6 @@ source_urls: "(https://tryhackme.com/room/expregistryforensics)"
 source_path: "Advanced Endpoint Investigations/Windows Endpoint Investigation/20250904T000001--tryhackme-expediting-registry-analysis__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Expediting Registry Analysis
 
@@ -564,4 +562,3 @@ Let us know what you found most helpful in this room on our [Discord channel](ht
      No answer needed
 
 ---
-{% endraw %}

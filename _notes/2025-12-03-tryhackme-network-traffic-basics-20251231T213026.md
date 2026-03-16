@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/networktrafficbasics)"
 source_path: "20251231T213026--tryhackme-network-traffic-basics__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Network Traffic Basics
 
@@ -437,4 +435,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

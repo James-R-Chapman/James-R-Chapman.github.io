@@ -10,8 +10,6 @@ source_id: "137c68bc-ed5d-47a0-a043-aa33286ead45"
 source_path: "20250227T000000--linux-forensics-cheatsheet__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # Linux Forensics Cheatsheet
 
@@ -149,4 +147,3 @@ Use grep or similar utitity to filter results as per requirement
 
 Location: /var/log
 Logs for each third-party application can be found in their specific directories in this location
-{% endraw %}

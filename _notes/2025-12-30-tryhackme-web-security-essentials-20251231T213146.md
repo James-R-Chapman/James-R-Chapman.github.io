@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/websecurityessentials)"
 source_path: "20251231T213146--tryhackme-web-security-essentials__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Web Security Essentials
 
@@ -298,4 +296,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

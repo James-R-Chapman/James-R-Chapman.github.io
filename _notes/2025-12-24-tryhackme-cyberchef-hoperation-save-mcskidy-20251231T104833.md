@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/encoding-decoding-aoc2025-s1a4z7x0c3)"
 source_path: "20251231T104833--tryhackme-cyberchef-hoperation-save-mcskidy__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | CyberChef - Hoperation Save McSkidy
 
@@ -330,4 +328,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

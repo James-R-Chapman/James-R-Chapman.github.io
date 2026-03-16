@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/container-security-aoc2025-z0x3v6n9m2)
 source_path: "20251231T104827--tryhackme-containers-doordashers-demise__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Containers - DoorDasher's Demise
 
@@ -178,4 +176,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

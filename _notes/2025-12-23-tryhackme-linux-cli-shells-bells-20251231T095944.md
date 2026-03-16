@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/linuxcli-aoc2025-o1fpqkvxti)"
 source_path: "20251231T095944--tryhackme-linux-cli-shells-bells__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # Identify the flag inside of the McSkidy's guideDetecting machine actions
 
@@ -278,4 +276,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

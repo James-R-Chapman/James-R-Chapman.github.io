@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/cloudenum-aoc2025-y4u7i0o3p6)"
 source_path: "20251231T104809--tryhackme-aws-security-s3cret-santa__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | AWS Security - S3cret Santa
 
@@ -47,8 +45,8 @@ Target machine
 Status:OffStart Machine AWS accounts can be accessed programmatically by using an Access Key ID and a Secret Access Key. For this room, both of those will be automatically configured for you. The AWS CLI will look for credentials at `~/.aws/credentials`, where you should see something similar to the following:
 
 ```
-aws_access_key_id = REDACTED_ACCESS_KEY_ID
-aws_secret_access_key = REDACTED_SECRET_ACCESS_KEY
+aws_access_key_id = AKIAU2VYTBGYOYXYZXYZ
+aws_secret_access_key = DhMy3ac4N6UBRiyKD43u0mdEBueOMKzyvnG+/FhI
 ```
 
 Amazon Security Token Service (STS) allows us to utilise the credentials of a user that we have saved during our AWS CLI configuration. We can use the `get-caller-identity` call to retrieve information about the user we have configured for the AWS CLI. Let's run the following command:
@@ -291,9 +289,9 @@ This command will ask STS, the service in charge of AWS security tokens, to gene
 ```
 {
     "Credentials": {
-        "AccessKeyId": "REDACTED_TEMP_ACCESS_KEY_ID",
-        "SecretAccessKey": "REDACTED_TEMP_SECRET_ACCESS_KEY",
-        "SessionToken": "REDACTED_AWS_SESSION_TOKEN",
+        "AccessKeyId": "ASIARZPUZDIKDM4AUIJK",
+        "SecretAccessKey": "WUzUY46CdgMOLkhuO5llc4G0W92QUaOBNhhzfmSm",
+        "SessionToken": "FQoGZXIvYXdzEBYaDdK2KFhRR9GhgoUk9LmzZZjzjJw+r++BFMc7nXyjTE3swUL4ddYyyl47fn6DJeR760L2LxSI+5ur33zUe8b5HwaSqkAbb4xXZdGkvcBv0VWVaLYAMHbbOs7M6WT7ffgcW7Z0bj4I3lB9sN056nuKvcmOG7PQpu/+1wZ2hq1e77/toQKKO+UkhCJU+qMK9iNChMfnuJvFciudTVuyqgG2lhbLK53WWnFxVCHhzjNnCZzZ5QzlBockhcZAq/tVUsp4IVFcz/cOqnT5Xdb5Ovz2Wc9nHOjrRjApIWqNqNb+Saj37le7FZEytuYlpSRtG1QP7n6vdtGPBb1t1ywT2So=",
         "Expiration": "2025-11-26T03:40:11.117460+00:00"
     },
     "AssumedRoleUser": {
@@ -309,7 +307,7 @@ The output will provide us the credentials we need to assume this role, specific
 Setting the Temporary Credentials to Assume Role
 
 ```Setting the Temporary Credentials to Assume Role
-user@machine$ export AWS_ACCESS_KEY_ID="REDACTED_TEMP_ACCESS_KEY_ID"user@machine$ export AWS_SECRET_ACCESS_KEY="REDACTED_TEMP_SECRET_ACCESS_KEY"user@machine$ export AWS_SESSION_TOKEN="REDACTED_AWS_SESSION_TOKEN"
+user@machine$ export AWS_ACCESS_KEY_ID="ASIAxxxxxxxxxxxx"user@machine$ export AWS_SECRET_ACCESS_KEY="abcd1234xxxxxxxxxxxx"user@machine$ export AWS_SESSION_TOKEN="FwoGZXIvYXdzEJr..."
 ```
 
 Once we have done that, we can officially use the permissions granted by the `bucketmaster` role. To check if you have correctly assumed the role, you can once again run:
@@ -359,4 +357,3 @@ _Answer:_
      THM{more_like_sir_cloudbane}
 
 ---
-{% endraw %}

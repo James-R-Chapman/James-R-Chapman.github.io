@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/networkdiscoverydetection)"
 source_path: "20251231T213007--tryhackme-network-discovery-detection__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Network Discovery Detection
 
@@ -258,4 +256,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

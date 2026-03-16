@@ -10,8 +10,6 @@ source_urls: "https://tryhackme.com/room/windowsmemoryandprocs"
 source_path: "Advanced Endpoint Investigations/Memory Analysis/20250920T215410--tryhackme-windows-memory-processes.md"
 ---
 
-{% raw %}
-
 
 
 # TryHackMe | Windows Memory & Processes
@@ -721,4 +719,3 @@ This room was the first in a series of three that dives into analyzing a memory 
      No answer needed
 
 ---
-{% endraw %}

@@ -10,8 +10,6 @@ source_urls: "(https://tryhackme.com/room/supplementalmemory)"
 source_path: "Advanced Endpoint Investigations/Memory Analysis/20250924T162658--tryhackme-supplemental-memory__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe  - Supplemental Memory
 
@@ -311,4 +309,3 @@ And what was next?
      No answer needed
 
 ---
-{% endraw %}

@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/idor-aoc2025-zl6MywQid9)"
 source_path: "20251231T211716--tryhackme-idor-santas-little-idor__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | IDOR - Santa’s Little IDOR
 
@@ -202,4 +200,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

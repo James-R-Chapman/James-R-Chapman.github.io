@@ -10,8 +10,6 @@ source_urls: "https://tryhackme.com/room/introtocoldsystemforensics"
 source_path: "Advanced Endpoint Investigations/Disk Image Analysis/20250920T215404--tryhackme-intro-to-cold-system-forensics.md"
 ---
 
-{% raw %}
-
 
 
 # TryHackMe | Intro to Cold System Forensics
@@ -283,4 +281,3 @@ Although this room introduces cold system forensics, the concepts covered apply 
      No answer needed
 
 ---
-{% endraw %}

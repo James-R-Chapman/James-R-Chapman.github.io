@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/splunkforloganalysis-aoc2025-x8fj2k4rq
 source_path: "20251231T213141--tryhackme-splunk-basics-did-you-siem__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Splunk Basics - Did you SIEM?
 
@@ -279,4 +277,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}

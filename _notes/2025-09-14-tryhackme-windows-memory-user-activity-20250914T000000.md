@@ -10,8 +10,6 @@ source_urls: "https://tryhackme.com/room/windowsmemoryanduseractivity"
 source_path: "Advanced Endpoint Investigations/Memory Analysis/20250920T215348--tryhackme-windows-memory-user-activity.md"
 ---
 
-{% raw %}
-
 
 
 # TryHackMe | Windows Memory & User Activity
@@ -556,4 +554,3 @@ In this room, we analyzed user activity through memory alone, tracking logins, s
      No answer needed
 
 ---
-{% endraw %}

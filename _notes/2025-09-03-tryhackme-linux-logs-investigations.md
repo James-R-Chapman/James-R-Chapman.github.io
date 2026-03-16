@@ -10,8 +10,6 @@ source_urls: "(https://tryhackme.com/room/linuxlogsinvestigations)"
 source_path: "Advanced Endpoint Investigations/Linux Endpoint Investigation/TryHackMe  - Linux Logs Investigations.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Linux Logs Investigations
 
@@ -960,4 +958,3 @@ Finally, we practised responding to an interesting incident by leveraging the di
      No answer needed
 
 ---
-{% endraw %}

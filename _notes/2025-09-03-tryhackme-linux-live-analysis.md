@@ -10,8 +10,6 @@ source_urls: "(https://tryhackme.com/room/linuxliveanalysis)"
 source_path: "Advanced Endpoint Investigations/Linux Endpoint Investigation/TryHackMe  - Linux Live Analysis.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Linux Live Analysis
 
@@ -1402,4 +1400,3 @@ You can learn more about forensics in the following rooms:
      No answer needed
 
 ---
-{% endraw %}

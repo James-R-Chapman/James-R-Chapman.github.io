@@ -11,8 +11,6 @@ source_urls: "(https://tryhackme.com/room/adventofcyberpreptrack)"
 source_path: "20251231T101229--advent-of-cyber-prep-track__tryhackme.md"
 ---
 
-{% raw %}
-
 
 # TryHackMe | Advent of Cyber Prep Track
 
@@ -531,4 +529,3 @@ _Answer:_
      No answer needed
 
 ---
-{% endraw %}
